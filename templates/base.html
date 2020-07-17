@@ -1,10 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <title>Tableau de bord</title>
 </head>
 <body>
+    <header>
+        <div class="logo_container">
+            <img src="{% static 'img/logo_RTA.png' %}" alt="logo" width="40px" height="40px">
+        </div>
+        <nav> <h6 style="font-size: 15px; color: #f5f6fa; padding-top: 12px; padding-left: 5px;">RTA Analyzer</h6></nav>
+    </header>
 
+    {% include 'partials/_sidebar.html' %}
 </body>
 </html>
