@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.shortcuts import render
+from Accidents.models import Sheet1
 
 # Create your views here.
 def home(requests):
