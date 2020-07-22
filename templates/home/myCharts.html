@@ -1,8 +1,19 @@
-{% load static %}
 {% extends 'home/welcome.html' %}
+{% load static %}
+
 
 {% block content %}
 <div>
-
+<div id="myLineChart" data-url="{% url 'lineChartData' %}"></div>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $.ajax({
+      url: $("#myLineChart").attr("data-url"),
+      dataType: 'json',
+      success: function (data) {
+        Highcharts.chart("myLineChart", data);
+      }
+    });
+  </script>
 </div>
-{%endblock}
+{%endblock%}
