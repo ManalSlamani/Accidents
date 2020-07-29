@@ -1,7 +1,12 @@
 body {
-  font-size: .875rem;
+    font-size: .875rem;
+    font-family: 'Poppins', sans-serif;
 }
-
+header{
+  display: flex;
+  margin: auto;
+  height: 10vh;
+}
 .feather {
   width: 16px;
   height: 16px;
@@ -27,7 +32,12 @@ body {
     top: 5rem;
   }
 }
-
+@media screen and (max-width: 1024px){
+  .main{
+    flex-direction: column;
+  }
+  
+}
 .sidebar-sticky {
   position: relative;
   top: 0;
@@ -56,7 +66,7 @@ body {
 
 .sidebar .nav-link.active {
   color: #007bff;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .sidebar .nav-link:hover .feather,
@@ -65,7 +75,7 @@ body {
 }
 
 .sidebar-heading {
-  font-size: .75rem;
+  font-size: .70rem;
   text-transform: uppercase;
 }
 
@@ -76,7 +86,8 @@ body {
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;
-  font-size: 22px;
+  padding-left: 0px;
+  font-size: 18px;
   background-color: rgba(0, 0, 0, .25);
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
 }
