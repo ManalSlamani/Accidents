@@ -5,7 +5,7 @@ body {
 header{
   display: flex;
   margin: auto;
-  height: 10vh;
+  /*height: 10vh;*/
 }
 .feather {
   width: 16px;
@@ -87,7 +87,7 @@ header{
   padding-top: .75rem;
   padding-bottom: .75rem;
   padding-left: 0px;
-  font-size: 18px;
+  font-size: 16px;
   background-color: rgba(0, 0, 0, .25);
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
 }
