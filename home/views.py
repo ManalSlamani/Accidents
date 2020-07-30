@@ -6,14 +6,17 @@ from django.db.models import Count, Q
 
 
 # Create your views here.
-def home(requests):
-    return render(requests, 'home/welcome.html')
+def home(request):
+    return render(request, 'home/welcome.html')
 
 
-def json_fun(request):
-    return render(request, "json_fun.html")
+def get_data(request, *args, **kwargs):
+    # data = Sheet1.objects.values('wilaya').annotate(total=Count('wilaya')).order_by('wilaya')
 
+    dataa = Sheet1.objects.all()
+    return render(request, 'home/lineChart.htm', {'dataa': dataa})
 
+<<<<<<< HEAD
 """def lineChartData(request):
     dataset = Sheet1.objects.values('wilaya').annotate(total=Count('wilaya')).orrder_by('wilaya')
     wilaya_display_name = dict()
@@ -28,3 +31,6 @@ def json_fun(request):
         }]
     }
     return JsonResponse(chart)"""
+=======
+    #return JsonResponse(data, safe=False)
+>>>>>>> 678fa17b156d2abb55bc202efcccd12bfdda8b28

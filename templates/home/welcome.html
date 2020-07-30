@@ -1,5 +1,5 @@
 {% load static %}
-{% block content %}
+<html>
 <head>
     <title>Dashboard </title>
     <meta charset="UTF-8">
@@ -7,26 +7,30 @@
     <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static '/css/style.css' %}">
-    <script src="{% static '/js/script.js' %}"></script>
+    {% block script %}
+    <script src="{% static 'js/highcharts.src.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
 
+    <script src="{% static '/js/script.js' %}"></script>
+  {% endblock %}
 
 </head>
 <body>
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-1 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-2" href="#">
-            <img src="{% static 'img/logo_RTA.png' %}" alt="logo" width="50px" height="50px" pedding-right="2px">
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-1" href="#" >
+            <img src="{% static 'img/logo_RTA.png' %}" alt="logo" width="45px" height="45px">
             Accidents Analyzer</a>
-        <div class=" row col-md-5 col-lg-2">
-            <div class="btn-group">
-           <button type="button" class="btn btn-md btn-outline-light">User Name</button>
-            <button type="button" class="btn btn-md btn-outline-light">Déconnexion</button>
+        <div class=" row ">
+            <div class="btn-group mr-2 px-3">
+           <button id="uername" type="button" class="btn btn-sm btn-outline-secondary">User Name</button>
+            <button id="deconnexion" type="button" class="btn btn-sm btn-outline-secondary">Déconnexion</button>
           </div>
         </div>
    </nav>
 <div class="container-fluid">
     <div class="row">
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-       <div class="sidebar-sticky pt-5">
+       <div class="sidebar-sticky pt-4">
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="#">
@@ -57,18 +61,32 @@
       </div>
     </nav>
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Tableau de bord</h1>
+      <div id="main" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h4>Les accidents routiers en Algérie</h4>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Exporter</button>
+            <button id="exporter" type="button" class="btn btn-sm btn-outline-secondary">Exporter</button>
           </div>
 
         </div>
       </div>
 
+<<<<<<< HEAD
+=======
+    {% block content %}
+
+    {% endblock %}
+
+>>>>>>> 678fa17b156d2abb55bc202efcccd12bfdda8b28
       </main>
 
   </div></div>
+
+<script>
+    $(document).ready(function() {
+        {%block jquery%} {% endblock jquery %}
+    })
+</script>
+
 </body>
-{% endblock %}
+</html>

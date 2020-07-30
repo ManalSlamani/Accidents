@@ -1,19 +1,29 @@
 {% extends 'home/welcome.html' %}
-{% load static %}
-
+{% block page_name %} Tableau de bord {% endblock %}
+{#{% block scripts %}#}
+{#<script type ="text/javascript">#}
+{##}
+{#       $.ajax({#}
+{#           method: "GET",#}
+{#           url: 'get-data/',#}
+{#           success: function (data) {#}
+{#               console.log(data)#}
+{#           },#}
+{#           error: function (error_data) {#}
+{#               console.log("error")#}
+{#               console.log(error_data)#}
+{#           }#}
+{#       })#}
+{##}
+{#</script>#}
+{#{% endblock %}#}
 
 {% block content %}
-<div>
-<div id="myLineChart" data-url="{% url 'lineChartData' %}"></div>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script>
-    $.ajax({
-      url: $("#myLineChart").attr("data-url"),
-      dataType: 'json',
-      success: function (data) {
-        Highcharts.chart("myLineChart", data);
-      }
-    });
-  </script>
-</div>
+
+   {%  for d in data %}
+         <p>
+             {{ d.wilaya }}
+          </p>
+   {% endfor %}
+
 {%endblock%}
