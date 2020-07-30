@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 import json
 from django.db.models import Count, Q
-from .models import Sheet1
+"""from .models import Sheet1"""
 
 
 # Create your views here.
@@ -14,7 +14,7 @@ def json_fun(request):
     return render(request, "json_fun.html")
 
 
-def lineChartData(request):
+"""def lineChartData(request):
     dataset = Sheet1.objects.values('wilaya').annotate(total=Count('wilaya')).orrder_by('wilaya')
     wilaya_display_name = dict()
     for wilaya_tuple in Sheet1.wilaya:
@@ -27,4 +27,4 @@ def lineChartData(request):
             'data': list(map(lambda row: {'name': wilaya_display_name[row['wilaya']], 'y': row['total']}, dataset))
         }]
     }
-    return JsonResponse(chart)
+    return JsonResponse(chart)"""
