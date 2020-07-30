@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -150,7 +148,7 @@ class NegativeSamples(models.Model):
         db_table = 'negative_samples'
 
 
-class Sheet1(models.Model):
+class accidents(models.Model):
     wilaya = models.CharField(max_length=20, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     cause_acc = models.CharField(db_column='CAUSE_ACC', max_length=50, blank=True, null=True)  # Field name made lowercase.
@@ -179,5 +177,5 @@ class Sheet1(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'sheet1'
->>>>>>> 678fa17b156d2abb55bc202efcccd12bfdda8b28
+        db_table = 'accidents'
+
