@@ -173,6 +173,7 @@ class Sheet1(models.Model):
     tempvent = models.IntegerField(db_column='TempVent', blank=True, null=True)  # Field name made lowercase.
     neige = models.IntegerField(db_column='Neige', blank=True, null=True)  # Field name made lowercase.
     accident = models.IntegerField(db_column='Accident', blank=True, null=True)  # Field name made lowercase.
+    id_accident = models.AutoField(db_column='ID_accident', primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

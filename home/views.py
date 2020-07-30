@@ -12,7 +12,8 @@ def home(request):
 
 def get_data(request, *args, **kwargs):
     # data = Sheet1.objects.values('wilaya').annotate(total=Count('wilaya')).order_by('wilaya')
-    data: {
-        "test": 100,
-    }
-    return JsonResponse(data)
+
+    dataa = Sheet1.objects.all()
+    return render(request, 'home/lineChart.htm', {'dataa': dataa})
+
+    #return JsonResponse(data, safe=False)

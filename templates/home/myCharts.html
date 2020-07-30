@@ -1,28 +1,29 @@
 {% extends 'home/welcome.html' %}
-
-<script>
-    {% block jquery %}
-        var endpoint = '/api/data/'
-
-$.ajax({
-    method: "GET",
-    url: endpoint,
-    success: function (data) {
-        console.log(data)
-    },
-    error: function (error_data) {
-        console.log("error")
-        console.log(error_data)
-    }
-})
-    {% endblock %}
-</script>
+{% block page_name %} Tableau de bord {% endblock %}
+{#{% block scripts %}#}
+{#<script type ="text/javascript">#}
+{##}
+{#       $.ajax({#}
+{#           method: "GET",#}
+{#           url: 'get-data/',#}
+{#           success: function (data) {#}
+{#               console.log(data)#}
+{#           },#}
+{#           error: function (error_data) {#}
+{#               console.log("error")#}
+{#               console.log(error_data)#}
+{#           }#}
+{#       })#}
+{##}
+{#</script>#}
+{#{% endblock %}#}
 
 {% block content %}
 
-    <div url-endpoint='{% url "api-data" %}'>
-    <h2> hello world</h2>
-
-    </div>
+   {%  for d in data %}
+         <p>
+             {{ d.wilaya }}
+          </p>
+   {% endfor %}
 
 {%endblock%}
