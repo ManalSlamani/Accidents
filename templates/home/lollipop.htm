@@ -1,0 +1,241 @@
+{% extends 'home/welcome.html' %}
+{% block page_name %} Tableau de bord {% endblock %}
+
+{% block content %}
+
+		<style type="text/css">
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 320px; 
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+	font-family: Verdana, sans-serif;
+	border-collapse: collapse;
+	border: 1px solid #EBEBEB;
+	margin: 10px auto;
+	text-align: center;
+	width: 100%;
+	max-width: 500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+.ld-label {
+	width:200px;
+	display: inline-block;
+}
+
+.ld-url-input {
+	width: 500px; 
+}
+
+.ld-time-input {
+	width: 40px;
+}
+
+		</style>
+<script src="./code/highcharts.js"></script>
+<script src="./code/highcharts-more.js"></script>
+<script src="./code/modules/dumbbell.js"></script>
+<script src="./code/modules/lollipop.js"></script>
+<script src="./code/modules/exporting.js"></script>
+<script src="./code/modules/accessibility.js"></script>
+
+
+<div class="row">
+    <div style="width: 850px; height: 820px">
+    {{my_map|safe}}
+    </div>
+    <div class="col">
+        <figure class="highcharts-figure">
+
+    <div id="daybarchart" style="height: 300px; width: 450px">
+    </div>
+
+</figure>
+         <figure class="highcharts-figure">
+
+    <div id="monthbarchart" style="height: 300px; width: 450px">
+    </div>
+
+</figure>
+    </div>
+  </div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+Highcharts.chart('daybarchart', {
+
+    chart: {
+        type: 'bar'
+    },
+
+    legend: {
+        enabled: false
+    },
+
+
+    title: {
+        text: 'Nombre de blessés et de décés par jour'
+    },
+
+    xAxis: {
+        title: {
+            text: "Jour de semaine"
+        },
+        categories: [ 'Dimancehe', 'Lundi', "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
+{#            {% for entry in daydata %}'{{ entry.jour}} '{% if not forloop.last %}, {% endif %}{% endfor %}#}
+          ]},
+
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Nombre enregistré'
+        }
+    },
+
+     plotOptions: {
+        column: {
+            grouping: false,
+            shadow: false,
+            borderWidth: 0
+        }
+    },
+   legend: {
+        layout: 'vertical',
+        align: 'center',
+        verticalAlign: 'top',
+
+        borderWidth: 1,
+        backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+        shadow: true
+    },
+    series: [{
+        color: 'rgba(186,60,61,.9)',
+        name: 'Nombre de décés',
+        data: [
+            {% for entry in daydata %}{{ entry.dec_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+
+    }, {
+        name: 'Nombre de blessés',
+        data: [
+            {% for entry in daydata %}{{ entry.bless_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+    },
+    ],
+      dataLabels: {
+            enabled: true,
+            rotation: -90,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.1f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+});
+Highcharts.chart('monthbarchart', {
+
+    chart: {
+        type: 'bar'
+    },
+
+    legend: {
+        enabled: false
+    },
+
+
+    title: {
+        text: 'Nombre de blessés et de décés par mois'
+    },
+
+    xAxis: {
+        title: {
+            text: "Mois"
+        },
+        categories: [
+{%          for entry in monthdata %}'{{ entry.mois}} '{% if not forloop.last %}, {% endif %}{% endfor %}
+          ]},
+
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Nombre enregistré'
+        }
+    },
+
+     plotOptions: {
+        column: {
+            grouping: false,
+            shadow: false,
+            borderWidth: 0
+        }
+    },
+   legend: {
+        layout: 'vertical',
+        align: 'center',
+        verticalAlign: 'top',
+
+        borderWidth: 1,
+        backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+        shadow: true
+    },
+    series: [{
+        color: 'rgba(186,60,61,.9)',
+        name: 'Nombre de décés',
+        data: [
+            {% for entry in monthdata %}{{ entry.dec_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+
+    }, {
+        name: 'Nombre de blessés',
+        data: [
+            {% for entry in monthdata %}{{ entry.bless_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+    },
+    ],
+      dataLabels: {
+            enabled: true,
+            rotation: -90,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.1f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+});
+		</script>
+{% endblock %}
