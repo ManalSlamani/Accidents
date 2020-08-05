@@ -63,10 +63,14 @@
 <div class="container-fluid">
 <div class="row ">
 
-    <div class="col-lg-7 col-md-6">
+    <div class="col-lg-5 col-md-6">
+        <h6> Distribution des accidents usr le territoire national</h6>
           {{my_map|safe}}
     </div>
     <div class="col-lg-2 col-md-4">
+{#          <figure class="highcharts-figure">#}
+{#                <div id="wilayachart" style="height: 300px; width: 450px"></div>#}
+{#        </figure>#}
         <figure class="highcharts-figure">
               <div id="daybarchart" style="height: 300px; width: 450px"></div>
         </figure>
@@ -239,5 +243,56 @@ Highcharts.chart('monthbarchart', {
         }
 
 });
+
+
+Highcharts.chart('wilayachart', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ' '
+    },
+    xAxis: {
+        categories: [
+            {% for entry in wilayadata %}'{{ entry.wilaya}} '{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: ' '
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Nomre de décés',
+        data: [
+            {% for entry in wilayadata %}{{ entry.dec_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ]
+
+    }, {
+        name: 'Nombre de blessés',
+        data: [
+            {% for entry in wilayahdata %}{{ entry.bless_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ]
+
+    },
+    ]
+});
+
 		</script>
 {% endblock %}
