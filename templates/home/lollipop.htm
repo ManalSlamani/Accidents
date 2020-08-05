@@ -60,23 +60,20 @@
 <script src="./code/modules/accessibility.js"></script>
 
 
-<div class="row">
-    <div style="width: 850px; height: 820px">
-    {{my_map|safe}}
+<div class="container-fluid">
+<div class="row ">
+
+    <div class="col-lg-7 col-md-6">
+          {{my_map|safe}}
     </div>
-    <div class="col">
+    <div class="col-lg-2 col-md-4">
         <figure class="highcharts-figure">
-
-    <div id="daybarchart" style="height: 300px; width: 450px">
+              <div id="daybarchart" style="height: 300px; width: 450px"></div>
+        </figure>
+        <figure class="highcharts-figure">
+                <div id="monthbarchart" style="height: 300px; width: 450px"></div>
+        </figure>
     </div>
-
-</figure>
-         <figure class="highcharts-figure">
-
-    <div id="monthbarchart" style="height: 300px; width: 450px">
-    </div>
-
-</figure>
     </div>
   </div>
 
@@ -113,29 +110,30 @@ Highcharts.chart('daybarchart', {
     yAxis: {
         min: 0,
         title: {
-            text: 'Nombre enregistré'
+            text: ' '
         }
     },
 
      plotOptions: {
-        column: {
-            grouping: false,
-            shadow: false,
-            borderWidth: 0
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
         }
     },
-   legend: {
-        layout: 'vertical',
+    legend: {
+        layout: 'horizontal',
         align: 'center',
         verticalAlign: 'top',
-
-        borderWidth: 1,
-        backgroundColor:
-            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-        shadow: true
+        floating: true,
+        y: 20,
+        {#borderWidth: 1,#}
+        {#backgroundColor:#}
+        {#    Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',#}
+        {#shadow: true#}
     },
     series: [{
-        color: 'rgba(186,60,61,.9)',
+
         name: 'Nombre de décés',
         data: [
             {% for entry in daydata %}{{ entry.dec_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
@@ -189,28 +187,32 @@ Highcharts.chart('monthbarchart', {
         min: 0,
         title: {
             text: 'Nombre enregistré'
+        },
+        labels: {
+            overflow: 'justify'
         }
     },
 
      plotOptions: {
-        column: {
-            grouping: false,
-            shadow: false,
-            borderWidth: 0
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
         }
     },
-   legend: {
-        layout: 'vertical',
+    legend: {
+        layout: 'horizontal',
         align: 'center',
         verticalAlign: 'top',
-
-        borderWidth: 1,
-        backgroundColor:
-            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-        shadow: true
+        floating: true,
+        y: 20,
+        {#borderWidth: 1,#}
+        {#backgroundColor:#}
+        {#    Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',#}
+        {#shadow: true#}
     },
     series: [{
-        color: 'rgba(186,60,61,.9)',
+
         name: 'Nombre de décés',
         data: [
             {% for entry in monthdata %}{{ entry.dec_count }}{% if not forloop.last %}, {% endif %}{% endfor %}

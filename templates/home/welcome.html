@@ -16,12 +16,36 @@
 
 </head>
 <body>
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow"  >
+<nav class="navbar navbar-dark  navbar-expand-lg sticky-top bg-dark  p-0 shadow "  >
+    <a class="navbar-brand" href="#" >
+            <img src="{% static 'img/logo_RTA.png' %}"  class="d-inline-block align-center" alt=""height="40px">
+           Accidents Analyzer
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ">
+          <li class="nav-item active">
+            <a class="nav-link " href="#">
+              Tableau de bord <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              Prédiction
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              Base De Données
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              Help
+            </a>
+          </li>
 
-        <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-1" href="#" >
-            <img src="{% static 'img/logo_RTA.png' %}" alt="logo" width="45px" height="45px">
-            Accidents Analyzer</a>
-
+       </ul>
+    </div>
 
         <div class=" row ">
             <div class="btn-group mr-2 px-3">
@@ -30,46 +54,41 @@
           </div>
         </div>
    </nav>
-<div class="container-fluid">
-    <div class="row">
-      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-       <div class="sidebar-sticky pt-4">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">
-              <span data-feather="home"></span>
-              Tableau de bord <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file"></span>
-              Prédiction
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="shopping-cart"></span>
-              Base De Données
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="users"></span>
-              Help
-            </a>
-          </li>
-
-        </ul>
-      </div>
-    </nav>
-      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-
+{#<div class="">#}
+{#    <div class="row">#}
+{#      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">#}
+{#       <div class="sidebar-sticky pt-4">#}
+{#        <ul class="nav flex-column">#}
+{#          <li class="nav-item">#}
+{#            <a class="nav-link active" href="#">#}
+{#              <span data-feather="home"></span>#}
+{#              Tableau de bord <span class="sr-only">(current)</span>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item">#}
+{#            <a class="nav-link" href="#">#}
+{#              <span data-feather="file"></span>#}
+{#              Prédiction#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item">#}
+{#            <a class="nav-link" href="#">#}
+{#              <span data-feather="shopping-cart"></span>#}
+{#              Base De Données#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item">#}
+{#            <a class="nav-link" href="#">#}
+{#              <span data-feather="users"></span>#}
+{#              Help#}
+{#            </a>#}
+{#          </li>#}
+{##}
+{#        </ul>#}
+{#      </div>#}
+{#    </nav>#}
+    <main role="main" class="col">
       <div id="main" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-      <button class="navbar-toggler  mr-0 px-1"  type="button" data-toggle="collapse" data-target="#container-fluid" aria-controls="container-fluid
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
         <h4>Les accidents routiers en Algérie</h4>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
@@ -85,7 +104,7 @@
 
       </main>
 
-  </div></div>
+  </div>
 
 <script>
     $(document).ready(function() {

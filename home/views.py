@@ -7,6 +7,7 @@ import folium
 from folium import plugins
 from django.views.generic import TemplateView
 
+
 # Create your views here.
 def home(request):
     return render(request, 'home/welcome.html')
@@ -26,7 +27,6 @@ def all_data(request, *args, **kwargs):
 
 
 # return JsonResponse(data, safe=False)
-
 
 
 def json_example(request):
@@ -55,14 +55,9 @@ def chart_data(request):
     return JsonResponse(chart)
 
 
-
-
-
-
-
 def chart_data(request):
     dataset = Sheet1.objects \
-        .values('mois')  \
+        .values('mois') \
         .annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accident=Count('nbre_dec'))
 
     date_display_name = dict()
@@ -80,12 +75,10 @@ def chart_data(request):
 
     return JsonResponse(chart)
 
-def monthheatmap (request):
-    data = Sheet1.objects.values('mois','jour').annotate(accident=Count('nbre_bless')).order_by('jour')
+
+def monthheatmap(request):
+    data = Sheet1.objects.values('mois', 'jour').annotate(accident=Count('nbre_bless')).order_by('jour')
     return render(request, 'home/heatmap.htm', {'monthdata': data})
-
-
-
 
 
 # ------------------------------------------------------------------------------
@@ -93,26 +86,30 @@ def monthheatmap (request):
 def daybarchart(request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    f = folium.Figure(width=650, height=500)
+    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+
+    att = zip(latitude, longitude)
+    print(att)
+    m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
+    m.add_to(f)
+    m = f._repr_html_()  # updated
+    context = {'my_map': m}
+
+    ddata = Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),
+                                                   accident=Count('nbre_dec')).order_by('jour')
+    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),
+                                                   accident=Count('nbre_dec')).order_by('mois')
+    return render(request, 'home/lollipop.htm', {'daydata': ddata, 'monthdata': mdata, 'my_map': m})
+
+
+# ----------------------------------------------------------------------------------------
+def makeHeatmap(request):
+    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
+    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     m = folium.Map([28, 1.5], zoom_start=5)
     test = folium.Html('<b>Hello world</b>', script=True)
     att = zip(latitude, longitude)
-    print(att)
-    m.add_child(plugins.HeatMap(att, radius=20))
-    m = m._repr_html_()  # updated
-    context = {'my_map': m}
-
-
-    ddata= Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accident=Count('nbre_dec')).order_by('jour')
-    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),
-                                                  accident=Count('nbre_dec')).order_by('mois')
-    return render(request, 'home/lollipop.htm', {'daydata': ddata, 'monthdata': mdata, 'my_map': m})
-# ----------------------------------------------------------------------------------------
-def makeHeatmap(request):
-    latitude = list(Sheet1.objects.values_list("latitude",flat=True))
-    longitude= list(Sheet1.objects.values_list("longitude", flat=True))
-    m = folium.Map([28, 1.5], zoom_start=5)
-    test = folium.Html('<b>Hello world</b>', script=True)
-    att = zip(latitude,longitude)
     print(att)
     m.add_child(plugins.HeatMap(att, radius=20))
     m = m._repr_html_()  # updated
