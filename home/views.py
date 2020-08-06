@@ -45,7 +45,9 @@ def daybarchart(request):
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
+
     m.add_to(f)
+
     m = f._repr_html_()  # updated
     context = {'my_map': m}
     wdata= Sheet1.objects.values("wilaya").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
