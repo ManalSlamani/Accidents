@@ -51,12 +51,16 @@ def daybarchart(request):
     m = f._repr_html_()  # updated
     context = {'my_map': m}
     wdata= Sheet1.objects.values("wilaya").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
-    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('accident'))
-    # print(ddata.accident)
-    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('accident'))
+    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
+    # accident =Sheet1.objects.values("accident").annotate(accidents=Count('accident'))
+    acc= (Sheet1.objects.values("accident").annotate(accidents=Count('accident'))[0]['accidents'])
+    mdata = (Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
+    bless= (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_bless'))[0]['accidents'])
+    dec= (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
     routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route'))
     catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
-    return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata})
+    return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata,'accidents': acc,
+                                                  "bless":bless, "dec":dec})
 
 
 # ----------------------------------------------------------------------------------------

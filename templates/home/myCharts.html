@@ -56,12 +56,10 @@
 <script src="{% static 'js/code/modules/exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
-{#<script src="./code/highcharts.js"></script>#}
-{#<script src="./code/highcharts-more.js"></script>#}
-{#<script src="./code/modules/dumbbell.js"></script>#}
-{#<script src="./code/modules/lollipop.js"></script>#}
-{#<script src="./code/modules/exporting.js"></script>#}
-{#<script src="./code/modules/accessibility.js"></script>#}
+<script src="{% static 'js/code/modules/dumbbell.js' %}"></script>
+<script src="{% static 'js/code/modules/accessibility.js' %}"></script>
+<script src="{% static 'js/code/modules/highcharts-more.js' %}"></script>
+
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 <div id="cards" class="card-deck">
@@ -74,7 +72,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <p class="card-title">Nombre total d'accidents</p>
-                            <h2 class="card-text text-info">{{ monthdata.accident }}</h2>
+                            <h2 class="card-text text-info">{{ accidents }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
@@ -88,7 +86,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <p class="card-title">Nombre total de blessés</p>
-                            <h2 class="card-text text-warning">5602</h2>
+                            <h2 class="card-text text-warning">{{ bless }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
@@ -102,7 +100,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <p class="card-title">Nombre total de décés</p>
-                            <h2 class="card-text text-danger">5602</h2>
+                            <h2 class="card-text text-danger">{{ dec }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
