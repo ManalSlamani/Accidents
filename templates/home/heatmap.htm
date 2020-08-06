@@ -2,6 +2,40 @@
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
-{{my_map|safe}}
+    <div class="container-fluid">
+    <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
+            <h4 style="padding-left: 4px"> Zones de concentration des accidents routiers en Algérie</h4></div>
+    <div class="row">
+
+    <div class="col-lg-9">
+        <div style="border-style: groove;">  {{my_map|safe}} </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="card border-dark mb-0" style="width: 320px;">
+            <div class="card-header">
+                <h5>Les paramètres du KDE</h5></div>
+            <div class="card-body text-dark">
+                <center>
+                <form style="">
+            <div class="form-group">
+               <h6>Seuil de densité</h6>
+                <div class="col-sm-10">
+                    <input  class="form-control" id="density" placeholder="">
+                </div>
+            </div>
+            <div class="form-group">
+                <h6>Rayon de recherche</h6>
+                <div class="col-sm-10">
+                    <input class="form-control" id="rayon" placeholder="">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="float: right;">Valider</button>
+        </form></center>
+  </div>
+
+    </div>
+</div>
+    </div>
+
 
     {% endblock %}

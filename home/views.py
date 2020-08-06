@@ -51,8 +51,9 @@ def daybarchart(request):
     m = f._repr_html_()  # updated
     context = {'my_map': m}
     wdata= Sheet1.objects.values("wilaya").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
-    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('nbre_dec'))
-    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('nbre_dec'))
+    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('accident'))
+    # print(ddata.accident)
+    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('accident'))
     routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route'))
     catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
     return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata})
@@ -62,7 +63,8 @@ def daybarchart(request):
 def makeHeatmap(request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-    f = folium.Figure(width=650, height=500)
+    # f = folium.Figure(width=650, height=500, title="Heatmap")
+    f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
 
     att = zip(latitude, longitude)

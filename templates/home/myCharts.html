@@ -59,7 +59,8 @@
 <script src="./code/modules/lollipop.js"></script>
 <script src="./code/modules/exporting.js"></script>
 <script src="./code/modules/accessibility.js"></script>
-
+<p style="text-align:right"> Date : <span id="datetime"> </span></p>
+    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 <div id="cards" class="card-deck">
             <div class="card border-info mb-3" style="max-width: 540px;">
                 <div class="row no-gutters">
@@ -70,7 +71,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <p class="card-title">Nombre total d'accidents</p>
-                            <h2 class="card-text text-info">5602</h2>
+                            <h2 class="card-text text-info">{{ monthdata.accident }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
