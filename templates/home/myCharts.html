@@ -1,4 +1,5 @@
 {% extends 'home/welcome.html' %}
+{% load static %}
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
@@ -59,76 +60,96 @@
 <script src="./code/modules/exporting.js"></script>
 <script src="./code/modules/accessibility.js"></script>
 
- <div class="card-deck">
-        <div class="card bg-transparent border-success mb-3" style="max-width: 540px;">
-            <div class="card-header bg-transparent border-success">Nombre total d'accidents</div>
-            <div class="card-body ">
-                <h2 class="card-title">5862</h2>
-                <p class="card-text">Janvier - Mars 2014</p>
-            </div>
+<div id="cards" class="card-deck">
+            <div class="card border-info mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{% static 'img/acc.png' %}"  class="card-img" alt="">
 
-        </div>
-        <div class="card bg-transparent border-warning mb-3" style="max-width: 540px;">
-            <div class="card-header bg-transparent border-warning">Header</div>
-            <div class="card-body text-primary">
-                <h5 class="card-title">Primary card title</h5>
-                <p class="card-text">Some quick</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p class="card-title">Nombre total d'accidents</p>
+                            <h2 class="card-text text-info">5602</h2>
+                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-warning mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                         <img src="{% static 'img/bless.png' %}"  class="card-img inj" alt="">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p class="card-title">Nombre total de blessés</p>
+                            <h2 class="card-text text-warning">5602</h2>
+                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-danger mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                         <img src="{% static 'img/dec2.png' %}"  class="card-img inj" alt="">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p class="card-title">Nombre total de décés</p>
+                            <h2 class="card-text text-danger">5602</h2>
+                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-success mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{% static 'img/evolution.png' %}"  class="card-img "  style="left: 20%;height: 50px; width: 60px" alt="">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p class="card-title">Evolution des accidents</p>
+                            <h2 class="card-text text-success">5602</h2>
+                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card bg-transparent border-danger mb-3" style="max-width: 540px;">
-            <div class="card-header bg-transparent border-danger">Header</div>
-            <div class="card-body text-primary">
-                <h5 class="card-title">Primary card title</h5>
-                <p class="card-text">Some quick</p>
-            </div>
-        </div>
-        <div class="card bg-transparent border-info mb-3" style="max-width: 540px;">
-            <div class="card-header bg-transparent border-info">Header</div>
-            <div class="card-body text-primary">
-                <h5 class="card-title">Primary card title</h5>
-                <p class="card-text">Some quick</p>
-            </div>
-        </div>
-    </div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 col-md-6">
+
             <h5> Distribution des accidents sur le territoire national</h5>
-            {{my_map|safe}}
+               <div style="border-style: groove;">  {{my_map|safe}} </div>
+            <br>
+            <div style="border-style: groove;">
             <figure class="highcharts-figure">
-                <div id="wilayachart" style=" width: 100%; height: 400px; margin: 0 auto"></div>
-            </figure>
+                <div id="wilayachart" style=" width: 100%; height: 400px; margin: 0 auto;" ></div>
+            </figure> </div>
         </div>
         <div class="col-lg-3">
-            <div class="row ">
-                <figure class="highcharts-figure ">
-                    <div id="daybarchart" style="height: 300px; width: 430px"></div>
+            <div class="row">
+                <figure class="highcharts-figure" >
+                    <div id="daybarchart" style="height: 300px; width: 430px; border-style: outset;"></div>
                 </figure>
                 <figure class="highcharts-figure">
-                    <div id="monthbarchart" style="height: 300px; width: 430px"></div>
+                    <div id="monthbarchart" style="height: 300px; width: 430px; border-style: outset;"></div>
                 </figure>
                 <figure class="highcharts-figure">
-                    <div id="routechart" style="height: 330px; width: 430px" ></div>
+                    <div id="routechart" style="height: 330px; width: 430px; border-style: outset;" ></div>
                 </figure>
                 <figure class="highcharts-figure">
-                    <div id="catchart"  style="height: 330px; width: 430px"></div>
+                    <div id="catchart"  style="height: 330px; width: 430px; border-style: outset;"></div>
                 </figure>
             </div>
         </div>
     </div>
     <div class="row">
 
-
-        <div class="col-lg-5 col-md-6">
-{#            <div class="row">#}
-                <figure class="highcharts-figure">
-                    <div id="routechart" ></div>
-                </figure>
-                <figure class="highcharts-figure">
-                    <div id="catchart" ></div>
-                </figure>
-{#            </div>#}
-        </div>
 
     </div>
 </div>
@@ -338,7 +359,7 @@ Highcharts.chart('wilayachart', {
         align: 'center',
         verticalAlign: 'top',
         x: 10,
-        y: 29,
+        y: 18,
         floating: true,
 
     },
@@ -379,14 +400,10 @@ Highcharts.chart('routechart', {
         type: 'bar'
     },
     title: {
-        text: 'Types de route et type de véhicules impliqués dans les accidents '
+        text: 'Types de routee impliquées '
     },
      legend: {
         enabled: false
-    },
-
-    subtitle: {
-        text: 'En Algérie'
     },
     xAxis: {
         categories: [
@@ -439,10 +456,7 @@ Highcharts.chart('catchart', {
     },
 
     title: {
-        text: 'Types de route et type de véhicules impliqués dans les accidents '
-    },
-    subtitle: {
-        text: 'En Algérie'
+        text: 'Types de véhicules impliqués '
     },
     xAxis: {
         categories: [

@@ -68,7 +68,7 @@
      <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 
-{#        <div id="cards" class="card-deck">#}
+{#<div id="cards" class="card-deck">#}
 {#            <div class="card border-info mb-3" style="max-width: 540px;">#}
 {#                <div class="row no-gutters">#}
 {#                    <div class="col-md-4">#}
@@ -78,7 +78,7 @@
 {#                    <div class="col-md-8">#}
 {#                        <div class="card-body">#}
 {#                            <p class="card-title">Nombre total d'accidents</p>#}
-{#                            <h2 class="card-text">5602</h2>#}
+{#                            <h2 class="card-text text-info">5602</h2>#}
 {#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
 {#                        </div>#}
 {#                    </div>#}
@@ -92,7 +92,7 @@
 {#                    <div class="col-md-8">#}
 {#                        <div class="card-body">#}
 {#                            <p class="card-title">Nombre total de blessés</p>#}
-{#                            <h2 class="card-text">5602</h2>#}
+{#                            <h2 class="card-text text-warning">5602</h2>#}
 {#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
 {#                        </div>#}
 {#                    </div>#}
@@ -106,7 +106,7 @@
 {#                    <div class="col-md-8">#}
 {#                        <div class="card-body">#}
 {#                            <p class="card-title">Nombre total de décés</p>#}
-{#                            <h2 class="card-text">5602</h2>#}
+{#                            <h2 class="card-text text-danger">5602</h2>#}
 {#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
 {#                        </div>#}
 {#                    </div>#}
@@ -120,13 +120,48 @@
 {#                    <div class="col-md-8">#}
 {#                        <div class="card-body">#}
 {#                            <p class="card-title">Evolution des accidents</p>#}
-{#                            <h2 class="card-text">5602</h2>#}
+{#                            <h2 class="card-text text-success">5602</h2>#}
 {#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
 {#                        </div>#}
 {#                    </div>#}
 {#                </div>#}
 {#            </div>#}
 {#        </div>#}
+
+{#<div class="card-deck">#}
+{#        <div class="card bg-transparent border-success mb-3" style="max-width: 540px;">#}
+{#            <div class="card-header bg-transparent border-success">#}
+{#                <h6>Nombre total d'accidents</h6>#}
+{#            </div>#}
+{#            <div class="card-body ">#}
+{#                <h3 class="card-title">5862</h3>#}
+{#                <p class="card-text">Janvier - Mars 2014</p>#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#        <div class="card bg-transparent border-warning mb-3" style="max-width: 540px;">#}
+{#            <div class="card-header bg-transparent border-warning">#}
+{#                <h6> Nombre total de blessés</h6></div>#}
+{#            <div class="card-body">#}
+{#                <h3 class="card-title text-warning">6025</h3>#}
+{#                <p class="card-text">Janvier - Mars 2014</p>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="card bg-transparent border-danger mb-3" style="max-width: 540px;">#}
+{#            <div class="card-header bg-transparent border-danger">Header</div>#}
+{#            <div class="card-body text-primary">#}
+{#                <h5 class="card-title">Primary card title</h5>#}
+{#                <p class="card-text">Some quick</p>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="card bg-transparent border-info mb-3" style="max-width: 540px;">#}
+{#            <div class="card-header bg-transparent border-info">Header</div>#}
+{#            <div class="card-body text-primary">#}
+{#                <h5 class="card-title">Primary card title</h5>#}
+{#                <p class="card-text">Some quick</p>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
     {% block content %}
 
     {% endblock %}
