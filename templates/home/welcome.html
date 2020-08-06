@@ -1,5 +1,5 @@
 {% load static %}
-<html>
+<html lang="fr">
 <head>
     <title>Dashboard </title>
     <meta charset="UTF-8">
@@ -24,12 +24,12 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ">
           <li class="nav-item active">
-            <a class="nav-link " href="#">
+            <a class="nav-link " href="/get-data/">
               Tableau de bord <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="/heatmap/">
               Heatmap
             </a>
           </li>
@@ -54,50 +54,79 @@
           </div>
         </div>
    </nav>
-{#<div class="">#}
-{#    <div class="row">#}
-{#      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">#}
-{#       <div class="sidebar-sticky pt-4">#}
-{#        <ul class="nav flex-column">#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link active" href="#">#}
-{#              <span data-feather="home"></span>#}
-{#              Tableau de bord <span class="sr-only">(current)</span>#}
-{#            </a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="#">#}
-{#              <span data-feather="file"></span>#}
-{#              Prédiction#}
-{#            </a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="#">#}
-{#              <span data-feather="shopping-cart"></span>#}
-{#              Base De Données#}
-{#            </a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="#">#}
-{#              <span data-feather="users"></span>#}
-{#              Help#}
-{#            </a>#}
-{#          </li>#}
-{##}
-{#        </ul>#}
-{#      </div>#}
-{#    </nav>#}
-    <main role="main" class="col">
-      <div id="main" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-{#        <h4>Les accidents routiers en Algérie</h4>#}
+
+<main role="main" class="col">
+    <div id="main" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h3>Les accidents routiers en Algérie</h3>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button id="exporter" type="button" class="btn btn-sm btn-outline-secondary">Exporter</button>
           </div>
 
         </div>
-      </div>
+        </div>
+     <p style="text-align:right"> Date : <span id="datetime"> </span></p>
+    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 
+{#        <div id="cards" class="card-deck">#}
+{#            <div class="card border-info mb-3" style="max-width: 540px;">#}
+{#                <div class="row no-gutters">#}
+{#                    <div class="col-md-4">#}
+{#                        <img src="{% static 'img/acc.png' %}"  class="card-img" alt="">#}
+{##}
+{#                    </div>#}
+{#                    <div class="col-md-8">#}
+{#                        <div class="card-body">#}
+{#                            <p class="card-title">Nombre total d'accidents</p>#}
+{#                            <h2 class="card-text">5602</h2>#}
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="card border-warning mb-3" style="max-width: 540px;">#}
+{#                <div class="row no-gutters">#}
+{#                    <div class="col-md-4">#}
+{#                         <img src="{% static 'img/bless.png' %}"  class="card-img" alt="">#}
+{#                    </div>#}
+{#                    <div class="col-md-8">#}
+{#                        <div class="card-body">#}
+{#                            <p class="card-title">Nombre total de blessés</p>#}
+{#                            <h2 class="card-text">5602</h2>#}
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="card border-danger mb-3" style="max-width: 540px;">#}
+{#                <div class="row no-gutters">#}
+{#                    <div class="col-md-4">#}
+{#                         <img src="{% static 'img/dec.png' %}"  class="card-img" alt="">#}
+{#                    </div>#}
+{#                    <div class="col-md-8">#}
+{#                        <div class="card-body">#}
+{#                            <p class="card-title">Nombre total de décés</p>#}
+{#                            <h2 class="card-text">5602</h2>#}
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="card border-success mb-3" style="max-width: 540px;">#}
+{#                <div class="row no-gutters">#}
+{#                    <div class="col-md-4">#}
+{#                        <img src="{% static 'img/evolution.png' %}"  class="card-img" alt="">#}
+{#                    </div>#}
+{#                    <div class="col-md-8">#}
+{#                        <div class="card-body">#}
+{#                            <p class="card-title">Evolution des accidents</p>#}
+{#                            <h2 class="card-text">5602</h2>#}
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
     {% block content %}
 
     {% endblock %}
@@ -113,4 +142,5 @@
 </script>
 
 </body>
+
 </html>

@@ -34,52 +34,6 @@ def json_example(request):
     return render(request, 'json_example.html')
 
 
-def chart_data(request):
-    dataset = Sheet1.objects \
-        .values('nbre_bless') \
-        .annotate(total=Count('nbre_bless')) \
-        .order_by('nbre_bless')
-
-    port_display_name = dict()
-    for mois in Sheet1.mois:
-        port_display_name[mois[0]] = mois[1]
-
-    chart = {
-        'chart': {'type': 'pie'},
-        'title': {'text': 'heatmap'},
-        'series': [{
-            'name': 'heatmap',
-            'data': list(map(lambda row: {'mois': port_display_name[row['nbre_bless']], 'y': row['total']}, dataset))
-        }]
-    }
-
-    return JsonResponse(chart)
-
-
-def chart_data(request):
-    dataset = Sheet1.objects \
-        .values('mois') \
-        .annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accident=Count('nbre_dec'))
-
-    date_display_name = dict()
-    for date_tuple in Sheet1.date:
-        date_display_name[date_tuple[0]] = date_tuple[1]
-
-    chart = {
-        'chart': {'type': 'pie'},
-        'title': {'text': 'Titanic Survivors by Ticket Class'},
-        'series': [{
-            'name': 'Embarkation Port',
-            'data': list(map(lambda row: {'name': date_display_name[row['mois']], 'y': row['total']}, dataset))
-        }]
-    }
-
-    return JsonResponse(chart)
-
-
-def monthheatmap(request):
-    data = Sheet1.objects.values('mois', 'jour').annotate(accident=Count('nbre_bless')).order_by('jour')
-    return render(request, 'home/heatmap.htm', {'monthdata': data})
 
 
 # ------------------------------------------------------------------------------
@@ -87,18 +41,19 @@ def monthheatmap(request):
 def daybarchart(request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-    f = folium.Figure(width=500, height=500)
+    f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
     context = {'my_map': m}
-    # wilayadata= Sheet1.objects.values("wilaya","mois").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya'),
-    ddata =     Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('nbre_dec')).order_by('jour')
-    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),
-                                                   accident=Count('nbre_dec')).order_by('mois')
-    return render(request, 'home/lollipop.htm', {'daydata': ddata, 'monthdata': mdata, 'my_map': m})
+    wdata= Sheet1.objects.values("wilaya").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
+    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('nbre_dec'))
+    mdata = Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),accident=Count('nbre_dec'))
+    routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route'))
+    catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
+    return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata})
 
 
 # ----------------------------------------------------------------------------------------
