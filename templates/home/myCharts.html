@@ -59,6 +59,8 @@
 <script src="{% static 'js/code/modules/dumbbell.js' %}"></script>
 <script src="{% static 'js/code/modules/accessibility.js' %}"></script>
 <script src="{% static 'js/code/modules/highcharts-more.js' %}"></script>
+    <script src="{% static 'js/code/modules/item-series.js' %}"></script>
+    <script src="{% static 'js/code/modules/item-series.src.js' %}"></script>
 
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
@@ -129,6 +131,9 @@
                <div style="border-style: groove;">  {{my_map|safe}}
         </div>
             <br>
+             <figure class="highcharts-figure">
+                    <div id="causechart"  style="height: 400px; width: 100%; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
+                </figure>
             <div style="border-style: groove;">
             <figure class="highcharts-figure">
                 <div id="wilayachart" style=" width: 100%; height: 400px; margin: 0 auto;" ></div>
@@ -138,6 +143,7 @@
             <div class="row">
 
                 <figure class="highcharts-figure" >
+
                     <div id="daybarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
                 </figure>
                 <figure class="highcharts-figure">
@@ -147,7 +153,7 @@
                     <div id="routechart" style="height: 330px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e" ></div>
                 </figure>
                 <figure class="highcharts-figure">
-                    <div id="catchart"  style="height: 330px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
+                    <div id="catchart"  style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
                 </figure>
             </div>
         </div>
@@ -505,5 +511,49 @@ Highcharts.chart('catchart', {
             }
         }
 });
+Highcharts.chart('causechart', {
+
+    chart: {
+        type: 'item'
+    },
+
+    title: {
+        text: 'Les six causes les plus pertinentes'
+    },
+
+    legend: {
+        {#enabled: false,#}
+        labelFormat: '{name} <span style="opacity: 0.4">{y}</span>'
+    },
+
+    series: [{
+        name: 'Nombre d\'occurences',
+        keys: ['name', 'y', 'label'],
+        data: [
+             {% for entry in causes %}
+            [name='{{ entry.cause_acc }}',y={{ entry.cause }}, label='{{ entry.cause_acc }}']
+            {% if not forloop.last %}, {% endif %}{% endfor %}
+{#              [{{ causes.cause_acc }},{{ causes.cause }}]#}
+{#            ['The Left', 69],#}
+{#            ['Social Democratic Party', 153],#}
+{#            ['Alliance 90/The Greens', 67],#}
+{#            ['Free Democratic Party', 80,],#}
+{#            ['Christian Democratic Union', 200, ],#}
+{#            ['Christian Social Union in Bavaria'],#}
+{#            ['Alternative for Germany', 94]#}
+        ],
+        dataLabels: {
+            enabled: true,
+            format: '{point.label}'
+        },
+
+        // Circular options
+        center: ['50%', '88%'],
+        size: '170%',
+        startAngle: -100,
+        endAngle: 100
+    }]
+});
+
 </script>
 {% endblock %}

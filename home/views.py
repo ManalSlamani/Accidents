@@ -19,24 +19,8 @@ def get_data(request, *args, **kwargs):
     return render(request, 'home/lineChart.htm', {"data": data})
 
 
-def all_data(request, *args, **kwargs):
-    data = Sheet1.objects.all()
-    allData = data.values('date', 'wilaya').annotate(acc_Count=Count('id_accident')).order_by('date').order_by('date')
-    allData["date"] = allData["date"].apply(lambda x: x.strftime('%Y-%m-%d'))
-    jsonData = allData.to_dict(orient='records')
-    return JsonResponse('home/lineChart.htm', {"data": jsonData})
 
 
-# return JsonResponse(data, safe=False)
-
-
-def json_example(request):
-    return render(request, 'json_example.html')
-
-
-
-
-# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 def daybarchart(request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
@@ -45,9 +29,7 @@ def daybarchart(request):
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
-
     m.add_to(f)
-
     m = f._repr_html_()  # updated
     context = {'my_map': m}
     wdata= Sheet1.objects.values("wilaya").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
@@ -59,8 +41,25 @@ def daybarchart(request):
     dec= (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
     routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route'))
     catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
+
+    causes= list(Sheet1.objects.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
+    print(causes[0])
+    print(causes[1]["cause"])
+    causes= causes[:6]
+    print(causes[0])
+    # cause_display_name = dict()
+    # for port_tuple in Sheet1.cause_acc:
+    #      cause_display_name[port_tuple[0]] = port_tuple[1]
+    # pie = {
+    #     'chart': {'type': 'pie'},
+    #     'title': {'text': 'Titanic Survivors by Ticket Class'},
+    #     'series': [{
+    #         'name': 'Embarkation Port',
+    #         'data': list(map(lambda row: {'name': cause_display_name[row['cause_acc']], 'y': row['cause']}, causes))
+    #     }]}
+
     return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata,'accidents': acc,
-                                                  "bless":bless, "dec":dec})
+                                                  "bless":bless, "dec":dec, 'causes':causes})
 
 
 # ----------------------------------------------------------------------------------------
@@ -78,3 +77,7 @@ def makeHeatmap(request):
     m = f._repr_html_()  # updated
     context = {'my_map': m}
     return render(request, "home/heatmap.htm", context)
+
+# ----------------------------------------------------------------------------------------
+def makeClusters(request):
+    return (request)
