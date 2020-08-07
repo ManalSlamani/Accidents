@@ -56,11 +56,12 @@
 <script src="{% static 'js/code/modules/exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
-<script src="{% static 'js/code/modules/dumbbell.js' %}"></script>
+<script src="{% static 'js/code/modules/histogram-bellcurve.js' %}"></script>
 <script src="{% static 'js/code/modules/accessibility.js' %}"></script>
-<script src="{% static 'js/code/modules/highcharts-more.js' %}"></script>
+{#<script src="{% static 'js/code/modules/highcharts-more.js' %}"></script>#}
     <script src="{% static 'js/code/modules/item-series.js' %}"></script>
     <script src="{% static 'js/code/modules/item-series.src.js' %}"></script>
+    <script src="{% static 'js/code/modules/timeline.js' %}"></script>
 
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
@@ -116,8 +117,8 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <p class="card-title">Evolution des accidents</p>
-                            <h2 class="card-text text-success">5602</h2>
-                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+                            <h2 class="card-text text-success">{{ evolution}} %</h2>
+                            <p class="card-text"><small class="text-muted">Entre les deux derniers mois</small></p>
                         </div>
                     </div>
                 </div>
@@ -126,42 +127,52 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 col-md-6">
-<div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
-            <h4 style="padding-left: 4px"> Distribution des accidents sur le territoire national</h4></div>
-               <div style="border-style: groove;">  {{my_map|safe}}
-        </div>
-            <br>
-             <figure class="highcharts-figure">
-                    <div id="causechart"  style="height: 400px; width: 100%; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
-                </figure>
-            <div style="border-style: groove;">
-            <figure class="highcharts-figure">
-                <div id="wilayachart" style=" width: 100%; height: 400px; margin: 0 auto;" ></div>
-            </figure> </div>
+
+           <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
+               <h4 style="padding-left: 4px"> Distribution des accidents sur le territoire national</h4>
+           </div>
+            <div style="border-style: groove;">  {{my_map|safe}} </div>
+            <figure class="highcharts-figure" style=" margin-top: 20px;width:100%; border-style: solid; border-width: 1px; border-color: #34495e">
+                    <div id="accidentschart" style=" width: 100%; height: 300px;  " ></div>
+            </figure>
         </div>
         <div class="col-lg-4">
-            <div class="row">
+            <div class="row" style="grid-row-gap: 0px;">
+                <h7 style="color: transparent"> hey</h7>
+                <figure class="highcharts-figure" style="border-style: solid groove; border-width: 1px; border-color: #34495e" >
+                    <div id="daybarchart" style="height: 280px; width: 430px;"></div>
+                </figure>
 
-                <figure class="highcharts-figure" >
+                <figure class="highcharts-figure" style="border-style: solid groove; border-width: 1px; border-color: #34495e" >
+                    <div id="hourpie" style="height: 200px; width: 430px; "></div>
+                </figure>
+                <figure class="highcharts-figure" style="border-style: solid; border-width: 1px; border-color: #34495e ">
+                    <div id="causechart"  style="height: 300px; width: 430px;  "></div>
+                </figure>
 
-                    <div id="daybarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
-                </figure>
-                <figure class="highcharts-figure">
-                    <div id="monthbarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
-                </figure>
-                <figure class="highcharts-figure">
-                    <div id="routechart" style="height: 330px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e" ></div>
-                </figure>
-                <figure class="highcharts-figure">
-                    <div id="catchart"  style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
-                </figure>
             </div>
         </div>
+
     </div>
     <div class="row">
 
 
     </div>
+    <div class="row">
+        <figure class="highcharts-figure">
+            <div id="routechart" style="height: 330px; width: 600px;border-style: solid groove; border-width: 1px; border-color: #34495e " ></div>
+        </figure>
+        <figure class="highcharts-figure">
+            <div id="catchart"  style="height: 330px; width: 700px;border-style: solid groove; border-width: 1px; border-color: #34495e "></div>
+        </figure>
+
+    </div>
+  <figure class="highcharts-figure" >
+                <div id="wilayachart" style=" width: 1000px; height: 330px; margin: 0 auto; " ></div>
+             </figure>
+<figure class="highcharts-figure">
+                    <div id="monthbarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
+                </figure>
 </div>
 
 
@@ -169,7 +180,7 @@
 Highcharts.chart('daybarchart', {
 
     chart: {
-        type: 'bar'
+        type: 'column'
     },
 
     legend: {
@@ -178,14 +189,14 @@ Highcharts.chart('daybarchart', {
 
 
 
-    title: {
+   title: {
         text: 'Statistiques des dégâts humains par jour'
     },
 
 
     xAxis: {
         title: {
-            text: "Jour de semaine"
+            text: ""
         },
         categories: [
             {#'Dimanche', 'Lundi', "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"#}
@@ -207,14 +218,14 @@ Highcharts.chart('daybarchart', {
         }
     },
     legend: {
-        layout: 'horizontal',
+         layout: 'horizontal',
         align: 'center',
-        verticalAlign: 'top',
+        verticalAlign: 'middle',
         floating: true,
-        y: 20,
-        {#borderWidth: 1,#}
-        {#backgroundColor:#}
-        {#    Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',#}
+        y: -80,
+        borderWidth: 1,
+        backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
         {#shadow: true#}
     },
     series: [{
@@ -230,6 +241,12 @@ Highcharts.chart('daybarchart', {
         color: '#2980b9 ',
         data: [
             {% for entry in daydata %}{{ entry.bless_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+    },
+        {
+        name: 'Nombre d\'accidents',
+        data: [
+            {% for entry in daydata %}{{ entry.accidents}}{% if not forloop.last %}, {% endif %}{% endfor %}
         ],
     },
     ],
@@ -405,58 +422,6 @@ Highcharts.chart('wilayachart', {
 
 
 });
-Highcharts.chart('routechart', {
-    chart: {
-        type: 'bar'
-    },
-    title: {
-        text: 'Types de routee impliquées '
-    },
-     legend: {
-        enabled: false
-    },
-    xAxis: {
-        categories: [
-            {% for entry in routedata %}'{{ entry.type_route}}'{% if not forloop.last %}, {% endif %}{% endfor %}
-        ],
-    },
-    yAxis: {
-        title: {
-            text: ''
-        }
-    },
-
-
-    plotOptions: {
-
-        bar: {
-            dataLabels: {
-                enabled: true
-            },
-            enableMouseTracking: true
-        }
-    },
-    series: [{
-        name: 'Type de route',
-        color:'#2c3e50',
-        data: [
-            {% for entry in routedata %}{{ entry.route_count}}{% if not forloop.last %}, {% endif %}{% endfor %}
-        ]
-    },
-    ],
-    dataLabels: {
-            enabled: true,
-            rotation: -90,
-            color: '#FFFFFF',
-            align: 'right',
-            format: '{point.y:.1f}', // one decimal
-            y: 10, // 10 pixels down from the top
-            style: {
-                fontSize: '13px',
-                fontFamily: 'Verdana, sans-serif'
-            }
-        }
-});
 Highcharts.chart('catchart', {
     chart: {
         type: 'bar'
@@ -466,7 +431,7 @@ Highcharts.chart('catchart', {
     },
 
     title: {
-        text: 'Types de véhicules impliqués '
+        text: 'Catégories de véhicules impliqués '
     },
     xAxis: {
         categories: [
@@ -514,46 +479,203 @@ Highcharts.chart('catchart', {
 Highcharts.chart('causechart', {
 
     chart: {
-        type: 'item'
+        type: 'pie'
     },
 
     title: {
-        text: 'Les six causes les plus pertinentes'
+        text: 'Les causes d\'accident les plus pertinentes'
     },
 
     legend: {
         {#enabled: false,#}
+
         labelFormat: '{name} <span style="opacity: 0.4">{y}</span>'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true
+            },
+            showInLegend: true
+        }
     },
 
     series: [{
-        name: 'Nombre d\'occurences',
+        name: 'Taux d\'occurences',
         keys: ['name', 'y', 'label'],
         data: [
              {% for entry in causes %}
             [name='{{ entry.cause_acc }}',y={{ entry.cause }}, label='{{ entry.cause_acc }}']
             {% if not forloop.last %}, {% endif %}{% endfor %}
-{#              [{{ causes.cause_acc }},{{ causes.cause }}]#}
-{#            ['The Left', 69],#}
-{#            ['Social Democratic Party', 153],#}
-{#            ['Alliance 90/The Greens', 67],#}
-{#            ['Free Democratic Party', 80,],#}
-{#            ['Christian Democratic Union', 200, ],#}
-{#            ['Christian Social Union in Bavaria'],#}
-{#            ['Alternative for Germany', 94]#}
         ],
         dataLabels: {
-            enabled: true,
-            format: '{point.label}'
+            enabled: false,
+            format: '{point.label} '
         },
 
         // Circular options
         center: ['50%', '88%'],
-        size: '170%',
+        size: '300%',
         startAngle: -100,
         endAngle: 100
     }]
 });
+Highcharts.chart('accidentschart', {
+
+    title: {
+        text: 'Evolution de l\'accidentalité entre Janvier et Mars 2014'
+    },
+
+    xAxis: {
+        categories: [
+{#            {% for entry in accident %}'{{ entry.mois }}'{% endfor %}#}
+         {% for entry in accident %}'{{ entry.mois}} '{% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: ''
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color}; font-size:10px; padding:0">{series.name}: </td>' +
+            '<td style="padding:0; font-size:12px"><b>{point.y:.1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        type: 'column',
+        name: 'Nombre d\'accidents',
+        data: [
+             {% for entry in accident %}{{ entry.accidents}} {% if not forloop.last %}, {% endif %}{% endfor %}
+{#            {% for entry in accident %}'{{ entry.accident }}'{% if not forloop.last %}, {% endif %}{% endfor %}#}
+        ]
+
+    }, {
+        type: 'column',
+        name: 'Nomvbre de blessés',
+        data: [
+            {% for entry in accident %}{{ entry.bless_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+
+        ]
+
+    }, {
+        type: 'column',
+        name: 'Nombre de décés',
+        data: [
+            {% for entry in accident %}{{ entry.dec_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        ]
+
+    },
+    {
+        type: 'spline',
+        name: 'Evolution des accidents',
+        data: [
+
+            {% for entry in cum_acc %}
+              {{ entry.cum_acc}}
+            {% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+        marker: {
+            lineWidth: 2,
+            lineColor: Highcharts.getOptions().colors[3],
+            fillColor: 'white'
+        }
+    },
+    ]
+});
+Highcharts.chart('routechart', {
+
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'Types de routes impliquées'
+    },
+   tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Pourcentage',
+        data: [
+            {% for entry in routedata %}
+                  [name='{{ entry.type_route }}',y= {{ entry.route_count}}]
+            {% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+
+    }]
+
+});
+Highcharts.chart('hourpie', {
+
+    title: {
+        text: ''
+    },
+
+    subtitle: {
+        text: 'Heures de pointe'
+    },
+    xAxis: {
+        categories:[
+          {% for entry in hourdata  %} '{{ entry.heure }}' {% if not forloop.last %}, {% endif %}{% endfor %}
+        ]
+    },
+    yAxis:{
+        title: {
+            text: 'Nombre d\'accidents'}
+    },
+    legend: {
+        enabled: false,
+    },
+
+    series: [
+        {   color: '#c0392b',
+            data: [
+              {% for entry in hourdata %}
+                  {{ entry.accidents }}
+            {% if not forloop.last %}, {% endif %}{% endfor %}
+        ],
+             accessibility: {
+            exposeAsGroupOnly: true
+        },
+            }]
+});
+
 
 </script>
 {% endblock %}
