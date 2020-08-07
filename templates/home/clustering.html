@@ -1,0 +1,80 @@
+{% extends 'home/welcome.html' %}
+{% block page_name %} Tableau de bord {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
+            <h4 style="padding-left: 4px"> Clusters des accidents routiers en Algérie</h4>
+        </div>
+    <div class="row">
+    <div class="col-lg-8">
+        <div style="border-style: groove;">  {{my_map|safe}} </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-success mb-1" style="width: 100%;">
+            <div class="card-header bg-transparent border-success text-success">
+                <h5>Les performances obtenues</h5></div>
+            <div class="card-body text-dark">
+                <center>
+             <form class="">
+                 <fieldset disabled>
+                 <div class="row">
+                 <div class="form-group mx-sm-2 mb-2 col">
+                     <p >Coefficient de Silhouette</p>
+                     <input  class="form-control" id="silhouette" placeholder="">
+                 </div>
+                 <div class="form-group mx-sm-2 mb-0 col">
+                     <p title="Indice de Calinski-Harabasz" data-toggle="popover" data-trigger="hover" >Indice CH</p>
+
+                    <input class="form-control" id="harabasz" placeholder="">
+
+            </div>
+                 </div> </fieldset>
+        </form></center>
+
+                <h5 style="border-top-style: solid;border-width: 2px;"><br>Les paramètres de DBSCAN</h5></div>
+            <div class="card-body text-dark">
+                <center>
+                <form style="">
+                    <div class="row">
+                    <div class="form-group mx-sm-3 mb-2 col">
+                        <h6>Epsilon</h6>
+                <div class="col-sm-10">
+                    <input  class="form-control" id="density" placeholder="">
+                </div>
+            </div>
+                    <div class="form-group mx-sm-3 mb-2 col">
+                <h6>minPts</h6>
+                <div class="col-sm-10">
+                    <input class="form-control" id="rayon" placeholder="">
+                </div>
+            </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Default checkbox
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
+                        <label class="form-check-label" for="defaultCheck2">
+                            Disabled checkbox
+                        </label>
+                    </div>
+            <button type="submit" class="btn btn-primary" style="float: right;">Valider</button>
+        </form></center>
+  </div>
+
+    </div>
+</div>
+    </div>
+
+    </div>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+</script>
+
+{% endblock %}

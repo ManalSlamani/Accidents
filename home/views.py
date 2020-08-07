@@ -38,7 +38,7 @@ def daybarchart(request):
     acc = (Sheet1.objects.values("accident").annotate(accidents=Count('accident'))[0]['accidents'])
 
 
-    wdata= Sheet1.objects.values("wilaya").annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
+    wdata= Sheet1.objects.values("wilaya").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
     ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accidents=Sum('accident'))
     accident =Sheet1.objects.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
     mdata = (Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
@@ -81,4 +81,14 @@ def makeHeatmap(request):
 
 # ----------------------------------------------------------------------------------------
 def makeClusters(request):
-    return (request)
+    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
+    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    # f = folium.Figure(width=650, height=500, title="Heatmap")
+    f = folium.Figure()
+    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    att = zip(latitude, longitude)
+
+    m.add_to(f)
+    m = f._repr_html_()  # updated
+    context = {'my_map': m}
+    return render(request,'home/clustering.html', context)
