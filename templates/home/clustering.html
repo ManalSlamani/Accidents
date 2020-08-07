@@ -11,8 +11,8 @@
         <div style="border-style: groove;">  {{my_map|safe}} </div>
     </div>
     <div class="col-lg-4">
-        <div class="card border-success mb-1" style="width: 100%;">
-            <div class="card-header bg-transparent border-success text-success">
+        <div class="card border-info mb-1" style="width: 100%;">
+            <div class="card-header bg-transparent border-info text-info">
                 <h5>Les performances obtenues</h5></div>
             <div class="card-body text-dark">
                 <center>
@@ -31,37 +31,77 @@
             </div>
                  </div> </fieldset>
         </form></center>
-
-                <h5 style="border-top-style: solid;border-width: 2px;"><br>Les paramètres de DBSCAN</h5></div>
+                <h6 style="border-top-style: solid;border-width: 2px;"><br>Les paramètres de DBSCAN</h6></div>
             <div class="card-body text-dark">
                 <center>
                 <form style="">
-                    <div class="row">
-                    <div class="form-group mx-sm-3 mb-2 col">
+                    <div class="form-row">
+                    <div class="form-group col-md-6 mb-3 ">
                         <h6>Epsilon</h6>
                 <div class="col-sm-10">
                     <input  class="form-control" id="density" placeholder="">
                 </div>
             </div>
-                    <div class="form-group mx-sm-3 mb-2 col">
+                    <div class="form-group col-md-6 mb-3 ">
                 <h6>minPts</h6>
                 <div class="col-sm-10">
                     <input class="form-control" id="rayon" placeholder="">
                 </div>
             </div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                    <div class="row">
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="cause">
                         <label class="form-check-label" for="defaultCheck1">
-                            Default checkbox
+                            Causes d'accidents
                         </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
-                        <label class="form-check-label" for="defaultCheck2">
-                            Disabled checkbox
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="troute">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Types de route
                         </label>
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="cveh">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Catégories de véhicules
+                        </label>
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="temperature">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Température
+                        </label>
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="precipitations">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Précipitations
+                        </label>
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="jour">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Jour de semaine
+                        </label>
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="heure">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Heure
+                        </label>
+                        </div>
+                        <div class="form-check" style="float:left; margin: 1%;">
+                        <input class="form-check-input" type="checkbox" value="" id="mois">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Mois
+                        </label>
+                        </div>
+
+
                     </div>
+
             <button type="submit" class="btn btn-primary" style="float: right;">Valider</button>
         </form></center>
   </div>
