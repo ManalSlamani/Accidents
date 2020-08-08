@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<body>
+
+{% block content %}
+    <div class="container-fluid row justify-content-center" role="main"  >
+
+
+<div class="row justify-content-center">
+      <div class="col-lg-4 col-md-6 col-sm-8">
+        <div class="card">
+          <div class="card-body">
+  <form method="post" >
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+  </form>
+          </div></div></div></div>
+  <div class="dropdown-divider"></div>
+  <a class="dropdown-item" href="#">Mot de passe oublié?</a> </div>
+
+{% endblock %}
+
+</body>
+</html>

@@ -35,8 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'widget_tweaks',
     'rest_framework',
     'home.apps.HomeConfig',
+    #
 ]
 
 MIDDLEWARE = [
@@ -142,3 +144,4 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+LOGIN_REDIRECT_URL = '/'

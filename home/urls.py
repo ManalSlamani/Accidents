@@ -7,5 +7,6 @@ urlpatterns = [
     # path(r'heatmap/?<int:myRadius>&<int:myOpacity>', views.makeHeatmap, name='heatmap'),
     # path(r'heatmap/', views.makeHeatmap, name='heatmap'),
     path(r'heatmap/', views.makeHeatmap, name='heatmap'),
-    path(r'clustering/', views.makeClusters, name='clustering')
+    path(r'clustering/', views.makeClusters, name='clustering'),
+    path(r'prediction/', views.makePrediction, name='prediction')
 ]

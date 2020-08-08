@@ -7,12 +7,6 @@ import folium
 from folium import plugins
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
-from django.views.generic import TemplateView
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import DBSCAN
-from collections import Counter
-from sklearn import metrics
-from sklearn import preprocessing
 import pandas as pd
 from .form import kdeform
 
@@ -119,3 +113,18 @@ def makeClusters(request):
     m = f._repr_html_()  # updated
     context = {'my_map': m}
     return render(request,'home/clustering.html', context)
+
+# ----------------------------------------------------------------------------------------
+def makePrediction (request):
+    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
+    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    df = pd.DataFrame(Sheet1.objects.all())
+    f = folium.Figure( height=500)
+    # f = folium.Figure()
+    m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
+    att = list(zip(latitude, longitude))
+
+    m.add_to(f)
+    m = f._repr_html_()  # updated
+    context = {'my_map': m}
+    return render(request, 'home/prediction.html', context)

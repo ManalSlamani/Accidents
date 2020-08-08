@@ -18,11 +18,11 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
-
 from home import views
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
+                  path('registration/', include('django.contrib.auth.urls')),
                   path(r'^api-auth/', include('rest_framework.urls')),
                   #path('home/', views.home, name='home'),
                   path('', include('home.urls')),

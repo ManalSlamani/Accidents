@@ -1,10 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'home/welcome.html' %}
+{% block page_name %} Tableau de bord {% endblock %}
+{% load static %}
+    <script src="{% static 'js/code/modules/exporting.js' %}"></script>
+<script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
+<script src="{% static 'js/code/modules/export-data.js' %}"></script>
+<script src="{% static 'js/code/modules/accessibility.js' %}"></script>
 
-</body>
-</html>
+{% block content %}
+
+    <style>
+table {
+  font-family: courier-new, courier, monospace, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+    font-family: courier-new, courier, monospace, sans-serif;
+  border: 1px solid #dddddd;
+  text-align: left;
+  height: 15px  ;
+  padding: 4px;
+}
+
+</style>
+
+
+    <div class="container-fluid">
+        <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
+            <h4 style="padding-left: 4px"> Prédiction de futures accidents routiers en Algérie</h4>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <table class="table table-bordered"  >
+  <thead>
+    <tr class="table-warning">
+      <th >Latitude</th>
+      <th >Longitude</th>
+      <th >Date</th>
+      <th >Heure</th>
+        <th>Probabilié</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <font size="5">
+    <tr>
+      <th >1</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th >2</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+   </font>
+  </tbody>
+</table>
+                 <div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+                     <figure class="highcharts-figure"  style="width: 100%;" >
+                              <div id="predictionchart" style="width: 100%;"></div>
+                    </figure>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div style="border-style: groove; width: 100%; align-content: center">  {{my_map|safe}} </div>
+            </div>
+
+
+        </div>
+    </div>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+
+
+Highcharts.chart('predictionchart', {
+
+    title: {
+        text: 'Accidents prédits avec leur probabilité d\'occurrence',
+    },
+
+    xAxis: {
+        categories:[
+
+        ],
+        title: {
+            text: 'Date'}
+    },
+
+    yAxis:{
+        title: {
+            text: 'Probabilité'}
+    },
+    legend: {
+        enabled: false,
+    },
+
+    series: [
+        {   color: '#c0392b',
+            data: [
+        ],
+             accessibility: {
+            exposeAsGroupOnly: true
+        },
+            }]
+});
+
+
+</script>
+
+
+{% endblock %}
