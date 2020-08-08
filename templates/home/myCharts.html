@@ -70,7 +70,6 @@
                 <div class="row no-gutters">
                     <div class="col-md-4">
                         <img src="{% static 'img/acc.png' %}"  class="card-img" alt="">
-
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -126,49 +125,73 @@
         </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-8 col-md-6">
+        <div class="col-lg-8 col-md-12">
            <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
                <h4 style="padding-left: 4px"> Distribution des accidents sur le territoire national</h4>
            </div>
-            <div style="border-style: groove;">  {{my_map|safe}} </div>
+            <div style="border-style: groove; width: 100%">  {{my_map|safe}} </div>
             <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
                  <figure class="highcharts-figure" style=" width:100%; ">
-                    <div id="accidentschart" style=" width: 100%; height: 300px;  " ></div>
+                    <div id="accidentschart" style=" width: 100%;   " ></div>
                  </figure>
             </div>
-
+            <div style="width: 100%;  margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+                 <figure class="highcharts-figure" style=" width:100%; ">
+                    <div id="ageochart" style=" width: 100%;" ></div>
+                 </figure>
+            </div>
         </div>
         <div class="col-lg-4">
             <div class="row" style="grid-row-gap: 0px;">
                 <h7 style="color: transparent"> hey</h7>
-                <figure class="highcharts-figure" style="border-style: solid groove; border-width: 1px; border-color: #34495e" >
-                    <div id="daybarchart" style="height: 280px; width: 430px;"></div>
-                </figure>
+                <div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+                     <figure class="highcharts-figure"  style="width: 100%;" >
+                              <div id="daybarchart" style="width: 100%;"></div>
+                    </figure>
+                </div>
 
-                <figure class="highcharts-figure" style="border-style: solid groove; border-width: 1px; border-color: #34495e" >
-                    <div id="hourpie" style="height: 200px; width: 430px; "></div>
+<div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+
+                <figure class="highcharts-figure" style=" width:100%;" >
+                    <div id="hourpie" style=" width: 100%; "></div>
                 </figure>
-                <figure class="highcharts-figure" style="border-style: solid; border-width: 1px; border-color: #34495e ">
-                    <div id="causechart"  style="height: 322px; width: 430px;  "></div>
-                </figure>
+</div>
+                <div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+
+                <figure class="highcharts-figure" style=" width: 100% ">
+                    <div id="causechart"  style=" width: 100%;  "></div>
+                </figure></div>
 
             </div>
         </div>
     </div>
     <div class="row">
-        <figure class="highcharts-figure">
-            <div id="routechart" style="height: 330px; margin-left: 11px; width: 600px;border-style: solid; border-width: 1px; border-color: #34495e " ></div>
-        </figure>
-        <figure class="highcharts-figure">
-            <div id="catchart"  style="height: 330px; width: 700px;border-style: solid; border-width: 1px; border-color: #34495e "></div>
-        </figure>
+        <div class="col-lg-6">
+             <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+
+            <figure class="highcharts-figure" style="width: 100%;">
+                <div id="routechart" style=" width: 100%;" ></div>
+            </figure></div>
+        </div>
+        <div class="col-lg-6">
+             <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+
+            <figure class="highcharts-figure" style="width: 100%;">
+                <div id="catchart"  style=" width: 100%"></div>
+            </figure></div>
+        </div>
+        <div class="w-100"></div>
+         <div class="col-lg-12 col-md-8">
+              <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
+            <figure class="highcharts-figure" style="margin-left: 2px">
+                <div id="wilayachart" style=" width: 160%; " ></div>
+            </figure></div>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-        <figure class="highcharts-figure"  style="margin-left: 0;">
-                <div id="wilayachart" style=" margin-left:auto;height: 330px; width: 1300px;border-style: solid; border-width: 1px; border-color: #34495e " ></div>
-        </figure></div>
-    </div>
+</div>
+
+    <div class="container-fluid">
+
     </div>
     <figure class="highcharts-figure">
                     <div id="monthbarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
@@ -219,9 +242,9 @@ Highcharts.chart('daybarchart', {
     legend: {
          layout: 'horizontal',
         align: 'center',
-        verticalAlign: 'middle',
+        verticalAlign: 'top',
         floating: true,
-        y: -80,
+        y: 30,
         borderWidth: 1,
         backgroundColor:
             Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
@@ -515,7 +538,7 @@ Highcharts.chart('causechart', {
 
         // Circular options
         center: ['50%', '88%'],
-        size: '250%',
+        size: '150%',
         startAngle: -100,
         endAngle: 100
     }]
@@ -634,12 +657,9 @@ Highcharts.chart('routechart', {
 Highcharts.chart('hourpie', {
 
     title: {
-        text: ''
-    },
-
-    subtitle: {
         text: 'Heures de pointe'
     },
+
     xAxis: {
         categories:[
           {% for entry in hourdata  %} '{{ entry.heure }}' {% if not forloop.last %}, {% endif %}{% endfor %}
@@ -664,6 +684,85 @@ Highcharts.chart('hourpie', {
             exposeAsGroupOnly: true
         },
             }]
+});
+Highcharts.chart('ageochart', {
+
+    title: {
+        text: 'Le nombre d\'accidents en fonction de l\'age du conducteur'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Nombre d\'accidents'
+        },
+        resize: {
+            enabled: true
+        }
+    },
+
+    xAxis: {
+        title:{
+            text:"L\'age du cahuffeur"
+        },
+        categories:[
+            {% for entry in temperaturedata %}'{{ entry.age_chauff}} '{% if not forloop.last %}, {% endif %}{% endfor %}
+        ]
+    },
+
+    legend: {
+        enabled: false,
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        floating: true,
+    },
+    chart: {
+        {#// Edit chart spacing#}
+        spacingBottom: -2,
+        spacingTop: -3,
+        {#spacingLeft: 10,#}
+        {#spacingRight: 10,#}
+        {#// Explicitly tell the width and height of a chart#}
+        width: null,
+        height: 325,
+},
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+
+        }
+    },
+
+    series: [{
+        name: 'Nombre d\'accidents enregistré',
+        data: [
+            {% for entry in temperaturedata %}{{ entry.accidents}}{% if not forloop.last %}, {% endif %}{% endfor %}
+            ]
+    },
+    {#    {#}
+    {#    name: 'Précipitations',#}
+    {#    data: [#}
+    {#        {% for entry in precipitationdata %}{{ entry.accidents}}{% if not forloop.last %}, {% endif %}{% endfor %}#}
+    {#    ]#}
+
+    ],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    enabled: false,
+                }
+            }
+        }]
+    }
+
 });
 
 

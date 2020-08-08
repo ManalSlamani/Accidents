@@ -54,8 +54,11 @@ def daybarchart(request):
     catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
     hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('-accidents'))[:7]
     # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
+    temperaturedata= Sheet1.objects.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
+    precipitationdata= Sheet1.objects.values("couverturenuage").annotate(accidents=Sum('accident')).order_by('couverturenuage')
 
-    print(hdata)
+
+
     cum_acc = Sheet1.objects.values('mois').annotate(cum_acc=Window(Count('mois'), order_by=F('mois').asc())).distinct()
     evolution = round(
     ((list(accident.distinct())[-1]['accidents'] - list(accident.distinct())[-2]['accidents']) * 100 / acc), 2)
@@ -68,7 +71,8 @@ def daybarchart(request):
 
     return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata,'accidents': acc,
                                                   "bless":bless, "dec":dec, "evolution":evolution, 'causes':causes, 'accident':accident,
-                                                  'cum_acc':cum_acc, 'hourdata':hdata})
+                                                  'cum_acc':cum_acc, 'hourdata':hdata, 'temperaturedata':temperaturedata,
+                                                  "precipitationdata":precipitationdata})
 
 
 # ----------------------------------------------------------------------------------------
