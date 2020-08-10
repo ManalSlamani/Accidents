@@ -62,7 +62,7 @@
     <script src="{% static 'js/code/modules/item-series.js' %}"></script>
     <script src="{% static 'js/code/modules/item-series.src.js' %}"></script>
     <script src="{% static 'js/code/modules/timeline.js' %}"></script>
-
+<div class="mycontainer">
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 <div id="cards" class="card-deck">
@@ -196,7 +196,7 @@
     <figure class="highcharts-figure">
                     <div id="monthbarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
 </figure>
-
+</div>
 
 <script type="text/javascript">
 Highcharts.chart('daybarchart', {

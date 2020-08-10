@@ -9,6 +9,7 @@ from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
 from .form import kdeform
+from joblib import dump, load
 
 
 # Create your views here.
@@ -100,13 +101,49 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     return render(request, "home/heatmap.htm", context)
 
 # ----------------------------------------------------------------------------------------
+
+import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+from collections import Counter
 def makeClusters(request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    att= list(zip(latitude,longitude))
+    dbscan_data_scaler = StandardScaler().fit(att)
+    dbscan_data = dbscan_data_scaler.transform(att)
+    model = DBSCAN(eps=0.02, min_samples=4).fit(dbscan_data)
+    model
+    clus_number = len(set(model.labels_)) - (-1 if -1 in model.labels_ else 0)
+    # print(set(model.labels_))
+    # print(clus_number)
+    outliers_df = pd.DataFrame(att)[model.labels_ == -1]
+    clusters_df = pd.DataFrame(att)[model.labels_ != -1]
+    model.labels_
+    colors = model.labels_
+    pd.DataFrame(colors).head()
+    colors_clusters = colors[colors != -1]
+    colors_outliers = "black"
+    clusters = Counter(model.labels_)
+    print(clusters)
+
     df = pd.DataFrame(Sheet1.objects.all())
     # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    # for row in clusters_df:
+    #     folium.Marker(location=[row[0],row[1]]).add_to(m)$
+    import matplotlib.cm as cm
+    import matplotlib.colors as colors
+    import  random
+    colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
+    rainbow = [colors.rgb2hex(i) for i in colors_array]
+    markers_colors = []
+    for lat, long in att:
+        folium.vector_layers.CircleMarker(
+            [lat, long],
+            radius=6, fill=True,  fill_opacity=0.9, color=rainbow[random.randint(2,148)-1]).add_to(m)
     att = list(zip(latitude, longitude))
 
     m.add_to(f)
@@ -118,11 +155,10 @@ def makeClusters(request):
 def makePrediction (request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-    df = pd.DataFrame(Sheet1.objects.all())
+
     f = folium.Figure( height=500)
     # f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
-    att = list(zip(latitude, longitude))
 
     m.add_to(f)
     m = f._repr_html_()  # updated
