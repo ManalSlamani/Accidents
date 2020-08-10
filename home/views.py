@@ -4,12 +4,21 @@ import json
 from django.db.models import Count, Q, Sum, Window, F
 from .models import Sheet1
 import folium
-from folium import plugins
+from folium import plugins, Popup
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
-from .form import kdeform
-from joblib import dump, load
+from .form import kdeform, clusteringform
+import matplotlib.cm as cm
+import matplotlib.colors as colors
+import random
+import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+from collections import Counter
+from joblib import  load
+from sklearn import metrics
 
 
 # Create your views here.
@@ -102,53 +111,63 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 
 # ----------------------------------------------------------------------------------------
 
-import numpy as np
-from sklearn.cluster import DBSCAN
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-from collections import Counter
-def makeClusters(request):
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-    att= list(zip(latitude,longitude))
-    dbscan_data_scaler = StandardScaler().fit(att)
-    dbscan_data = dbscan_data_scaler.transform(att)
-    model = DBSCAN(eps=0.02, min_samples=4).fit(dbscan_data)
-    model
-    clus_number = len(set(model.labels_)) - (-1 if -1 in model.labels_ else 0)
-    # print(set(model.labels_))
-    # print(clus_number)
-    outliers_df = pd.DataFrame(att)[model.labels_ == -1]
-    clusters_df = pd.DataFrame(att)[model.labels_ != -1]
-    model.labels_
-    colors = model.labels_
-    pd.DataFrame(colors).head()
-    colors_clusters = colors[colors != -1]
-    colors_outliers = "black"
-    clusters = Counter(model.labels_)
-    print(clusters)
 
-    df = pd.DataFrame(Sheet1.objects.all())
-    # f = folium.Figure(width=650, height=500, title="Heatmap")
+def makeClusters(request):
+    df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
-    # for row in clusters_df:
-    #     folium.Marker(location=[row[0],row[1]]).add_to(m)$
-    import matplotlib.cm as cm
-    import matplotlib.colors as colors
-    import  random
-    colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
-    rainbow = [colors.rgb2hex(i) for i in colors_array]
-    markers_colors = []
-    for lat, long in att:
-        folium.vector_layers.CircleMarker(
-            [lat, long],
-            radius=6, fill=True,  fill_opacity=0.9, color=rainbow[random.randint(2,148)-1]).add_to(m)
-    att = list(zip(latitude, longitude))
+
+
+    if request.method == 'POST':
+        formClus = clusteringform(request.POST)
+    else:
+        formClus = clusteringform()
+    myEpsilon = request.POST.get('myEpsilon')
+    print((myEpsilon))
+    myMinPts  = request.POST.get('myMinPts')
+    print(type(myMinPts))
+    popup =Popup(width=80, show=False)
+
+    if (myEpsilon == None):
+        model = load('home/dbscan.joblib')
+        silhouette= 0.642
+        inxch= 57.086
+        clusters_df = df[model.labels_ != -1]
+        clusters = Counter(model.labels_)
+        m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+        colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
+        rainbow = [colors.rgb2hex(i) for i in colors_array]
+        for row in range(len(clusters_df)):
+            folium.vector_layers.CircleMarker(
+                [float(clusters_df.iloc[row]['latitude']), float(clusters_df.iloc[row]['longitude'])],
+                radius=5, fill=True, popup= ('NBRE_Bless:', clusters_df.iloc[row]['nbre_bless'], 'NBRE_Dec:', clusters_df.iloc[row]['nbre_dec']),
+                fill_opacity=1, color=random.choice(rainbow)).add_to(m)
+    else:
+        att= df[['longitude','latitude']]
+        dbscan_data=pd.DataFrame(att)
+        dbscan_data = dbscan_data.values.astype('float32', copy=False)
+        dbscan_data_scaler = StandardScaler().fit(dbscan_data)
+        dbscan_data = dbscan_data_scaler.transform(dbscan_data)
+        model = DBSCAN(eps=float(myEpsilon), min_samples=float(myMinPts)).fit(dbscan_data)
+        silhouette= metrics.silhouette_score(dbscan_data, model.labels_)
+        inxch= metrics.calinski_harabasz_score(dbscan_data, model.labels_)
+        clusters_df = df[model.labels_ != -1]
+        core = model.core_sample_indices_
+        print(len(clusters_df))
+        clusters = Counter(model.labels_)
+        colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
+        rainbow = [colors.rgb2hex(i) for i in colors_array]
+        m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+        for row in range(len(clusters_df)):
+            folium.vector_layers.CircleMarker(
+                [float(clusters_df.iloc[row]['latitude']), float(clusters_df.iloc[row]['longitude'])],
+                radius=8, fill=True, popup=(clusters_df.iloc[row]['cause_acc'], clusters_df.iloc[row]['nbre_bless']),
+                fill_opacity=1, color=random.choice(rainbow)).add_to(m)
+
+
 
     m.add_to(f)
     m = f._repr_html_()  # updated
-    context = {'my_map': m}
+    context = {'my_map': m, 'formClus':formClus, 'silhouette':silhouette, 'inxch':inxch}
     return render(request,'home/clustering.html', context)
 
 # ----------------------------------------------------------------------------------------

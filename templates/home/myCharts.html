@@ -62,7 +62,7 @@
     <script src="{% static 'js/code/modules/item-series.js' %}"></script>
     <script src="{% static 'js/code/modules/item-series.src.js' %}"></script>
     <script src="{% static 'js/code/modules/timeline.js' %}"></script>
-<div class="mycontainer">
+
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 <div id="cards" class="card-deck">
@@ -143,15 +143,13 @@
         </div>
         <div class="col-lg-4">
             <div class="row" style="grid-row-gap: 0px;">
-                <h7 style="color: transparent"> hey</h7>
+                <h8 style="color: transparent"> hey</h8>
                 <div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
                      <figure class="highcharts-figure"  style="width: 100%;" >
                               <div id="daybarchart" style="width: 100%;"></div>
                     </figure>
                 </div>
-
-<div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
-
+                <div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
                 <figure class="highcharts-figure" style=" width:100%;" >
                     <div id="hourpie" style=" width: 100%; "></div>
                 </figure>
@@ -196,7 +194,7 @@
     <figure class="highcharts-figure">
                     <div id="monthbarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
 </figure>
-</div>
+
 
 <script type="text/javascript">
 Highcharts.chart('daybarchart', {
