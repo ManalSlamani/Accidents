@@ -82,7 +82,9 @@ $(document).ready(function(){
 
 
 Highcharts.chart('predictionchart', {
-
+    chart: {
+        type: 'column'
+    },
     title: {
         text: 'Accidents prédits avec leur probabilité d\'occurrence',
     },
@@ -106,6 +108,7 @@ Highcharts.chart('predictionchart', {
     series: [
         {   color: '#c0392b',
             data: [
+
         ],
              accessibility: {
             exposeAsGroupOnly: true

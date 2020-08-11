@@ -1,3 +1,5 @@
+from IPython.core.display import HTML
+from IPython.lib.display import IFrame
 from django.http import JsonResponse
 from django.shortcuts import render
 import json
@@ -115,7 +117,8 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 def makeClusters(request):
     df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     f = folium.Figure()
-
+    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    # m.create_map(path='clusters.html')
 
     if request.method == 'POST':
         formClus = clusteringform(request.POST)
@@ -131,6 +134,9 @@ def makeClusters(request):
         model = load('home/dbscan.joblib')
         silhouette= 0.642
         inxch= 57.086
+        nbr_clusters= 263
+        outliers= 152
+
         clusters_df = df[model.labels_ != -1]
         clusters = Counter(model.labels_)
         m = folium.Map(location=[28.5, 1.5], zoom_start=5)
@@ -141,6 +147,7 @@ def makeClusters(request):
                 [float(clusters_df.iloc[row]['latitude']), float(clusters_df.iloc[row]['longitude'])],
                 radius=5, fill=True, popup= ('NBRE_Bless:', clusters_df.iloc[row]['nbre_bless'], 'NBRE_Dec:', clusters_df.iloc[row]['nbre_dec']),
                 fill_opacity=1, color=random.choice(rainbow)).add_to(m)
+        # m.save('clusters.html')
     else:
         att= df[['longitude','latitude']]
         dbscan_data=pd.DataFrame(att)
@@ -151,35 +158,39 @@ def makeClusters(request):
         silhouette= metrics.silhouette_score(dbscan_data, model.labels_)
         inxch= metrics.calinski_harabasz_score(dbscan_data, model.labels_)
         clusters_df = df[model.labels_ != -1]
+        a=False
         core = model.core_sample_indices_
         print(len(clusters_df))
         clusters = Counter(model.labels_)
+        nbr_clusters= len(set(model.labels_)) - (-1 if -1 in model.labels_ else 0)
+        outliers= len(df[model.labels_==-1])
         colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
         rainbow = [colors.rgb2hex(i) for i in colors_array]
-        m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+
         for row in range(len(clusters_df)):
             folium.vector_layers.CircleMarker(
                 [float(clusters_df.iloc[row]['latitude']), float(clusters_df.iloc[row]['longitude'])],
                 radius=8, fill=True, popup=(clusters_df.iloc[row]['cause_acc'], clusters_df.iloc[row]['nbre_bless']),
                 fill_opacity=1, color=random.choice(rainbow)).add_to(m)
 
-
-
     m.add_to(f)
     m = f._repr_html_()  # updated
-    context = {'my_map': m, 'formClus':formClus, 'silhouette':silhouette, 'inxch':inxch}
+    context = {'my_map': m, 'formClus':formClus, 'silhouette':silhouette, 'inxch':inxch, 'nbr_clusters':nbr_clusters,
+               'outliers':outliers}
     return render(request,'home/clustering.html', context)
 
 # ----------------------------------------------------------------------------------------
 def makePrediction (request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-
+    mars= pd.read_excel("F:\CS3_PFE\Gendarmerie\data\\mars_pred.xlsx")
+    predections=len(mars)
     f = folium.Figure( height=500)
     # f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
-
+    for row in range(len(mars)):
+        folium.Marker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])], popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
-    context = {'my_map': m}
+    context = {'my_map': m, 'predections':predections}
     return render(request, 'home/prediction.html', context)

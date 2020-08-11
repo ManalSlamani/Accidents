@@ -8,5 +8,6 @@ urlpatterns = [
     # path(r'heatmap/', views.makeHeatmap, name='heatmap'),
     path(r'heatmap/', views.makeHeatmap, name='heatmap'),
     path(r'clustering/', views.makeClusters, name='clustering'),
+    path(r'clustering/clusters/', views.makeClusters, name='clustering'),
     path(r'prediction/', views.makePrediction, name='prediction')
 ]

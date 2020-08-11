@@ -65,64 +65,81 @@
 
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
-<div id="cards" class="card-deck">
-            <div class="card border-info mb-3" style="max-width: 540px;">
+<div id="cards" class="card-deck" style="height: 120px">
+            <div class="card border-info mb-3" style="max-width: 540px; height: 100%">
+                <div class="card-header bg-transparent border-info ">Nombre total d'accidents</div>
                 <div class="row no-gutters">
                     <div class="col-md-4">
                         <img src="{% static 'img/acc.png' %}"  class="card-img" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <p class="card-title">Nombre total d'accidents</p>
-                            <h2 class="card-text text-info">{{ accidents }}</h2>
+                            <h2 class="card-text text-info" style="padding-left: 10px">{{ accidents }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card border-warning mb-3" style="max-width: 540px;">
+            <div class="card border-dark mb-3" style="max-width: 540px;height: 100%">
+                <div class="card-header bg-transparent border-dark">Nombre total de blessés</div>
                 <div class="row no-gutters">
                     <div class="col-md-4">
                          <img src="{% static 'img/bless.png' %}"  class="card-img inj" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <p class="card-title">Nombre total de blessés</p>
-                            <h2 class="card-text text-warning">{{ bless }}</h2>
+                            <h2 class="card-text text-dark">{{ bless }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card border-danger mb-3" style="max-width: 540px;">
+            <div class="card border-danger mb-3" style="max-width: 540px;height: 100%">
+                 <div class="card-header bg-transparent border-dark ">Nombre total de décés</div>
                 <div class="row no-gutters">
                     <div class="col-md-4">
                          <img src="{% static 'img/dec2.png' %}"  class="card-img inj" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <p class="card-title">Nombre total de décés</p>
                             <h2 class="card-text text-danger">{{ dec }}</h2>
                             <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card border-success mb-3" style="max-width: 540px;">
+            <div class="card border-success mb-3" style="max-width: 540px; height: 100%">
+                <div class="card-header bg-transparent border-dark ">Evolution des accidents</div>
                 <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="{% static 'img/evolution.png' %}"  class="card-img "  style="left: 20%;height: 50px; width: 60px" alt="">
+                    <div class="col-md-3">
+                        <img src="{% static 'img/evolution.png' %}"  class="card-img "  style="top:20%;left: 20%;height: 40px; width: 50px" alt="">
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="card-body">
-                            <p class="card-title">Evolution des accidents</p>
                             <h2 class="card-text text-success">{{ evolution}} %</h2>
-                            <p class="card-text"><small class="text-muted">Entre les deux derniers mois</small></p>
+                            <p class="card-text" style="padding-left: 0px"><small class="text-muted">Entre les deux derniers mois</small></p>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="card border-warning mb-3" style="max-width: 540px; height: 100%">
+                 <div class="card-header bg-transparent border-dark ">Accidents futures</div>
+
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{% static 'img/warning.svg' %}"  class="card-img "  style="top:15%; left: 25%;height: 45px; width: 50px" alt="">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h2 class="card-text text-warning">30</h2>
+                            <p class="card-text"><small class="text-muted">Accidents</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    <br>
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 col-md-12">

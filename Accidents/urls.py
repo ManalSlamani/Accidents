@@ -23,7 +23,7 @@ from home import views
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('registration/', include('django.contrib.auth.urls')),
-                  path(r'^api-auth/', include('rest_framework.urls')),
+                  # path(r'^api-auth/', include('rest_framework.urls')),
                   #path('home/', views.home, name='home'),
                   path('', include('home.urls')),
                   #path('', RedirectView.as_view(url='/home/', permanent=True)),
