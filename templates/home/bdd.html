@@ -2,8 +2,72 @@
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <style>
+    div.scroll {
+                margin: 4px;
+                padding:4px;
+        overflow: auto;
 
+                width: 100%;
+                height: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
+                text-align:justify;
+            }
+    </style>
+    <div class="container-fluid" >
+    <div style="height: 500px; border-style: solid; border-width: 0.5px;" class="scroll">
+    <table class="table-bordered" style="width: 100%; font-size: 10px; height: 100%">
+        <thead>
+    <tr>
+      <th scope="col">Wilaya</th>
+      <th scope="col">Latitude</th>
+      <th scope="col">Longitude</th>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Jour</th>
+      <th scope="col">Mois</th>
+      <th scope="col">Cause de l'accident</th>
+      <th scope="col">Type de route</th>
+      <th scope="col">Nbre de blessés</th>
+      <th scope="col">Nbre de décés</th>
+      <th scope="col">Age du chauffeur</th>
+      <th scope="col">Date de naissance chauff</th>
+      <th scope="col">Année d'obtention du permis</th>
+      <th scope="col">Catégorie du véhicule</th>
+      <th scope="col">Tempé- rature</th>
+      <th scope="col">Préce- pitations</th>
+      <th scope="col">Couverture Nuageuse</th>
+      <th scope="col">Vitesse du vent</th>
+      <th scope="col">Temp du vent</th>
+      <th scope="col">Humidité</th>
+    </tr>
+  </thead>
+        {% for i in data %}
+            <tr>
+            <td> {{ i.wilaya }}</td>
+            <td> {{ i.latitude }}</td>
+            <td> {{ i.longitude }}</td>
+            <td> {{ i.date }}</td>
+            <td> {{ i.heure }}</td>
+            <td> {{ i.jour }}</td>
+            <td> {{ i.mois }}</td>
+            <td> {{ i.cause_acc }}</td>
+            <td> {{ i.type_route }}</td>
+            <td> {{ i.nbre_bless }}</td>
+            <td> {{ i.nbre_dec }}</td>
+            <td> {{ i.age_chauff }}</td>
+            <td> {{ i.date_naiss_chauff }}</td>
+            <td> {{ i.annee_permis }}</td>
+            <td> {{ i.cat_veh }}</td>
+            <td> {{ i.temperature }}</td>
+            <td> {{ i.precipitation }}</td>
+            <td> {{ i.vitessevent }}</td>
+            <td> {{ i.tempvent}}</td>
+            <td> {{ i.humidite}}</td></tr>
+        {% endfor %}
+    </table></div>
+{#     {{ data }}#}
     </div>
 
 {% endblock %}

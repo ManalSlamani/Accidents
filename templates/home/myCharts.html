@@ -601,7 +601,7 @@ Highcharts.chart('accidentschart', {
 
     }, {
         type: 'column',
-        name: 'Nomvbre de blessés',
+        name: 'Nombre de blessés',
         data: [
             {% for entry in accident %}{{ entry.bless_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
 

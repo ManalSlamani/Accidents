@@ -194,3 +194,8 @@ def makePrediction (request):
     m = f._repr_html_()  # updated
     context = {'my_map': m, 'predections':predections}
     return render(request, 'home/prediction.html', context)
+
+def allData(request):
+    data= list(Sheet1.objects.all().values())
+
+    return render(request,'home/bdd.html', {'data':data})
