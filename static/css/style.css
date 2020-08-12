@@ -4,14 +4,22 @@ html, body {
     font-size: .875rem;
     font-family: 'Poppins', sans-serif;
     /*background-color: #f5f6fa;*/
+    /*background-color: #ecf0f1;*/
 
 }
-
+.mycontainer{
+  background-color: #ffffff;
+}
 
 header{
   display: flex;
   margin: auto;
   /*height: 10vh;*/
+}
+footer{
+  display: flex;
+  margin: auto;
+  /*height: 60px;*/
 }
 .feather {
   width: 16px;

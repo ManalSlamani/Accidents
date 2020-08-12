@@ -3,12 +3,16 @@
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
+<style>
 
-		<style type="text/css">
+
 .highcharts-figure, .highcharts-data-table table {
-    min-width: 320px;
-    max-width: 800px;
+    min-width: 310px;
+    max-width: 3200px;
+    {#max-height: 300px;#}
     margin: 1em auto;
+    font-size: 11px;
+
 }
 
 .highcharts-data-table table {
@@ -18,11 +22,12 @@
 	margin: 10px auto;
 	text-align: center;
 	width: 100%;
-	max-width: 500px;
+	max-width: 250px;
+    max-height: 250px;
 }
 .highcharts-data-table caption {
     padding: 1em 0;
-    font-size: 1em;
+    font-size: 1.2em;
     color: #555;
 }
 .highcharts-data-table th {
@@ -38,21 +43,7 @@
 .highcharts-data-table tr:hover {
     background: #f1f7ff;
 }
-
-.ld-label {
-	width:200px;
-	display: inline-block;
-}
-
-.ld-url-input {
-	width: 500px;
-}
-
-.ld-time-input {
-	width: 40px;
-}
-
-		</style>
+    </style>
 <script src="{% static 'js/code/modules/exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
@@ -62,9 +53,10 @@
     <script src="{% static 'js/code/modules/item-series.js' %}"></script>
     <script src="{% static 'js/code/modules/item-series.src.js' %}"></script>
     <script src="{% static 'js/code/modules/timeline.js' %}"></script>
-
-<p style="text-align:right"> Date : <span id="datetime"> </span></p>
-    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
+    <script src="{% static 'js/code/themes/grid-light.js' %}"></script>
+  <div class="btn-toolbar mb-12 mb-md-1 "  >
+      <button id="exporter" type="button" class="btn btn-sm btn-outline-secondary" style=" margin-left: 95%;float: right">Exporter</button>
+  </div>
 <div id="cards" class="card-deck" style="height: 120px">
             <div class="card border-info mb-3" style="max-width: 540px; height: 100%">
                 <div class="card-header bg-transparent border-info ">Nombre total d'accidents</div>
@@ -147,6 +139,7 @@
                <h4 style="padding-left: 4px"> Distribution des accidents sur le territoire national</h4>
            </div>
             <div style="border-style: groove; width: 100%">  {{my_map|safe}} </div>
+
             <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
                  <figure class="highcharts-figure" style=" width:100%; ">
                     <div id="accidentschart" style=" width: 100%;   " ></div>
@@ -181,39 +174,38 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-md-12">
              <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
 
             <figure class="highcharts-figure" style="width: 100%;">
                 <div id="routechart" style=" width: 100%;" ></div>
             </figure></div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-md-12">
              <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
 
             <figure class="highcharts-figure" style="width: 100%;">
                 <div id="catchart"  style=" width: 100%"></div>
             </figure></div>
         </div>
-        <div class="w-100"></div>
+{#        <div class="w-100"></div>#}
          <div class="col-lg-12 col-md-8">
               <div style="width: 100%; margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
-            <figure class="highcharts-figure" style="margin-left: 2px">
-                <div id="wilayachart" style=" width: 160%; " ></div>
+            <figure class="highcharts-figure" style="margin-left: 0px; width: 100%">
+                <div id="wilayachart" style=" width: 100%; " ></div>
             </figure></div>
         </div>
     </div>
-</div>
-
-    <div class="container-fluid">
-
-    </div>
-    <figure class="highcharts-figure">
+    <div>
+         <figure class="highcharts-figure">
                     <div id="monthbarchart" style="height: 300px; width: 430px; border-style: solid groove; border-width: 1px; border-color: #34495e"></div>
 </figure>
+    </div>
+</div>
 
 
 <script type="text/javascript">
+{#Highcharts.setOptions(Highcharts.theme);#}
 Highcharts.chart('daybarchart', {
 
     chart: {

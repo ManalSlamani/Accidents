@@ -1,7 +1,7 @@
 {% load static %}
 <html lang="fr">
 <head>
-    <title>Dashboard </title>
+    <title>Accidetns Analyzer </title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
@@ -68,12 +68,9 @@
 <main role="main" class="col">
     <div id="main" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h3>Les accidents routiers en Algérie</h3>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group mr-2">
-            <button id="exporter" type="button" class="btn btn-sm btn-outline-secondary">Exporter</button>
-          </div>
+              <p style="text-align:right; margin-bottom:0px; "> Date : <span id="datetime"> </span></p>
+    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
 
-        </div>
         </div>
 
 
@@ -190,6 +187,11 @@
   $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
 });
 </script>
+
+<div class="footer navbar navbar-dark  navbar-expand-lg sticky-top bg-dark  p-0 shadow ">
+ <p>© 2018 Gandalf</p>
+</div>
 </body>
+
 
 </html>

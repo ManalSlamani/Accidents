@@ -10,7 +10,7 @@ from folium import plugins, Popup
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
-from .form import kdeform, clusteringform
+from .form import kdeform, clusteringform, wilaya
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -181,9 +181,8 @@ def makeClusters(request):
 
 # ----------------------------------------------------------------------------------------
 def makePrediction (request):
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     mars= pd.read_excel("F:\CS3_PFE\Gendarmerie\data\\mars_pred.xlsx")
+
     predections=len(mars)
     f = folium.Figure( height=500)
     # f = folium.Figure()
@@ -192,10 +191,21 @@ def makePrediction (request):
         folium.Marker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])], popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
-    context = {'my_map': m, 'predections':predections}
+    # mars = list(mars)
+    print(mars)
+    context = {'my_map': m, 'predections':predections, 'mars':mars}
     return render(request, 'home/prediction.html', context)
 
 def allData(request):
-    data= list(Sheet1.objects.all().values())
+    data= Sheet1.objects.all().values()
+    if request.method == 'POST':
+        wilayaform = wilaya(request.POST)
+        mywilaya= request.POST.get('wilaya')
+        data = Sheet1.objects.filter(wilaya=mywilaya)
+        total=len(data)
+    else:
+        total= len(data)
+        wilayaform = wilaya()
 
-    return render(request,'home/bdd.html', {'data':data})
+    context= {'data':data, 'form':wilayaform, 'total':total}
+    return render(request,'home/bdd.html', context)

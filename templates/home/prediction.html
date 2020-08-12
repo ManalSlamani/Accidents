@@ -46,30 +46,27 @@ td, th {
         <table class="table table-bordered" style="padding-top: 20px"  >
   <thead>
     <tr class="table-warning">
+        <th>Wilaya</th>
       <th >Latitude</th>
       <th >Longitude</th>
       <th >Date</th>
       <th >Heure</th>
-        <th>Proba</th>
+      <th>Probabillité</th>
     </tr>
   </thead>
 
   <tbody>
   <font size="5">
-    <tr>
-      <th >1</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th >2</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+   {% for acc in mars.itertuples %}
+       <tr>
+       <td>{{ acc.wilaya }}</td>
+       <td>{{ acc.Latitude }}</td>
+       <td>{{ acc.Longitude }}</td>
+       <td>{{ acc.date }}</td>
+       <td>{{ acc.HEURE }}</td>
+       <td>{{ acc.proba_1 }}</td>
+       </tr>
+   {% endfor %}
    </font>
   </tbody>
 </table>
