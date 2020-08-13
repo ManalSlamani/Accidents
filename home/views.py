@@ -100,11 +100,11 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     myOpacity = request.POST.get('myOpacity')
     print(type(myOpacity))
     if (myRadius == None):
-        colormap = branca.colormap.LinearColormap(colors=['blue','yellow', 'red'],  vmin=0, vmax=0.8)
+        colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=0.8)
         colormap.add_to(m)  # add color bar at the top of the map
         m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
     else:
-        colormap = branca.colormap.LinearColormap(colors=['blue','yellow', 'red'],  vmin=0, vmax=myOpacity)
+        colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=float(myOpacity))
         colormap.add_to(m)  # add color bar at the top of the map
         HeatMap(att, radius=float(myRadius), min_opacity=float(myOpacity)).add_to(folium.FeatureGroup(name='Heat Map').add_to(m))
         folium.LayerControl().add_to(m)

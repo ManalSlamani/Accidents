@@ -4,11 +4,13 @@ html, body {
     font-size: .875rem;
     font-family: 'Poppins', sans-serif;
     /*background-color: #f5f6fa;*/
-    /*background-color: #ecf0f1;*/
+    background-color: #f5f6fa;
 
 }
 .mycontainer{
   background-color: #ffffff;
+  width: 94%;
+  margin:0 auto;
 }
 
 header{
