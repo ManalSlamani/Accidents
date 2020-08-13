@@ -9,13 +9,16 @@
         </div>
     <div class="row">
     <div class="col-lg-8">
-        <div style="border-style: groove;">
+        <div style="border-style: groove;" >
+{#<div id='clusters'></div>#}
 {#            {% if a  %}#}
 {#             <iframe></iframe>  <include src="clusters.html"> </include>#}
 {#                <div id="includedContent"></div>#}
 {#                {% else %}#}
                     {{my_map|safe}}
 {#             {% endif %}#}
+{#            <object type="text/html" data="clusters.html"></object>#}
+{#            <div data-include="/clusters.html"></div>#}
              </div>
 
 
@@ -83,6 +86,7 @@
     </div>
 
     </div>
+     <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
 <script>
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
@@ -90,5 +94,6 @@ $(document).ready(function(){
 
 
 </script>
+
 
 {% endblock %}

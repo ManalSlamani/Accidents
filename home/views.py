@@ -1,3 +1,4 @@
+import branca
 from IPython.core.display import HTML
 from IPython.lib.display import IFrame
 from django.http import JsonResponse
@@ -18,7 +19,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
-from collections import Counter
+from collections import Counter, defaultdict
 from joblib import  load
 from sklearn import metrics
 
@@ -56,9 +57,10 @@ def daybarchart(request):
     ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accidents=Sum('accident')).order_by('-accidents')
     accident =Sheet1.objects.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
     mdata = (Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
-    routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route')*100/acc)
-    catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
-    hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('-accidents'))[:7]
+    routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route')).order_by('-route_count')[:8]
+    # routedata=routedata[:]
+    catdata = list (Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh')).order_by('-cat_count'))[:8]
+    hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('heure'))
     # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
     temperaturedata= Sheet1.objects.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
     precipitationdata= Sheet1.objects.values("couverturenuage").annotate(accidents=Sum('accident')).order_by('couverturenuage')
@@ -98,10 +100,12 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     myOpacity = request.POST.get('myOpacity')
     print(type(myOpacity))
     if (myRadius == None):
-       m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
+        colormap = branca.colormap.LinearColormap(colors=['blue','yellow', 'red'],  vmin=0, vmax=0.8)
+        colormap.add_to(m)  # add color bar at the top of the map
+        m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
     else:
-        # m.add_child(plugins.HeatMap(att, radius=myRadius, min_opacity=myOpacity))
-        print(type(myOpacity))
+        colormap = branca.colormap.LinearColormap(colors=['blue','yellow', 'red'],  vmin=0, vmax=myOpacity)
+        colormap.add_to(m)  # add color bar at the top of the map
         HeatMap(att, radius=float(myRadius), min_opacity=float(myOpacity)).add_to(folium.FeatureGroup(name='Heat Map').add_to(m))
         folium.LayerControl().add_to(m)
 
@@ -188,11 +192,12 @@ def makePrediction (request):
     # f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
     for row in range(len(mars)):
-        folium.Marker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])], popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
+        folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],color='crimson', radius=8,
+    fill=False, popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
     # mars = list(mars)
-    print(mars)
+
     context = {'my_map': m, 'predections':predections, 'mars':mars}
     return render(request, 'home/prediction.html', context)
 

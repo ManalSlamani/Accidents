@@ -38,7 +38,7 @@ footer{
   left: 0;
   z-index: 100; /* Behind the navbar */
   padding: 48px 0 0; /* Height of navbar */
-  box-shadow: inset -0.1px 0 0 rgba(0, 0, 0, .1);
+  box-shadow: inset -0.2px 0 0 rgba(0, 0, 0, .1);
 }
 
 @media (max-width: 767.98px) {
@@ -101,7 +101,7 @@ footer{
   padding: .5rem 0.5rem .50rem 0px;
   font-size: 17px;
   background-color: rgba(0, 0, 0, .25);
-  box-shadow: inset -0.5px 0 0 rgba(0, 0, 0, .2);
+  box-shadow: inset -0.2px 0 0 rgba(0, 0, 0, .2);
 }
 .navbar{
   width: 100%;
@@ -148,13 +148,13 @@ footer{
   /*max-width: 100px;*/
   /*max-height: 100px;*/
   position: absolute;
-  top: 10%;
-  left: 10%;
+  top: 20%;
+  /*left: 10%;*/
   /*width: 100%;*/
 }
 .inj{
-  width: 100px;
-  height: 50px;
+  width: 100%;
+  height: 50%;
   left: -10%;
   top: 15%;
 
