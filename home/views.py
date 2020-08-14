@@ -1,3 +1,5 @@
+import datetime
+
 import branca
 from IPython.core.display import HTML
 from IPython.lib.display import IFrame
@@ -11,7 +13,7 @@ from folium import plugins, Popup
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
-from .form import kdeform, clusteringform, wilaya
+from .form import kdeform, clusteringform, wilaya, makefilter
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -38,12 +40,18 @@ def get_data(request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------
 def daybarchart(request):
+    if request.method == 'POST':
+        myfilter = makefilter(request.POST)
+    else:
+        myfilter = makefilter()
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    m = folium.Map(location=[28.5, 1.5], zoom_start=5.2)
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
+    colormap = branca.colormap.LinearColormap(colors=['green','yellow',  'brown'], vmin=0, vmax=6000)
+    colormap.add_to(m)  # add color bar at the top of the map
     m.add_to(f)
     m = f._repr_html_()  # updated
     context = {'my_map': m}
@@ -80,7 +88,7 @@ def daybarchart(request):
     return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata,'accidents': acc,
                                                   "bless":bless, "dec":dec, "evolution":evolution, 'causes':causes, 'accident':accident,
                                                   'cum_acc':cum_acc, 'hourdata':hdata, 'temperaturedata':temperaturedata,
-                                                  "precipitationdata":precipitationdata})
+                                                  "precipitationdata":precipitationdata, 'myfilter':myfilter})
 
 
 # ----------------------------------------------------------------------------------------
@@ -129,9 +137,9 @@ def makeClusters(request):
     else:
         formClus = clusteringform()
     myEpsilon = request.POST.get('myEpsilon')
-    print((myEpsilon))
+
     myMinPts  = request.POST.get('myMinPts')
-    print(type(myMinPts))
+
     popup =Popup(width=80, show=False)
 
     if (myEpsilon == None):
@@ -185,20 +193,25 @@ def makeClusters(request):
 
 # ----------------------------------------------------------------------------------------
 def makePrediction (request):
-    mars= pd.read_excel("F:\CS3_PFE\Gendarmerie\data\\mars_pred.xlsx")
-
+    mars= pd.read_excel(".\static\\rf_pred.xlsx")
+    print(mars.date)
+    # mars.date= datetime.date(mars.date)
     predections=len(mars)
     f = folium.Figure( height=500)
     # f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
+    colors_array = cm.rainbow(np.linspace(0,1 , len(mars)))
+    rainbow = [colors.rgb2hex(i) for i in colors_array]
     for row in range(len(mars)):
-        folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],color='crimson', radius=8,
-    fill=False, popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
+        folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],
+                            color=(rainbow[row-1]), radius=7,fill=True, id= rainbow[row-1],
+                            popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
+        mars.iloc[row]['id']=rainbow[row-1]
     m.add_to(f)
     m = f._repr_html_()  # updated
     # mars = list(mars)
-
-    context = {'my_map': m, 'predections':predections, 'mars':mars}
+    total= len(mars)
+    context = {'my_map': m, 'predections':predections, 'mars':mars, 'total':total, 'rainbow':rainbow}
     return render(request, 'home/prediction.html', context)
 
 def allData(request):

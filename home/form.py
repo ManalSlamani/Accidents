@@ -3,7 +3,6 @@ from django import forms
 class kdeform(forms.Form):
     myRadius= forms.DecimalField(label='Rayon de recherche',  widget=forms.NumberInput(attrs={'min': '0', 'step': '1'}))
     myOpacity= forms.DecimalField(label='Seuil de densité ', widget= forms.NumberInput(attrs={'min': '0', 'step': '0.1'}))
-
 class clusteringform(forms.Form):
     # silhouette = forms.DecimalField(label='Coefficient de Silhouette', disabled=True, widget=forms.NumberInput)
     # inxch = forms.DecimalField(label='Indice CH', disabled=True)
@@ -23,5 +22,12 @@ class wilaya(forms.Form):
         ('tlemcen','tlemcen'),
     ]
     wilaya=  forms.CharField( widget=forms.Select(choices=options, attrs={'empty_value':"Toutes les wilayas", 'width':'200', 'id':'mywilaya'} ), initial= "--")
+class makefilter(forms.Form):
+    causes=[('--','--'),]
+    routes=[('--','--'),]
+
+    cause= forms.CharField(label='Cause', required=False, widget=forms.Select(choices=causes))
+    route= forms.CharField(label= 'Type de route', required=False, widget=forms.Select(choices=routes))
+
 
 

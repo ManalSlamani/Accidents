@@ -11,8 +11,16 @@
     max-width: 3200px;
     {#max-height: 300px;#}
     margin: 1em auto;
-
+    overflow: visible;
     font-size: 10px;
+}
+.highcharts-container.highcharts-container{
+  z-index: auto !important;
+  overflow: visible!important;
+}
+.highcharts-contextmenu, highcharts-menu{
+    overflow: visible;
+    z-index: 120;
 
 }
 
@@ -134,9 +142,17 @@
 
         </div>
     <br>
+{#    <div>#}
+{# <form action="/heatmap/" method="post" class="row" style="float: right">#}
+{#                        {% csrf_token %}#}
+{#                         {{ myfilter }}#}
+{#                        <br>#}
+{#                        <button type="submit" class="btn btn-light" style="float: right;">Valider</button>#}
+{#                    </form><br></div>#}
 <div class="container-fluid">
 
     <div class="row">
+
         <div class="col-lg-8 col-md-12">
 
            <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">

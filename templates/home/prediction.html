@@ -32,13 +32,16 @@ td, th {
         </div>
         <div class="row">
             <div class="col-lg-7">
-                 <table class="table table-bordered" style="padding-top: 20px"  >
+{#                 <h5 style="border-left-style: groove; padding-left: 3px ">Réulatats du prédicteur "Forets aléatoires"</h5>#}
+                 <p style="float: right">Total: {{ total }} accidents prédits pour le {{ mars.date.1.date }}</p>
+                <table class="table table-bordered" style="padding-top: 20px; width: 100%; font-size: 12.5px; width: 100%"  >
   <thead>
     <tr class="table-warning">
+        <th>#</th>
         <th>Wilaya</th>
       <th >Latitude</th>
       <th >Longitude</th>
-      <th >Date</th>
+      <th>Date</th>
       <th >Heure</th>
       <th>Probabillité</th>
     </tr>
@@ -48,12 +51,13 @@ td, th {
   <font size="5">
    {% for acc in mars.itertuples %}
        <tr>
+           <td > <a href="acc.Index">{{acc.Index}}</a></td>
        <td>{{ acc.wilaya }}</td>
-       <td>{{ acc.Latitude }}</td>
-       <td>{{ acc.Longitude }}</td>
-       <td>{{ acc.date }}</td>
+       <td>{{ acc.Latitude|floatformat:4 }}</td>
+       <td>{{ acc.Longitude|floatformat:4 }}</td>
+       <td>{{ acc.date.date }}</td>
        <td>{{ acc.HEURE }}</td>
-       <td>{{ acc.proba_1 }}</td>
+       <td>{{ acc.proba_1|floatformat:4}}</td>
        </tr>
    {% endfor %}
    </font>
@@ -61,7 +65,7 @@ td, th {
 </table>
             </div>
             <div class="col-lg-5">
-                <div style="border-style: groove; width: 100%; align-content: center">  {{my_map|safe}} </div>
+            <div style="border-style: groove; width: 100%; align-content: center">  {{my_map|safe}} </div><br>
             </div>
         </div>
         <div style="padding-top: 20px">
@@ -69,6 +73,11 @@ td, th {
         </div>
     </div>
 <script>
+function humanize(x){
+  return x.toFixed(4).replace(/\.?0*$/,'');
+}
+
+
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
 });
