@@ -51,7 +51,7 @@ td, th {
   <font size="5">
    {% for acc in mars.itertuples %}
        <tr>
-           <td > <a href="acc.Index">{{acc.Index}}</a></td>
+           <td > <a href="#acc.Index">{{acc.Index}}</a></td>
        <td>{{ acc.wilaya }}</td>
        <td>{{ acc.Latitude|floatformat:4 }}</td>
        <td>{{ acc.Longitude|floatformat:4 }}</td>

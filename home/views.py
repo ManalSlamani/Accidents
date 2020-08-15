@@ -90,7 +90,6 @@ def daybarchart(request):
                                                   'cum_acc':cum_acc, 'hourdata':hdata, 'temperaturedata':temperaturedata,
                                                   "precipitationdata":precipitationdata, 'myfilter':myfilter})
 
-
 # ----------------------------------------------------------------------------------------
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
@@ -124,8 +123,6 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     return render(request, "home/heatmap.htm", context)
 
 # ----------------------------------------------------------------------------------------
-
-
 def makeClusters(request):
     df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     f = folium.Figure()
@@ -206,7 +203,6 @@ def makePrediction (request):
         folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],
                             color=(rainbow[row-1]), radius=7,fill=True, id= rainbow[row-1],
                             popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
-        mars.iloc[row]['id']=rainbow[row-1]
     m.add_to(f)
     m = f._repr_html_()  # updated
     # mars = list(mars)
