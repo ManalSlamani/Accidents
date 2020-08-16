@@ -1,9 +1,5 @@
 import datetime
-
 import branca
-from IPython.core.display import HTML
-from IPython.lib.display import IFrame
-from django.http import JsonResponse
 from django.shortcuts import render
 import json
 from django.db.models import Count, Q, Sum, Window, F
@@ -13,7 +9,7 @@ from folium import plugins, Popup
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
-from .form import kdeform, clusteringform, wilaya, makefilter
+from .form import kdeform, clusteringform, wilaya, makefilter, authentif
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -223,3 +219,11 @@ def allData(request):
 
     context= {'data':data, 'form':wilayaform, 'total':total}
     return render(request,'home/bdd.html', context)
+
+def authentification (request):
+    if request.method == 'POST':
+        form = authentif(request.POST)
+    else:
+        form = authentif()
+
+    return render(request, 'home/authentification.html', {"form": form} )

@@ -13,5 +13,6 @@ urlpatterns = [
     # (r'(.+\.html)$', 'clusters.html'),
     # path(r'clustering/clusters.html', TemplateView.as_view(template_name='home/clusters.html'), name='clusters'),
     path(r'prediction/', views.makePrediction, name='prediction'),
-    path(r'bdd/', views.allData, name='bdd')
+    path(r'bdd/', views.allData, name='bdd'),
+    path(r'authentification/', views.authentification, name='authentif')
 ]

@@ -28,6 +28,15 @@ class makefilter(forms.Form):
 
     cause= forms.CharField(label='Cause', required=False, widget=forms.Select(choices=causes))
     route= forms.CharField(label= 'Type de route', required=False, widget=forms.Select(choices=routes))
+class authentif(forms.Form):
+    comptes=[
+        ('--','--'),
+        ("décideur","Compte décideur"),
+        ("admin","Compte admin")
+    ]
+    user= forms.CharField(label="Nom d'utilisateur", required=True)
+    pwd =forms.CharField(label="Mot de passe", required=True)
+    compte =forms.CharField(label='Type de compte', required=True, widget=forms.Select(choices=comptes))
 
 
 
