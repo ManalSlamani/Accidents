@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 import json
 from django.db.models import Count, Q, Sum, Window, F
-from .models import Sheet1
+from .models import Accidents
 import folium
 from folium import plugins, Popup
 from folium.plugins import HeatMap
@@ -19,7 +19,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from collections import Counter
-from joblib import  load
+from joblib import load
 from sklearn import metrics
 
 
@@ -29,7 +29,7 @@ def home(request):
 
 
 def get_data(request, *args, **kwargs):
-    data = Sheet1.objects.all()
+    data = Accidents.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
 
 
@@ -37,8 +37,8 @@ def get_data(request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------
 def daybarchart(request):
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    latitude = list(Accidents.objects.values_list("latitude", flat=True))
+    longitude = list(Accidents.objects.values_list("longitude", flat=True))
     f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     att = list(zip(latitude, longitude))
@@ -47,31 +47,31 @@ def daybarchart(request):
     m = f._repr_html_()  # updated
     context = {'my_map': m}
 
-    bless = (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_bless'))[0]['accidents'])
-    dec = (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
-    acc = (Sheet1.objects.values("accident").annotate(accidents=Count('accident'))[0]['accidents'])
+    bless = (Accidents.objects.values("accident").annotate(accidents=Sum('nbre_bless'))[0]['accidents'])
+    dec = (Accidents.objects.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
+    acc = (Accidents.objects.values("accident").annotate(accidents=Count('accident'))[0]['accidents'])
 
 
-    wdata= Sheet1.objects.values("wilaya").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
-    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accidents=Sum('accident')).order_by('-accidents')
-    accident =Sheet1.objects.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
-    mdata = (Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
-    routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route')*100/acc)
-    catdata = Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
-    hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('-accidents'))[:7]
+    wdata= Accidents.objects.values("wilaya").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
+    ddata =Accidents.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accidents=Sum('accident')).order_by('-accidents')
+    accident =Accidents.objects.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
+    mdata = (Accidents.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
+    routedata = Accidents.objects.values('type_route').annotate(route_count=Count('type_route')*100/acc)
+    catdata = Accidents.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
+    hdata= list(Accidents.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('-accidents'))[:7]
     # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
-    temperaturedata= Sheet1.objects.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
-    precipitationdata= Sheet1.objects.values("couverturenuage").annotate(accidents=Sum('accident')).order_by('couverturenuage')
+    temperaturedata= Accidents.objects.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
+    precipitationdata= Accidents.objects.values("couverturenuage").annotate(accidents=Sum('accident')).order_by('couverturenuage')
 
 
 
-    cum_acc = Sheet1.objects.values('mois').annotate(cum_acc=Window(Count('mois'), order_by=F('mois').asc())).distinct()
+    cum_acc = Accidents.objects.values('mois').annotate(cum_acc=Window(Count('mois'), order_by=F('mois').asc())).distinct()
     evolution = round(
     ((list(accident.distinct())[-1]['accidents'] - list(accident.distinct())[-2]['accidents']) * 100 / acc), 2)
 
 
 
-    causes= list(Sheet1.objects.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
+    causes= list(Accidents.objects.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
     causes= causes[:6]
 
 
@@ -83,8 +83,8 @@ def daybarchart(request):
 
 # ----------------------------------------------------------------------------------------
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    latitude = list(Accidents.objects.values_list("latitude", flat=True))
+    longitude = list(Accidents.objects.values_list("longitude", flat=True))
     # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
@@ -115,7 +115,7 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 
 
 def makeClusters(request):
-    df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
+    df=pd.DataFrame(Accidents.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     # m.create_map(path='clusters.html')
@@ -181,8 +181,8 @@ def makeClusters(request):
 
 # ----------------------------------------------------------------------------------------
 def makePrediction (request):
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    latitude = list(Accidents.objects.values_list("latitude", flat=True))
+    longitude = list(Accidents.objects.values_list("longitude", flat=True))
     mars= pd.read_excel("F:\CS3_PFE\Gendarmerie\data\\mars_pred.xlsx")
     predections=len(mars)
     f = folium.Figure( height=500)
@@ -196,6 +196,6 @@ def makePrediction (request):
     return render(request, 'home/prediction.html', context)
 
 def allData(request):
-    data= list(Sheet1.objects.all().values())
+    data= list(Accidents.objects.all().values())
 
     return render(request,'home/bdd.html', {'data':data})

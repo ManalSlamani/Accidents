@@ -53,7 +53,8 @@
 }
 
 		</style>
-<script src="{% static 'js/code/modules/exporting.js' %}"></script>
+<!--
+  <script src="{% static 'js/code/modules/exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
 <script src="{% static 'js/code/modules/histogram-bellcurve.js' %}"></script>
@@ -61,7 +62,19 @@
 {#<script src="{% static 'js/code/modules/highcharts-more.js' %}"></script>#}
     <script src="{% static 'js/code/modules/item-series.js' %}"></script>
     <script src="{% static 'js/code/modules/item-series.src.js' %}"></script>
-    <script src="{% static 'js/code/modules/timeline.js' %}"></script>
+    <script src="{% static 'js/code/modules/timeline.js' %}"></script>-->
+
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="	https://cdnjs.cloudflare.com/ajax/libs/highcharts/8.1.2/modules/histogram-bellcurve.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+{#<script src="{% static 'js/code/modules/highcharts-more.js' %}"></script>#}
+    <script src="https://cdn.bootcdn.net/ajax/libs/highcharts/8.1.2/modules/item-series.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highcharts/8.1.2/es-modules/masters/modules/item-series.src.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highcharts/8.1.2/modules/timeline.js"></script>
+
 
 <p style="text-align:right"> Date : <span id="datetime"> </span></p>
     <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
