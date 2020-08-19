@@ -20,6 +20,7 @@ import pandas as pd
 from collections import Counter, defaultdict
 from joblib import  load
 from sklearn import metrics
+import leaflet
 
 
 # Create your views here.
@@ -43,7 +44,9 @@ def daybarchart(request):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=5.2)
+    # m = folium.Map(location=[28.5, 1.5], zoom_start=5.2)
+    m = folium.Map(location=[28.5, 2], zoom_start=5,
+                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
     colormap = branca.colormap.LinearColormap(colors=['green','yellow',  'brown'], vmin=0, vmax=6000)
@@ -90,9 +93,8 @@ def daybarchart(request):
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-    # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
     att = zip(latitude, longitude)
     if request.method == 'POST':
         form = kdeform(request.POST)
@@ -121,9 +123,10 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 # ----------------------------------------------------------------------------------------
 def makeClusters(request):
     df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
-    f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
-    # m.create_map(path='clusters.html')
+    fig = folium.Figure()
+    # m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    m = folium.Map(location=[28.5, 2], zoom_start=5,
+                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
 
     if request.method == 'POST':
         formClus = clusteringform(request.POST)
@@ -144,7 +147,9 @@ def makeClusters(request):
 
         clusters_df = df[model.labels_ != -1]
         clusters = Counter(model.labels_)
-        m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+        m = folium.Map(location=[28.5, 2], zoom_start=5,
+                       tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png",
+                       attr="openmaptiles-server")
         colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
         rainbow = [colors.rgb2hex(i) for i in colors_array]
         for row in range(len(clusters_df)):
@@ -178,8 +183,8 @@ def makeClusters(request):
                 radius=8, fill=True, popup=(clusters_df.iloc[row]['cause_acc'], clusters_df.iloc[row]['nbre_bless']),
                 fill_opacity=1, color=random.choice(rainbow)).add_to(m)
 
-    m.add_to(f)
-    m = f._repr_html_()  # updated
+    m.add_to(fig)
+    m = fig._repr_html_()  # updated
     context = {'my_map': m, 'formClus':formClus, 'silhouette':silhouette, 'inxch':inxch, 'nbr_clusters':nbr_clusters,
                'outliers':outliers}
     return render(request,'home/clustering.html', context)
@@ -192,7 +197,10 @@ def makePrediction (request):
     predections=len(mars)
     f = folium.Figure( height=500)
     # f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
+    # m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
+    m = folium.Map(location=[28.5, 2], zoom_start=5,
+                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
+
     colors_array = cm.rainbow(np.linspace(0,1 , len(mars)))
     rainbow = [colors.rgb2hex(i) for i in colors_array]
     for row in range(len(mars)):
