@@ -5,6 +5,43 @@
 {% block content %}
 
 <style>
+.maplegend .legend-title {
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 90%;
+    }
+  .maplegend .legend-scale ul {
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 0;
+    float: left;
+    list-style: none;
+    }
+  .maplegend .legend-scale ul li {
+    font-size: 80%;
+    list-style: none;
+    margin-left: 0;
+    line-height: 18px;
+    margin-bottom: 2px;
+    }
+  .maplegend ul.legend-labels li span {
+    display: block;
+    float: left;
+    height: 16px;
+    width: 30px;
+    margin-right: 5px;
+    margin-left: 0;
+    border: 1px solid #999;
+    }
+  .maplegend .legend-source {
+    font-size: 80%;
+    color: #777;
+    clear: both;
+    }
+  .maplegend a {
+    color: #777;
+    }
 .highcharts-figure, .highcharts-data-table table {
     min-width: 200px;
     max-width: 3200px;
@@ -13,6 +50,7 @@
     overflow: visible;
     font-size: 10px;
 }
+
 .highcharts-container.highcharts-container{
   z-index: auto !important;
   overflow: visible!important;
@@ -22,6 +60,7 @@
     z-index: 120;
 
 }
+
 .highcharts-data-table table {
 	font-family: Verdana, sans-serif;
 	border-collapse: collapse;
@@ -166,6 +205,18 @@
                <h4 style="padding-left: 4px"> Distribution des accidents sur le territoire national</h4>
            </div>
             <div style="border-style: groove; width: 100%">
+                <div id='maplegend' class='maplegend'
+    style='position: absolute; z-index:9999; border:2px solid grey; background-color:rgba(255, 255, 255, 0.8);
+     border-radius:6px; padding: 5px; font-size:14px; margin: 10px; right: 30px; top: 30px;'>
+
+<div class='legend-scale' >
+  <ul class='legend-labels'>
+    <li><span style='background:#2ecc71;opacity:0.7;'></span>0-10</li>
+    <li><span style='background:#f1c40f;opacity:0.7;'></span>30-100</li>
+    <li><span style='background:#e67e22;opacity:0.7;'></span> >150 </li>
+  </ul>
+</div>
+</div>
                 {{my_map|safe}}
             </div>
             <div style="width: 100%;  margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">

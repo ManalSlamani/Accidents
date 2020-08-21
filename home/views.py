@@ -84,10 +84,14 @@ def daybarchart(request):
     causes = list(data.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
     causes = causes[:6]
     att = list(zip(latitude, longitude))
-    MarkerCluster(att).add_to(m)
-    vmax= len(att)
-    colormap = branca.colormap.LinearColormap(colors=['green', 'yellow', 'brown'], index=[0,300, vmax], vmin=0, vmax=vmax)
-    colormap.add_to(m)  # add color bar at the top of the map
+    MarkerCluster(att, options={'maxClusterRadius':50}).add_to(m)
+    # folium.map.LayerControl('topleft', collapsed=True).add_to(m)
+    vmax= len(att)/2
+    # colormap = branca.colormap.LinearColormap(colors=['green','yellow','brown'])
+    # steps = 20
+    # colormap = branca.colormap.linear.YlOrBr_09.scale(0, 1).to_step(steps)
+
+    # colormap.add_to(m)  # add color bar at the top of the map
     m.add_to(f)
     m = f._repr_html_()  # updated
 
