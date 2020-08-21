@@ -9,7 +9,7 @@ from folium import plugins, Popup
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
-from .form import kdeform, clusteringform, wilaya, makefilter, authentif
+from .form import *
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -37,51 +37,59 @@ def get_data(request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------
 def daybarchart(request):
-    if request.method == 'POST':
-        myfilter = makefilter(request.POST)
-    else:
-        myfilter = makefilter()
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     f = folium.Figure()
-    # m = folium.Map(location=[28.5, 1.5], zoom_start=5.2)
     m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
+                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png",
+                   attr="local-map-server")
+    if request.method == 'POST':
+        myfilter = intervalledate(request.POST)
+        debut = request.POST.get('debut')
+        fin = request.POST.get('fin')
+        data = Sheet1.objects.filter(date__range=[debut, fin])
+        evolution = 5
+    else:
+        data= Sheet1.objects.all()
+        myfilter = intervalledate()
+
+    latitude = list(data.values_list("latitude", flat=True))
+    longitude = list(data.values_list("longitude", flat=True))
+    bless = (data.values("accident").annotate(accidents=Sum('nbre_bless'))[0]['accidents'])
+    dec = (data.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
+    acc = (data.values("accident").annotate(accidents=Count('accident'))[0]['accidents'])
+    wdata = data.values("wilaya").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'),
+                                           bless_count=Sum('nbre_bless')).order_by('wilaya')
+    ddata = data.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'),
+                                         accidents=Sum('accident')).order_by('-accidents')
+    accident = data.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'),
+                                            bless_count=Sum('nbre_bless'))
+    if len(accident)>1:
+        evolution = round(
+        ((list(accident.distinct())[-1]['accidents'] - list(accident.distinct())[-2]['accidents']) * 100 / acc), 2)
+    else:
+        evolution=0
+
+    mdata = (data.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
+    routedata = data.values('type_route').annotate(route_count=Count('type_route')).order_by(
+        '-route_count')[:8]
+    catdata = list(data.values('cat_veh').annotate(cat_count=Count('cat_veh')).order_by('-cat_count'))[:8]
+    hdata = list(
+        data.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('heure'))
+    # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
+    temperaturedata = data.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
+    precipitationdata = data.values("couverturenuage").annotate(accidents=Sum('accident')).order_by(
+        'couverturenuage')
+
+    cum_acc = data.values('mois').annotate(cum_acc=Window(Count('mois'), order_by=F('mois').asc())).distinct()
+
+    causes = list(data.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
+    causes = causes[:6]
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
-    colormap = branca.colormap.LinearColormap(colors=['green','yellow',  'brown'], vmin=0, vmax=6000)
+    vmax= len(att)
+    colormap = branca.colormap.LinearColormap(colors=['green', 'yellow', 'brown'], index=[0,300, vmax], vmin=0, vmax=vmax)
     colormap.add_to(m)  # add color bar at the top of the map
     m.add_to(f)
     m = f._repr_html_()  # updated
-    context = {'my_map': m}
-
-    bless = (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_bless'))[0]['accidents'])
-    dec = (Sheet1.objects.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
-    acc = (Sheet1.objects.values("accident").annotate(accidents=Count('accident'))[0]['accidents'])
-
-
-    wdata= Sheet1.objects.values("wilaya").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')).order_by('wilaya')
-    ddata =Sheet1.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accidents=Sum('accident')).order_by('-accidents')
-    accident =Sheet1.objects.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
-    mdata = (Sheet1.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
-    routedata = Sheet1.objects.values('type_route').annotate(route_count=Count('type_route')).order_by('-route_count')[:8]
-    # routedata=routedata[:]
-    catdata = list (Sheet1.objects.values('cat_veh').annotate(cat_count=Count('cat_veh')).order_by('-cat_count'))[:8]
-    hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('heure'))
-    # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
-    temperaturedata= Sheet1.objects.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
-    precipitationdata= Sheet1.objects.values("couverturenuage").annotate(accidents=Sum('accident')).order_by('couverturenuage')
-
-
-
-    cum_acc = Sheet1.objects.values('mois').annotate(cum_acc=Window(Count('mois'), order_by=F('mois').asc())).distinct()
-    evolution = round(
-    ((list(accident.distinct())[-1]['accidents'] - list(accident.distinct())[-2]['accidents']) * 100 / acc), 2)
-
-
-
-    causes= list(Sheet1.objects.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
-    causes= causes[:6]
 
 
     return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata,'accidents': acc,
@@ -235,3 +243,6 @@ def authentification (request):
         form = authentif()
 
     return render(request, 'home/authentification.html', {"form": form} )
+
+def help (request):
+    return render(request, "home/help.html")

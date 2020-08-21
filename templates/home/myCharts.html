@@ -3,9 +3,8 @@
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
+
 <style>
-
-
 .highcharts-figure, .highcharts-data-table table {
     min-width: 200px;
     max-width: 3200px;
@@ -23,7 +22,6 @@
     z-index: 120;
 
 }
-
 .highcharts-data-table table {
 	font-family: Verdana, sans-serif;
 	border-collapse: collapse;
@@ -52,7 +50,9 @@
 .highcharts-data-table tr:hover {
     background: #f1f7ff;
 }
-    </style>
+
+
+</style>
 <script src="{% static 'js/code/modules/exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
@@ -67,7 +67,23 @@
 {#  <div class="btn-toolbar mb-12 mb-md-1 "  >#}
 {#      <button id="exporter" type="button" class="btn btn-sm btn-outline-secondary" style=" margin-left: 95%;float: right">Exporter</button>#}
 {#  </div>#}
-<div id="cards" class="card-deck" style="height: 120px">
+
+{#    <div>#}
+{# <form action="/heatmap/" method="post" class="row" style="float: right">#}
+{#                        {% csrf_token %}#}
+{#                         {{ myfilter }}#}
+{#                        <br>#}
+{#                        <button type="submit" class="btn btn-light" style="float: right;">Valider</button>#}
+{#                    </form><br></div>#}
+<div  style="margin-left:775px; margin-right:0;">
+<form class="form-row" action="" method="post" style="width: 100%; place-content: center;  grid-column-gap: 2%;" >
+        {% csrf_token %}{{ myfilter }}
+    <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 11px;">Soumettre</button>
+</form>
+</div>
+    <div class="container-fluid">
+
+<div id="cards" class="card-deck" style="height: 120px; width: 102%">
             <div class="card border-info mb-3" style="max-width: 540px; height: 100%">
                 <div class="card-header bg-transparent border-info ">Nombre total d'accidents</div>
                 <div class="row no-gutters">
@@ -77,7 +93,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2 class="card-text text-info" style="padding-left: 10px;">{{ accidents }}</h2>
-                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
                         </div>
                     </div>
                 </div>
@@ -91,7 +107,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2 class="card-text text-dark">{{ bless }}</h2>
-                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
                         </div>
                     </div>
                 </div>
@@ -105,7 +121,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2 class="card-text text-danger">{{ dec }}</h2>
-                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>
+{#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
                         </div>
                     </div>
                 </div>
@@ -119,7 +135,7 @@
                     <div class="col-md-9">
                         <div class="card-body">
                             <h2 class="card-text text-success">{{ evolution}} %</h2>
-                            <p class="card-text" style="padding-left: 0px"><small class="text-muted">Les deux derniers mois</small></p>
+                            <p class="card-text" style="padding-left: 0px"><small class="text-muted">Les deux derniers mois </small></p>
                         </div>
                     </div>
                 </div>
@@ -134,7 +150,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2 class="card-text text-warning">64</h2>
-                            <p class="card-text"><small class="text-muted">Accidents </small></p>
+                            <p class="card-text"><small class="text-muted">Accidents prédits </small></p>
                         </div>
                     </div>
                 </div>
@@ -142,15 +158,6 @@
 
         </div>
     <br>
-{#    <div>#}
-{# <form action="/heatmap/" method="post" class="row" style="float: right">#}
-{#                        {% csrf_token %}#}
-{#                         {{ myfilter }}#}
-{#                        <br>#}
-{#                        <button type="submit" class="btn btn-light" style="float: right;">Valider</button>#}
-{#                    </form><br></div>#}
-<div class="container-fluid">
-
     <div class="row">
 
         <div class="col-lg-8 col-md-12">
@@ -223,6 +230,7 @@
 </figure>
     </div>
 </div>
+
 
 
 <script type="text/javascript">
