@@ -27,12 +27,9 @@ import leaflet
 def home(request):
     return render(request, 'home/welcome.html')
 
-
 def get_data(request, *args, **kwargs):
     data = Sheet1.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
-
-
 
 
 # ------------------------------------------------------------------------------
@@ -167,7 +164,7 @@ def makeClusters(request):
         for row in range(len(clusters_df)):
             folium.vector_layers.CircleMarker(
                 [float(clusters_df.iloc[row]['latitude']), float(clusters_df.iloc[row]['longitude'])],
-                radius=5, fill=True, popup= ('NBRE_Bless:', clusters_df.iloc[row]['nbre_bless'], 'NBRE_Dec:', clusters_df.iloc[row]['nbre_dec']),
+                radius=5, fill=True, popup= ('Cause:', clusters_df.iloc[row]['cause_acc'], 'NBRE_Bless:', clusters_df.iloc[row]['nbre_bless']),
                 fill_opacity=1, color=random.choice(rainbow)).add_to(m)
         # m.save('clusters.html')
     else:
@@ -192,7 +189,7 @@ def makeClusters(request):
         for row in range(len(clusters_df)):
             folium.vector_layers.CircleMarker(
                 [float(clusters_df.iloc[row]['latitude']), float(clusters_df.iloc[row]['longitude'])],
-                radius=8, fill=True, popup=(clusters_df.iloc[row]['cause_acc'], clusters_df.iloc[row]['nbre_bless']),
+                radius=8, fill=True, popup=('Cause:', clusters_df.iloc[row]['cause_acc'], 'Nbre_bless',clusters_df.iloc[row]['nbre_bless']),
                 fill_opacity=1, color=random.choice(rainbow)).add_to(m)
 
     m.add_to(fig)
@@ -228,17 +225,39 @@ def makePrediction (request):
 
 def allData(request):
     data= Sheet1.objects.all().values()
-    if request.method == 'POST':
-        wilayaform = wilaya(request.POST)
-        mywilaya= request.POST.get('wilaya')
-        data = Sheet1.objects.filter(wilaya=mywilaya)
-        total=len(data)
-    else:
-        total= len(data)
-        wilayaform = wilaya()
-
-    context= {'data':data, 'form':wilayaform, 'total':total}
+    # if request.method == 'POST':
+    #     wilayaform = wilaya(request.POST)
+    #     mywilaya= request.POST.get('wilaya')
+    #     data = Sheet1.objects.filter(wilaya=mywilaya)
+    #     total=len(data)
+    #     form = uploadFiles()
+    # else:
+    #     total= len(data)
+    #     wilayaform = wilaya()
+    #     form = uploadFiles()
+    total = len(data)
+    wilayaform = wilaya()
+    form = uploadFiles()
+    context= {'data':data, 'wilayaform':wilayaform, 'total':total,'form': form}
     return render(request,'home/bdd.html', context)
+
+def uploadData(request):
+    data = Sheet1.objects.all().values()
+    total = len(data)
+    form = uploadFiles(request.POST, request.FILES)
+    wilayaform = wilaya()
+    context ={'data':data, 'wilayaform':wilayaform, 'total':total,'form': form}
+    return render(request, 'home/bdd.html', context)
+def changeWilaya(request):
+    wilayaform = wilaya(request.POST)
+    mywilaya= request.POST.get('wilaya')
+    data = Sheet1.objects.filter(wilaya=mywilaya)
+    total=len(data)
+    form = uploadFiles()
+    context = {'data':data, 'wilayaform':wilayaform, 'total':total,'form': form }
+    return render(request, 'home/bdd.html', context)
+
+
 
 def authentification (request):
     if request.method == 'POST':

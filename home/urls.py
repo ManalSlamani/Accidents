@@ -14,6 +14,10 @@ urlpatterns = [
     # path(r'clustering/clusters.html', TemplateView.as_view(template_name='home/clusters.html'), name='clusters'),
     path(r'prediction/', views.makePrediction, name='prediction'),
     path(r'bdd/', views.allData, name='bdd'),
+    path(r'upload/', views.uploadData, name='upload'),
+    path(r'change/', views.changeWilaya, name='change'),
+    # path(r'bdd/', views.uploadData, name='bdd'),
+    # path(r'bdd/', views.uploadData name='bdd'),
     path(r'help/', views.help, name='help'),
     path(r'authentification/', views.authentification, name='authentif')
 ]
