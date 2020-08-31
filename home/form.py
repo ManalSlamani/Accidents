@@ -1,5 +1,5 @@
 from django import forms
-
+from . import models
 
 class kdeform(forms.Form):
     myRadius= forms.DecimalField(label='Rayon de recherche',  widget=forms.NumberInput(attrs={'min': '0', 'step': '1'}))
@@ -42,9 +42,13 @@ class intervalledate(forms.Form):
     debut= forms.DateField (label='Du',  widget=forms.DateInput(attrs={'type':'date', 'min':'2014-01-01', 'max': '2014-03-30', 'value':'2014-01-01'}))
     fin= forms.DateField (label='Au',  widget=forms.DateInput(attrs={'type':'date','min':'2014-01-02', 'max': '2014-03-31', 'value':'2014-03-31'}))
 class uploadFiles(forms.Form):
-    # title = forms.CharField(max_length=50)
-    file_field = forms.FileField( label='Sélectionner un fichier',
-        widget=forms.ClearableFileInput(attrs={'multiple': True,  'lang':'fr'}))
+    file_field = forms.FileField(label='Sélectionner un fichier',
+                                 widget=forms.ClearableFileInput(attrs={'multiple': True, 'lang': 'fr'}))
+    # class Meta:
+        # model= models.Sheet1
+        # fields = '__all__'
+            # title = forms.CharField(max_length=50)
+
     #'class': 'custom-file-input',
 
 

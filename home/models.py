@@ -161,7 +161,7 @@ class Sheet1(models.Model):
     nbre_dec = models.IntegerField(db_column='NBRE_DEC', blank=True, null=True)  # Field name made lowercase.
     nbre_bless = models.IntegerField(db_column='NBRE_BLESS', blank=True, null=True)  # Field name made lowercase.
     annee_permis = models.DateField(db_column='ANNEE_PERMIS', blank=True, null=True)  # Field name made lowercase.
-    cat_veh = models.CharField(db_column='CAT_VEH', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    cat_veh = models.CharField(db_column='CAT_VEH', max_length=80, blank=True, null=True)  # Field name made lowercase.
     date_naiss_chauff = models.DateField(blank=True, null=True)
     age_chauff = models.IntegerField(db_column='AGE_CHAUFF', blank=True, null=True)  # Field name made lowercase.
     temperature = models.IntegerField(db_column='Temperature', blank=True, null=True)  # Field name made lowercase.
@@ -176,5 +176,5 @@ class Sheet1(models.Model):
     id_accident = models.AutoField(db_column='ID_accident', primary_key=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        # managed = True
         db_table = 'sheet1'
