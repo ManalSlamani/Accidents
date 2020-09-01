@@ -231,16 +231,6 @@ def makePrediction (request):
 
 def allData(request):
     data= Sheet1.objects.all().values()
-    # if request.method == 'POST':
-    #     wilayaform = wilaya(request.POST)
-    #     mywilaya= request.POST.get('wilaya')
-    #     data = Sheet1.objects.filter(wilaya=mywilaya)
-    #     total=len(data)
-    #     form = uploadFiles()
-    # else:
-    #     total= len(data)
-    #     wilayaform = wilaya()
-    #     form = uploadFiles()
     total = len(data)
     wilayaform = wilaya()
     # form = uploadFiles()
@@ -251,30 +241,15 @@ def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
         data_resource= resources.modelresource_factory(model=Sheet1)()
-        print('1')
+
         dataset = Dataset()
         new_data = request.FILES['importData']
-        print('2')
+
 
         imported_data = dataset.load(new_data.read().decode('utf-8'),format='csv')
-        #imported_data.append_col(col=tuple(f'id_accident' for _ in range(dataset.height)),
-        # header='id_accident')
         result = data_resource.import_data(dataset, dry_run=True)  # Testing data import
-        print('3')
-        print(result)
         if not result.has_errors():
             data_resource.import_data(dataset, dry_run=False)  # Actually import now
-            print('4')
-
-    # form = uploadFiles(request.POST, request.FILES)
-    # form = uploadFiles(request.POST)
-    # if form.is_valid():
-    #     form.save()
-
-    # form.save()
-
-    # imported_data = dataset.load(new_data.read().decode('utf8', 'ignore'), format='csv')
-
     wilayaform = wilaya()
     data = Sheet1.objects.all().values()
     total = len(data)
