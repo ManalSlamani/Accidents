@@ -31,51 +31,53 @@ td, th {
             <h4 style="padding-left: 4px"> Prédiction de futures accidents routiers en Algérie</h4>
         </div>
         <div class="row">
-            <div class="col-lg-6">
-                 <div style="width: 100%;margin-top:20px;margin-left:0px;border-style: solid; border-width: 1px; border-color: #34495e">
-                     <figure class="highcharts-figure"  style="width: 100%;" >
-                              <div id="predictionchart" style="width: 100%;"></div>
-                    </figure>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div style="border-style: groove; width: 100%; align-content: center">  {{my_map|safe}} </div>
-            </div>
-        </div>
-        <div style="padding-top: 20px">
-        <table class="table table-bordered" style="padding-top: 20px"  >
+            <div class="col-lg-7">
+{#                 <h5 style="border-left-style: groove; padding-left: 3px ">Réulatats du prédicteur "Forets aléatoires"</h5>#}
+                 <p style="float: right">Total: {{ total }} accidents prédits pour le {{ mars.date.1.date }}</p>
+                <table class="table table-bordered" style="padding-top: 20px; width: 100%; font-size: 12.5px; width: 100%"  >
   <thead>
     <tr class="table-warning">
+        <th>#</th>
+        <th>Wilaya</th>
       <th >Latitude</th>
       <th >Longitude</th>
-      <th >Date</th>
+      <th>Date</th>
       <th >Heure</th>
-        <th>Proba</th>
+      <th>Probabillité</th>
     </tr>
   </thead>
 
   <tbody>
   <font size="5">
-    <tr>
-      <th >1</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th >2</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+   {% for acc in mars.itertuples %}
+       <tr>
+           <td > <a href="#acc.Index">{{acc.Index}}</a></td>
+       <td>{{ acc.wilaya }}</td>
+       <td>{{ acc.Latitude|floatformat:4 }}</td>
+       <td>{{ acc.Longitude|floatformat:4 }}</td>
+       <td>{{ acc.date.date }}</td>
+       <td>{{ acc.HEURE }}</td>
+       <td>{{ acc.proba_1|floatformat:4}}</td>
+       </tr>
+   {% endfor %}
    </font>
   </tbody>
 </table>
+            </div>
+            <div class="col-lg-5">
+            <div style="border-style: groove; width: 100%; align-content: center">  {{my_map|safe}} </div><br>
+            </div>
+        </div>
+        <div style="padding-top: 20px">
+
         </div>
     </div>
 <script>
+function humanize(x){
+  return x.toFixed(4).replace(/\.?0*$/,'');
+}
+
+
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
 });
@@ -91,6 +93,7 @@ Highcharts.chart('predictionchart', {
 
     xAxis: {
         categories:[
+            {% for entry in mars %}{{ entry.date}} {% if not forloop.last %}, {% endif %}{% endfor %}
 
         ],
         title: {
@@ -108,6 +111,7 @@ Highcharts.chart('predictionchart', {
     series: [
         {   color: '#c0392b',
             data: [
+                {% for entry in mars %}{{ entry.proba_1}}{% if not forloop.last %}, {% endif %}{% endfor %}
 
         ],
              accessibility: {

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     # 'widget_tweaks',
     'rest_framework',
     'home.apps.HomeConfig',
+    'accounts',
+
     #
 ]
 
@@ -69,6 +71,8 @@ TEMPLATES = [
         },
     },
 ]
+
+#AUTH_USER_MODEL = 'accounts.Account'
 
 WSGI_APPLICATION = 'Accidents.wsgi.application'
 

@@ -1,7 +1,6 @@
-from IPython.core.display import HTML
-from IPython.lib.display import IFrame
-from django.http import JsonResponse
-from django.shortcuts import render
+import datetime
+import branca
+from django.shortcuts import render,redirect
 import json
 from django.db.models import Count, Q, Sum, Window, F
 from .models import Accidents
@@ -10,7 +9,7 @@ from folium import plugins, Popup
 from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
-from .form import kdeform, clusteringform
+from .form import kdeform, clusteringform, wilaya, makefilter, authentif
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -18,10 +17,16 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
-from collections import Counter
-from joblib import load
+from collections import Counter, defaultdict
+from joblib import  load
 from sklearn import metrics
-
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
+from django.forms import inlineformset_factory
+from django.http import HttpResponse
+from .models import *
+from .form import CreateUserForm
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -37,12 +42,19 @@ def get_data(request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------
 def daybarchart(request):
+    if request.method == 'POST':
+        myfilter = makefilter(request.POST)
+    else:
+        myfilter = makefilter()
     latitude = list(Accidents.objects.values_list("latitude", flat=True))
     longitude = list(Accidents.objects.values_list("longitude", flat=True))
+
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 1.5], zoom_start=5)
+    m = folium.Map(location=[28.5, 1.5], zoom_start=5.2)
     att = list(zip(latitude, longitude))
     MarkerCluster(att).add_to(m)
+    colormap = branca.colormap.LinearColormap(colors=['green','yellow',  'brown'], vmin=0, vmax=6000)
+    colormap.add_to(m)  # add color bar at the top of the map
     m.add_to(f)
     m = f._repr_html_()  # updated
     context = {'my_map': m}
@@ -56,9 +68,11 @@ def daybarchart(request):
     ddata =Accidents.objects.values('jour').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'), accidents=Sum('accident')).order_by('-accidents')
     accident =Accidents.objects.values("mois").annotate(accidents=Sum('accident'), dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless'))
     mdata = (Accidents.objects.values('mois').annotate(dec_count=Sum('nbre_dec'), bless_count=Sum('nbre_bless')))
-    routedata = Accidents.objects.values('type_route').annotate(route_count=Count('type_route')*100/acc)
-    catdata = Accidents.objects.values('cat_veh').annotate(cat_count=Count('cat_veh'))
-    hdata= list(Accidents.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('-accidents'))[:7]
+    routedata = Accidents.objects.values('type_route').annotate(route_count=Count('type_route')).order_by('-route_count')[:8]
+    # routedata=routedata[:]
+    catdata = list (Accidents.objects.values('cat_veh').annotate(cat_count=Count('cat_veh')).order_by('-cat_count'))[:8]
+    hdata= list(Accidents.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('heure'))
+
     # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
     temperaturedata= Accidents.objects.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
     precipitationdata= Accidents.objects.values("couverturenuage").annotate(accidents=Sum('accident')).order_by('couverturenuage')
@@ -78,8 +92,7 @@ def daybarchart(request):
     return render(request, 'home/myCharts.html', {'daydata': ddata, 'monthdata': mdata, 'my_map': m, 'wilaya_data': wdata, 'routedata': routedata, 'catdata': catdata,'accidents': acc,
                                                   "bless":bless, "dec":dec, "evolution":evolution, 'causes':causes, 'accident':accident,
                                                   'cum_acc':cum_acc, 'hourdata':hdata, 'temperaturedata':temperaturedata,
-                                                  "precipitationdata":precipitationdata})
-
+                                                  "precipitationdata":precipitationdata, 'myfilter':myfilter})
 
 # ----------------------------------------------------------------------------------------
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
@@ -98,10 +111,12 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     myOpacity = request.POST.get('myOpacity')
     print(type(myOpacity))
     if (myRadius == None):
-       m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
+        colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=0.8)
+        colormap.add_to(m)  # add color bar at the top of the map
+        m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
     else:
-        # m.add_child(plugins.HeatMap(att, radius=myRadius, min_opacity=myOpacity))
-        print(type(myOpacity))
+        colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=float(myOpacity))
+        colormap.add_to(m)  # add color bar at the top of the map
         HeatMap(att, radius=float(myRadius), min_opacity=float(myOpacity)).add_to(folium.FeatureGroup(name='Heat Map').add_to(m))
         folium.LayerControl().add_to(m)
 
@@ -112,8 +127,6 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     return render(request, "home/heatmap.htm", context)
 
 # ----------------------------------------------------------------------------------------
-
-
 def makeClusters(request):
     df=pd.DataFrame(Accidents.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     f = folium.Figure()
@@ -125,9 +138,9 @@ def makeClusters(request):
     else:
         formClus = clusteringform()
     myEpsilon = request.POST.get('myEpsilon')
-    print((myEpsilon))
+
     myMinPts  = request.POST.get('myMinPts')
-    print(type(myMinPts))
+
     popup =Popup(width=80, show=False)
 
     if (myEpsilon == None):
@@ -181,21 +194,85 @@ def makeClusters(request):
 
 # ----------------------------------------------------------------------------------------
 def makePrediction (request):
-    latitude = list(Accidents.objects.values_list("latitude", flat=True))
-    longitude = list(Accidents.objects.values_list("longitude", flat=True))
-    mars= pd.read_excel("F:\CS3_PFE\Gendarmerie\data\\mars_pred.xlsx")
+    mars= pd.read_excel(".\static\\rf_pred.xlsx")
+    print(mars.date)
+    # mars.date= datetime.date(mars.date)
     predections=len(mars)
     f = folium.Figure( height=500)
     # f = folium.Figure()
     m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
+    colors_array = cm.rainbow(np.linspace(0,1 , len(mars)))
+    rainbow = [colors.rgb2hex(i) for i in colors_array]
     for row in range(len(mars)):
-        folium.Marker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])], popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
+        folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],
+                            color=(rainbow[row-1]), radius=7,fill=True, id= rainbow[row-1],
+                            popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
-    context = {'my_map': m, 'predections':predections}
+    # mars = list(mars)
+    total= len(mars)
+    context = {'my_map': m, 'predections':predections, 'mars':mars, 'total':total, 'rainbow':rainbow}
     return render(request, 'home/prediction.html', context)
 
 def allData(request):
-    data= list(Accidents.objects.all().values())
+    data= Accidents.objects.all().values()
+    if request.method == 'POST':
+        wilayaform = wilaya(request.POST)
+        mywilaya= request.POST.get('wilaya')
+        data = Accidents.objects.filter(wilaya=mywilaya)
+        total=len(data)
+    else:
+        total= len(data)
+        wilayaform = wilaya()
 
-    return render(request,'home/bdd.html', {'data':data})
+    context= {'data':data, 'form':wilayaform, 'total':total}
+    return render(request,'home/bdd.html', context)
+
+
+def authentification (request):
+    form = authentif()
+    if request.method == 'POST':
+        form = authentif(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('user')
+            password = form.cleaned_data.get('pwd')
+            user = authenticate(request,username = username,password=password)
+            if user is not None :
+                login(request,user)
+                return redirect('home')
+            else:
+                messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
+                return render(request, 'home/authentification.html', {"form": form})
+
+
+
+
+
+
+
+
+    return render(request, 'home/authentification.html', {"form": form} )
+
+def logoutUser(request):
+    logout(request)
+    return redirect('authentif')
+
+
+def registerPage(request):
+    #form = UserCreationForm()
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+
+        # form = UserCreationForm(request.POST)
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request,'Compte créé pour ' + user)
+            return redirect('authentif')
+
+
+
+
+    return render(request,'home/register.html',{"form":form})

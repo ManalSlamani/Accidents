@@ -1,6 +1,6 @@
 {% extends 'home/welcome.html' %}
 {% block page_name %} Tableau de bord {% endblock %}
-
+{% load static %}
 {% block content %}
     <style>
     div.scroll {
@@ -15,8 +15,18 @@
                 text-align:justify;
             }
     </style>
-    <div class="container-fluid" >
+     <div class="container-fluid">
+    <div class="row" style="width: 300px; float: right">
+           <form action="/bdd/" method="post" class="row" >
+                        {% csrf_token %}<div class="col-lg-9">
+               {{ form.as_p }}</div>
+               <div class="col-lg-3">
+                   <button type="submit" class="btn btn-warning" style="float: right; font-size: 11px">Valider</button></div>
+                </form></div>
+    </div>
+
     <div style="height: 500px; border-style: solid; border-width: 0.5px;" class="scroll">
+    <p style="float: right">Total: {{ total }}</p>
     <table class="table-bordered" style="width: 100%; font-size: 10px; height: 100%">
         <thead>
     <tr>
@@ -67,7 +77,6 @@
             <td> {{ i.humidite}}</td></tr>
         {% endfor %}
     </table></div>
-{#     {{ data }}#}
     </div>
-
+</dv>
 {% endblock %}
