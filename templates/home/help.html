@@ -1,0 +1,36 @@
+{% extends 'home/welcome.html' %}
+{% block page_name %} Tableau de bord {% endblock %}
+{% load static %}
+{% block content %}
+    <div class="container-fluid">
+    <div style="margin: 0 auto;width: 70%; padding-top: 30px">
+        <p>
+            Le domaine de la sécurité routière est apparu depuis que l’homme a commencé à utiliser les moyens de transport pour ses déplacements. C’est toute une discipline qui étudie les conditions et les mesures nécessaires afin de minimiser les accidents de la route en termes de nombre, de gravité et de conséquences. L’occurrence des accidents a fait naître une autre discipline nommée «accidentologie». Cette dernière concerne l’étude des accidents, leurs causes et leurs impacts sur l’environnement.
+        </p>
+        <p>
+         Ces accidents prennent chaque année des milliers de vies dans le monde. Selon le bilan du Centre National de Prévention et de Sécurité Routière (CNPSR), 3.049 personnes ont trouvé la mort et 29.095 personnes ont été blessées dans 21.109 accidents enregistrés au niveau national, lors des onze premiers mois de l’année 2019
+        </p>
+        <p>
+            Ce projet s’inscrit dans le cadre de la collaboration entre l’École nationale Supérieure d’Informatique (ESI) et le Centre de Recherche et Développement de la Gendarmerie Nationale(CRD−GN).
+            <br>Vu les dommages et dégâts causés par les accidents chaque année et l’absence d’un système d’analyse et de suivi des accidents en Algérie, le CRD−GN a lancé un projet d’étude exploratoire des méthodes et techniques d’analyse spatio-temporelle et prédictive des accidents routiers à la lumière des travaux de recherches sur le domaine de l’accidentologie routière à travers le monde.
+        </p>
+        <div class="row">
+        <div class="col-lg-9">
+            <p >
+
+        Ce projet consiste en la conception et la réalisation d'un système qui a pour objectif de présenter les données des accidents de la route sous forme d'un tableau de bord. Ce dernier regroupe des statistiques, des graphes et des cartes routières qui résument la situation des accidents de circulation en Algérie de l'année en cours. De plus, le système est doté d'un prédicteur qui prédit l'occurrence future des accidents routiers.
+
+    </p>
+        </div>
+        <div class="col-lg-3" style="margin: 0 auto">
+            <img src="{% static 'img/logo_RTA.png' %}" style="width: 70px; height: 70px; margin-left: 40px"> <h5>Accidents Analyzer</h5>
+
+
+        </div></div>
+
+    </div>
+
+
+    </div>
+
+{% endblock %}

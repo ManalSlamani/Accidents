@@ -35,13 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'widget_tweaks',
     'rest_framework',
+    'import_export',
     'home.apps.HomeConfig',
-    'accounts',
 
     #
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -148,4 +148,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
 LOGIN_REDIRECT_URL = '/'
+LEAFLET_CONFIG = {
+'DEFAULT_CENTER': (28.5, 1.5),
+'DEFAULT_ZOOM': 16,
+'TILES': 'http://192.168.99.100:32768/styles/klokantech-basic/{z}/{x}/{y}.png',
+"type": "raster",
+}
+IMPORT_EXPORT_USE_TRANSACTIONS = True

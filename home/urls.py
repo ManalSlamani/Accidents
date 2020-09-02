@@ -16,5 +16,11 @@ urlpatterns = [
     path(r'bdd/', views.allData, name='bdd'),
     path(r'authentification/', views.authentification, name='authentif'),
     path(r'logout/', views.logoutUser, name='logout'),
-    path('register/',views.registerPage, name='register')
+    path('register/',views.registerPage, name='register'),
+    path(r'upload/', views.uploadData, name='upload'),
+    path(r'change/', views.changeWilaya, name='change'),
+    # path(r'bdd/', views.uploadData, name='bdd'),
+    # path(r'bdd/', views.uploadData name='bdd'),
+    path(r'help/', views.help, name='help')
+
 ]

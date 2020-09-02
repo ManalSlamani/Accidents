@@ -2,6 +2,8 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from . import models
+
 
 class kdeform(forms.Form):
     myRadius= forms.DecimalField(label='Rayon de recherche',  widget=forms.NumberInput(attrs={'min': '0', 'step': '1'}))
@@ -40,6 +42,19 @@ class authentif(forms.Form):
     user= forms.CharField(label="Nom d'utilisateur", required=True)
     pwd =forms.CharField(label="Mot de passe", required=True)
     compte =forms.CharField(label='Type de compte', required=True, widget=forms.Select(choices=comptes))
+class intervalledate(forms.Form):
+    debut= forms.DateField (label='Du',  widget=forms.DateInput(attrs={'type':'date', 'min':'2014-01-01', 'max': '2014-03-30', 'value':'2014-01-01'}))
+    fin= forms.DateField (label='Au',  widget=forms.DateInput(attrs={'type':'date','min':'2014-01-02', 'max': '2014-03-31', 'value':'2014-03-31'}))
+class uploadFiles(forms.Form):
+    file_field = forms.FileField(label='Sélectionner un fichier',
+                                 widget=forms.ClearableFileInput(attrs={'multiple': True, 'lang': 'fr'}))
+    # class Meta:
+        # model= models.Sheet1
+        # fields = '__all__'
+            # title = forms.CharField(max_length=50)
+
+    #'class': 'custom-file-input',
+
 
 
 
