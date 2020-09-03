@@ -23,6 +23,7 @@ from joblib import  load
 from sklearn import metrics
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from .models import *
@@ -109,6 +110,7 @@ def daybarchart(request):
                                                   "precipitationdata":precipitationdata, 'myfilter':myfilter})
 
 # ----------------------------------------------------------------------------------------
+
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     latitude = list(Accidents.objects.values_list("latitude", flat=True))
     longitude = list(Accidents.objects.values_list("longitude", flat=True))
@@ -141,6 +143,7 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     return render(request, "home/heatmap.htm", context)
 
 # ----------------------------------------------------------------------------------------
+
 def makeClusters(request):
 
     df=pd.DataFrame(Accidents.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
@@ -211,6 +214,7 @@ def makeClusters(request):
     return render(request,'home/clustering.html', context)
 
 # ----------------------------------------------------------------------------------------
+
 def makePrediction (request):
     mars= pd.read_excel(".\static\\rf_pred.xlsx")
     print(mars.date)
@@ -240,19 +244,22 @@ def makePrediction (request):
 
 
 def authentification (request):
-    form = authentif()
-    if request.method == 'POST':
-        form = authentif(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('user')
-            password = form.cleaned_data.get('pwd')
-            user = authenticate(request,username = username,password=password)
-            if user is not None :
-                login(request,user)
-                return redirect('home')
-            else:
-                messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
-                return render(request, 'home/authentification.html', {"form": form})
+    if request.user.is_authenticated:
+        return redirect('home')
+    else:
+        form = authentif()
+        if request.method == 'POST':
+            form = authentif(request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get('user')
+                password = form.cleaned_data.get('pwd')
+                user = authenticate(request,username = username,password=password)
+                if user is not None :
+                    login(request,user)
+                    return redirect('home')
+                else:
+                    messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
+                    return render(request, 'home/authentification.html', {"form": form})
 
 
 
@@ -261,7 +268,7 @@ def authentification (request):
 
 
 
-    return render(request, 'home/authentification.html', {"form": form} )
+        return render(request, 'home/authentification.html', {"form": form} )
 
 def logoutUser(request):
     logout(request)
@@ -270,22 +277,25 @@ def logoutUser(request):
 
 def registerPage(request):
     #form = UserCreationForm()
-    form = CreateUserForm()
+    if request.user.is_authenticated:
+        return redirect('home')
+    else:
+        form = CreateUserForm()
 
-    if request.method == 'POST':
+        if request.method == 'POST':
 
-        # form = UserCreationForm(request.POST)
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request,'Compte créé pour ' + user)
-            return redirect('authentif')
-
-
+            # form = UserCreationForm(request.POST)
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request,'Compte créé pour ' + user)
+                return redirect('authentif')
 
 
-    return render(request,'home/register.html',{"form":form})
+
+
+        return render(request,'home/register.html',{"form":form})
 
 def allData(request):
     data= Accidents.objects.all().values()
@@ -295,10 +305,11 @@ def allData(request):
     context= {'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request,'home/bdd.html', context)
 
+
 def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
-        data_resource= resources.modelresource_factory(model=Sheet1)()
+        data_resource= resources.modelresource_factory(model=Accidents)()
 
         dataset = Dataset()
         new_data = request.FILES['importData']
