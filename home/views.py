@@ -33,17 +33,22 @@ from tablib import Dataset
 import leaflet
 # Create your views here.
 from .resources import Sheet1Resource
+from .decorators import unauthenticated_user,allowed_users
 
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def home(request):
     return render(request, 'home/welcome.html')
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin'])
 def get_data(request, *args, **kwargs):
     data = Accidents.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
 
 
 # ------------------------------------------------------------------------------
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def daybarchart(request):
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5,
@@ -110,7 +115,8 @@ def daybarchart(request):
                                                   "precipitationdata":precipitationdata, 'myfilter':myfilter})
 
 # ----------------------------------------------------------------------------------------
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     latitude = list(Accidents.objects.values_list("latitude", flat=True))
     longitude = list(Accidents.objects.values_list("longitude", flat=True))
@@ -143,7 +149,8 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     return render(request, "home/heatmap.htm", context)
 
 # ----------------------------------------------------------------------------------------
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def makeClusters(request):
 
     df=pd.DataFrame(Accidents.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
@@ -214,7 +221,8 @@ def makeClusters(request):
     return render(request,'home/clustering.html', context)
 
 # ----------------------------------------------------------------------------------------
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def makePrediction (request):
     mars= pd.read_excel(".\static\\rf_pred.xlsx")
     print(mars.date)
@@ -242,61 +250,58 @@ def makePrediction (request):
 
 
 
-
+@unauthenticated_user
 def authentification (request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        form = authentif()
-        if request.method == 'POST':
-            form = authentif(request.POST)
-            if form.is_valid():
-                username = form.cleaned_data.get('user')
-                password = form.cleaned_data.get('pwd')
-                user = authenticate(request,username = username,password=password)
-                if user is not None :
-                    login(request,user)
-                    return redirect('home')
-                else:
-                    messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
-                    return render(request, 'home/authentification.html', {"form": form})
+    form = authentif()
+    if request.method == 'POST':
+        form = authentif(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('user')
+            password = form.cleaned_data.get('pwd')
+            user = authenticate(request,username = username,password=password)
+            if user is not None :
+                login(request,user)
+                return redirect('home')
+            else:
+                messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
+                return render(request, 'home/authentification.html', {"form": form})
+
+    return render(request, 'home/authentification.html', {"form": form} )
 
 
 
-
-
-
-
-
-        return render(request, 'home/authentification.html', {"form": form} )
 
 def logoutUser(request):
     logout(request)
     return redirect('authentif')
 
 
-def registerPage(request):
-    #form = UserCreationForm()
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        form = CreateUserForm()
 
-        if request.method == 'POST':
+@unauthenticated_user
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == 'POST':
 
             # form = UserCreationForm(request.POST)
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request,'Compte créé pour ' + user)
-                return redirect('authentif')
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request,'Compte créé pour ' + user)
+            return redirect('authentif')
+
+    return render(request,'home/register.html',{"form":form})
 
 
 
+def userpage(request):
+    context = {}
+    return render(request,'home/profile.html',context)
 
-        return render(request,'home/register.html',{"form":form})
 
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def allData(request):
     data= Accidents.objects.all().values()
     total = len(data)
@@ -305,7 +310,8 @@ def allData(request):
     context= {'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request,'home/bdd.html', context)
 
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
@@ -324,7 +330,8 @@ def uploadData(request):
     total = len(data)
     context ={'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request, 'home/bdd.html', context)
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def changeWilaya(request):
     wilayaform = wilaya(request.POST)
     mywilaya= request.POST.get('wilaya')
@@ -334,7 +341,8 @@ def changeWilaya(request):
     context = {'data':data, 'wilayaform':wilayaform, 'total':total,'form': form }
     return render(request, 'home/bdd.html', context)
 
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['admin','Decideurs'])
 def help (request):
     return render(request, "home/help.html")
 

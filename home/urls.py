@@ -21,6 +21,7 @@ urlpatterns = [
     path(r'change/', views.changeWilaya, name='change'),
     # path(r'bdd/', views.uploadData, name='bdd'),
     # path(r'bdd/', views.uploadData name='bdd'),
-    path(r'help/', views.help, name='help')
+    path(r'help/', views.help, name='help'),
+    path(r'user/',views.userpage, name='user')
 
 ]
