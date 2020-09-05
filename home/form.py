@@ -40,8 +40,10 @@ class authentif(forms.Form):
         ("admin","Compte admin")
     ]
     user= forms.CharField(label="Nom d'utilisateur", required=True)
-    pwd =forms.CharField(label="Mot de passe", required=True)
+    pwd = forms.CharField(widget=forms.PasswordInput,label="Mot de passe", required=True)
+    #pwd =forms.CharField(label="Mot de passe", required=True)
     compte =forms.CharField(label='Type de compte', required=True, widget=forms.Select(choices=comptes))
+
 class intervalledate(forms.Form):
     debut= forms.DateField (label='Du',  widget=forms.DateInput(attrs={'type':'date', 'min':'2014-01-01', 'max': '2014-03-30', 'value':'2014-01-01'}))
     fin= forms.DateField (label='Au',  widget=forms.DateInput(attrs={'type':'date','min':'2014-01-02', 'max': '2014-03-31', 'value':'2014-03-31'}))
