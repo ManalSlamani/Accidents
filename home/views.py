@@ -36,11 +36,12 @@ from .resources import Sheet1Resource
 from .decorators import unauthenticated_user,allowed_users
 
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
+#@authenticated_user
 def home(request):
     return render(request, 'home/welcome.html')
+
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin'])
+#@authenticated_user
 def get_data(request, *args, **kwargs):
     data = Accidents.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
@@ -48,7 +49,7 @@ def get_data(request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
+#@authenticated_user
 def daybarchart(request):
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5,
@@ -116,7 +117,6 @@ def daybarchart(request):
 
 # ----------------------------------------------------------------------------------------
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     latitude = list(Accidents.objects.values_list("latitude", flat=True))
     longitude = list(Accidents.objects.values_list("longitude", flat=True))
@@ -150,7 +150,6 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 
 # ----------------------------------------------------------------------------------------
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def makeClusters(request):
 
     df=pd.DataFrame(Accidents.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
@@ -222,7 +221,6 @@ def makeClusters(request):
 
 # ----------------------------------------------------------------------------------------
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def makePrediction (request):
     mars= pd.read_excel(".\static\\rf_pred.xlsx")
     print(mars.date)
@@ -294,14 +292,14 @@ def registerPage(request):
     return render(request,'home/register.html',{"form":form})
 
 
-
+@login_required(login_url='authentif')
+@allowed_users(allowed_roles=['Decideurs'])
 def userpage(request):
     context = {}
     return render(request,'home/profile.html',context)
 
 
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def allData(request):
     data= Accidents.objects.all().values()
     total = len(data)
@@ -311,7 +309,6 @@ def allData(request):
     return render(request,'home/bdd.html', context)
 
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
@@ -331,7 +328,6 @@ def uploadData(request):
     context ={'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request, 'home/bdd.html', context)
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def changeWilaya(request):
     wilayaform = wilaya(request.POST)
     mywilaya= request.POST.get('wilaya')
@@ -342,7 +338,6 @@ def changeWilaya(request):
     return render(request, 'home/bdd.html', context)
 
 @login_required(login_url='authentif')
-@allowed_users(allowed_roles=['admin','Decideurs'])
 def help (request):
     return render(request, "home/help.html")
 

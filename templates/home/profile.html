@@ -1,10 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="fr">
 <head>
+    <title>Accidetns Analyzer </title>
     <meta charset="UTF-8">
-    <title>Profil Utilisateur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <link rel="stylesheet" href="{% static '/css/login.css' %}">
+    {% block script %}
+    <script src="{% static 'js/highcharts.src.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
+
+    <script src="{% static '/js/script.js' %}"></script>
+  {% endblock %}
+
 </head>
 <body>
-<h1>Profil Utilisateur</h1>
+<nav class="navbar sticky-top  navbar-dark navbar-expand-md   bg-dark  p-0 shadow navbar-fixed-top "  style="height: 40px">
+</nav>
+<div >
+<main role="main" class="col" style="margin: 0 auto">
+              <p style="text-align:right; margin-bottom:0px; "> Date : <span id="datetime"> </span></p>
+    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
+</main>
+</div>
+
+
+
+
+
+<div class="footer navbar navbar-dark  navbar-expand-l bg-dark  p-0 shadow navbar-fixed-bottom fixed-bottom " style="height: 40px">
+{# <p style="float: right; position: relative; font-size: 11px">© 2020 </p>#}
+</div>
 </body>
+
+
 </html>
