@@ -3,7 +3,7 @@ import branca
 from django.shortcuts import render,redirect
 import json
 from django.db.models import Count, Q, Sum, Window, F
-from .models import Accidents
+from .models import Sheet1
 from import_export import resources
 import folium
 from folium import plugins, Popup
@@ -43,7 +43,7 @@ def home(request):
 @login_required(login_url='authentif')
 #@authenticated_user
 def get_data(request, *args, **kwargs):
-    data = Accidents.objects.all()
+    data = Sheet1.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
 
 
@@ -59,10 +59,10 @@ def daybarchart(request):
         myfilter = intervalledate(request.POST)
         debut = request.POST.get('debut')
         fin = request.POST.get('fin')
-        data = Accidents.objects.filter(date__range=[debut, fin])
+        data = Sheet1.objects.filter(date__range=[debut, fin])
         evolution = 5
     else:
-        data= Accidents.objects.all()
+        data= Sheet1.objects.all()
         myfilter = intervalledate()
 
     latitude = list(data.values_list("latitude", flat=True))
@@ -118,8 +118,8 @@ def daybarchart(request):
 # ----------------------------------------------------------------------------------------
 @login_required(login_url='authentif')
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
-    latitude = list(Accidents.objects.values_list("latitude", flat=True))
-    longitude = list(Accidents.objects.values_list("longitude", flat=True))
+    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
+    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
@@ -152,7 +152,7 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 @login_required(login_url='authentif')
 def makeClusters(request):
 
-    df=pd.DataFrame(Accidents.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
+    df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     fig = folium.Figure()
     # m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     m = folium.Map(location=[28.5, 2], zoom_start=5,
@@ -301,7 +301,7 @@ def userpage(request):
 
 @login_required(login_url='authentif')
 def allData(request):
-    data= Accidents.objects.all().values()
+    data= Sheet1.objects.all().values()
     total = len(data)
     wilayaform = wilaya()
     # form = uploadFiles()
@@ -323,7 +323,7 @@ def uploadData(request):
         if not result.has_errors():
             data_resource.import_data(dataset, dry_run=False)  # Actually import now
     wilayaform = wilaya()
-    data = Accidents.objects.all().values()
+    data = Sheet1.objects.all().values()
     total = len(data)
     context ={'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request, 'home/bdd.html', context)
@@ -331,7 +331,7 @@ def uploadData(request):
 def changeWilaya(request):
     wilayaform = wilaya(request.POST)
     mywilaya= request.POST.get('wilaya')
-    data = Accidents.objects.filter(wilaya=mywilaya)
+    data = Sheet1.objects.filter(wilaya=mywilaya)
     total=len(data)
     form = uploadFiles()
     context = {'data':data, 'wilayaform':wilayaform, 'total':total,'form': form }

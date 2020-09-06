@@ -1,5 +1,5 @@
 from import_export import resources
-from .models import Accidents
+from .models import Sheet1
 from django.db import models
 from import_export.fields import Field
 
@@ -7,7 +7,7 @@ class Sheet1Resource(resources.ModelResource):
     # id_accident = models.AutoField(db_column='ID_accident', primary_key=True)  # Field name made lowercase.
     # id_accident= Field(column_name='ID_accident')
     class Meta:
-        model= Accidents
+        model= Sheet1
         skip_unchanged = True
         report_skipped = True
         exclude = ('id_accident',)
