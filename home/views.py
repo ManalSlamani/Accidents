@@ -1,6 +1,6 @@
 import datetime
 import branca
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 import json
 from django.db.models import Count, Q, Sum, Window, F
 from .models import Sheet1
@@ -23,7 +23,9 @@ from joblib import  load
 from sklearn import metrics
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from .models import *
@@ -36,12 +38,10 @@ from .resources import Sheet1Resource
 from .decorators import unauthenticated_user,allowed_users
 
 @login_required(login_url='authentif')
-#@authenticated_user
 def home(request):
     return render(request, 'home/welcome.html')
 
 @login_required(login_url='authentif')
-#@authenticated_user
 def get_data(request, *args, **kwargs):
     data = Sheet1.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
@@ -49,7 +49,6 @@ def get_data(request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------
 @login_required(login_url='authentif')
-#@authenticated_user
 def daybarchart(request):
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5,
@@ -292,11 +291,19 @@ def registerPage(request):
     return render(request,'home/register.html',{"form":form})
 
 
-@login_required(login_url='authentif')
-@allowed_users(allowed_roles=['Decideurs'])
-def userpage(request):
-    context = {}
-    return render(request,'home/profile.html',context)
+
+
+
+class ShowProfileView(DetailView):
+    model = User
+    template_name = 'home/profile.html'
+
+    def get_context_data(self,*args,**kwargs):
+        users = User.objects.all()
+        context = super(ShowProfileView,self).get_context_data(*args,**kwargs)
+        page_user = get_object_or_404(User,id=self.kwargs['pk'])
+        context["page_user"] = page_user
+        return context
 
 
 @login_required(login_url='authentif')

@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static '/css/style.css' %}">
-    <link rel="stylesheet" href="{% static '/css/login.css' %}">
+    <link rel="stylesheet" href="{% static '/css/profile.css' %}">
+
     {% block script %}
     <script src="{% static 'js/highcharts.src.js' %}"></script>
     <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
@@ -17,18 +18,119 @@
 
 </head>
 <body>
-<nav class="navbar sticky-top  navbar-dark navbar-expand-md   bg-dark  p-0 shadow navbar-fixed-top "  style="height: 40px">
+<nav class="navbar sticky-top  navbar-dark navbar-expand-md   bg-dark  p-0 shadow navbar-fixed-top " >
+    <a class="navbar-brand" href="/get-data/" >
+            <img src="{% static 'img/logo_RTA.png' %}"  class="d-inline-block align-center" alt=""height="40px">
+           Accidents Analyzer
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav " >
+          <li class="nav-item active">
+            <a class="nav-link " href="/get-data/" >
+              Tableau de bord
+                <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/heatmap/" >
+              Heatmap
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/clustering/">
+              Clustering BDSCAN
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/prediction/">
+              Prédictions
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/bdd/">
+              Base De Données
+            </a>
+          </li>
+          {% if not request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" href="/help/">
+              À propos
+            </a>
+          </li>
+            {% endif %}
+        {% if request.user.is_staff %}
+            <li class="nav-item">
+            <a class="nav-link" href="/admin/">
+              Administration
+            </a>
+        {% endif %}
+       </ul>
+    </div>
 </nav>
-<div >
-<main role="main" class="col" style="margin: 0 auto">
-              <p style="text-align:right; margin-bottom:0px; "> Date : <span id="datetime"> </span></p>
-    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
-</main>
-</div>
 
 
 
+{# Content #}
 
+<div class="main-content">
+    <div class="container mt-7">
+      <!-- Table -->
+      <h2 class="mb-5">{{ page_user.first_name }} {{ page_user.last_name }}</h2>
+      <div class="row">
+        <div class="col-xl-8 m-auto order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">Informations Utilisateur</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="#!" class="btn btn-dark" style="float: right;">Modifier</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form>
+                <h6 class="heading-small text-muted mb-4">Informations Utilisateur</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-username">Nom Utilisateur</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="{{ page_user.username }}">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">Adresse mail</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="{{ page_user.email }}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-first-name">Prénom</label>
+                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="{{ page_user.first_name }}">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-last-name">Nom</label>
+                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="{{ page_user.last_name }}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{# Content #}
 
 <div class="footer navbar navbar-dark  navbar-expand-l bg-dark  p-0 shadow navbar-fixed-bottom fixed-bottom " style="height: 40px">
 {# <p style="float: right; position: relative; font-size: 11px">© 2020 </p>#}

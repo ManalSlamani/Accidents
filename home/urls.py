@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import ShowProfileView
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path(r'prediction/', views.makePrediction, name='prediction'),
     path(r'bdd/', views.allData, name='bdd'),
     path(r'authentification/', views.authentification, name='authentif'),
+    path(r'<int:pk>/profile/', ShowProfileView.as_view(), name='profile'),
     path(r'logout/', views.logoutUser, name='logout'),
     path('register/',views.registerPage, name='register'),
     path(r'upload/', views.uploadData, name='upload'),
@@ -22,6 +24,6 @@ urlpatterns = [
     # path(r'bdd/', views.uploadData, name='bdd'),
     # path(r'bdd/', views.uploadData name='bdd'),
     path(r'help/', views.help, name='help'),
-    path(r'user/',views.userpage, name='user')
+    #path(r'user/',views.userpage, name='user')
 
 ]

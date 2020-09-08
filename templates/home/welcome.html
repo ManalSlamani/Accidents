@@ -62,12 +62,19 @@
               Base De Données
             </a>
           </li>
+            {% if not request.user.is_staff %}
           <li class="nav-item">
             <a class="nav-link" href="/help/">
               À propos
             </a>
           </li>
-
+            {% endif %}
+        {% if request.user.is_staff %}
+            <li class="nav-item">
+            <a class="nav-link" href="/admin/">
+              Administration
+            </a>
+        {% endif %}
        </ul>
     </div>
     <div class=" row " >
@@ -75,7 +82,7 @@
 
 
 
-        <a  class="hello-msg" href="#">
+        <a  class="hello-msg" href="{% url 'profile' request.user.id %}">
              {{ request.user }} </a>
         <a class="hello-msg" href="{% url 'logout' %}">Se déconnecter</a>
 
