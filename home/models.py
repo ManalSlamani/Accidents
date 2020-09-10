@@ -174,10 +174,5 @@ class Sheet1(models.Model):
         managed = False
         db_table = 'sheet1'
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, null= True, on_delete= models.CASCADE)
-    desc = models.TextField()
 
-    def __str__(self):
-        return str(self.user)
 

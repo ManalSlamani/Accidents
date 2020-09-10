@@ -21,7 +21,7 @@ import pandas as pd
 from collections import Counter, defaultdict
 from joblib import  load
 from sklearn import metrics
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -29,7 +29,9 @@ from django.views.generic import DetailView
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from .models import *
-from .form import CreateUserForm
+from .form import CreateUserForm, EditUserForm
+from django.views import generic
+from django.urls import reverse_lazy
 from django.contrib import messages
 from tablib import Dataset
 import leaflet
@@ -290,6 +292,22 @@ def registerPage(request):
 
     return render(request,'home/register.html',{"form":form})
 
+@login_required(login_url='authentif')
+def EditProfilePage(request):
+    form = EditUserForm()
+
+    if request.method == 'POST':
+
+            # form = UserCreationForm(request.POST)
+        form = EditUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request,'Compte modifié pour ' + user)
+            return redirect('home')
+
+    return render(request,'home/edit_profile.html',{"form":form})
+
 
 
 
@@ -304,6 +322,16 @@ class ShowProfileView(DetailView):
         page_user = get_object_or_404(User,id=self.kwargs['pk'])
         context["page_user"] = page_user
         return context
+
+
+class UserEditView(generic.UpdateView):
+    model = User
+    form_class = EditUserForm
+    template_name = 'home/edit_profile.html'
+    success_url = reverse_lazy('home')
+
+    def get_object(self):
+        return self.request.user
 
 
 @login_required(login_url='authentif')
