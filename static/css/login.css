@@ -1,5 +1,6 @@
 input[type=text], input[type=password], select{
   width: 80%;
+
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
@@ -29,7 +30,7 @@ button:hover {
   background-color: #f44336;
 }
 
-.imgcontainer {
+.img_container {
   text-align: center;
   margin: 24px 0 5px 0;
   width: 100%;

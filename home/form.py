@@ -1,5 +1,9 @@
+from django.forms import ModelForm
 from django import forms
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.models import User
 from . import models
+
 
 class kdeform(forms.Form):
     myRadius= forms.DecimalField(label='Rayon de recherche',  widget=forms.NumberInput(attrs={'min': '0', 'step': '1'}))
@@ -36,8 +40,10 @@ class authentif(forms.Form):
         ("admin","Compte admin")
     ]
     user= forms.CharField(label="Nom d'utilisateur", required=True)
-    pwd =forms.CharField(label="Mot de passe", required=True)
+    pwd = forms.CharField(widget=forms.PasswordInput,label="Mot de passe", required=True)
+    #pwd =forms.CharField(label="Mot de passe", required=True)
     compte =forms.CharField(label='Type de compte', required=True, widget=forms.Select(choices=comptes))
+
 class intervalledate(forms.Form):
     debut= forms.DateField (label='Du',  widget=forms.DateInput(attrs={'type':'date', 'min':'2014-01-01', 'max': '2014-03-30', 'value':'2014-01-01'}))
     fin= forms.DateField (label='Au',  widget=forms.DateInput(attrs={'type':'date','min':'2014-01-02', 'max': '2014-03-31', 'value':'2014-03-31'}))
@@ -53,3 +59,17 @@ class uploadFiles(forms.Form):
 
 
 
+
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username','password1','password2']
+
+class EditUserForm(UserChangeForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', }))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', }))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', }))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', }))
+    class Meta :
+        model = User
+        fields = ['username','first_name','last_name','email']

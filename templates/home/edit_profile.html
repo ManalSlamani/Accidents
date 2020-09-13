@@ -1,0 +1,151 @@
+{% load static %}
+<html lang="fr">
+<head>
+    <title>Accidetns Analyzer </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <link rel="stylesheet" href="{% static '/css/profile.css' %}">
+    {% block script %}
+    <script src="{% static 'js/highcharts.src.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
+
+    <script src="{% static '/js/script.js' %}"></script>
+  {% endblock %}
+<style>
+    .hello-msg{
+        font-size: 12px;
+        color: #ecf0f1;
+        padding-right: 30px;
+        float: bottom;
+        padding-top: 7px;
+        padding-left: 3px
+    }
+</style>
+
+</head>
+<body>
+<nav class="navbar sticky-top  navbar-dark navbar-expand-md   bg-dark  p-0 shadow navbar-fixed-top " >
+    <a class="navbar-brand" href="/get-data/" >
+            <img src="{% static 'img/logo_RTA.png' %}"  class="d-inline-block align-center" alt=""height="40px">
+           Accidents Analyzer
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav " >
+          <li class="nav-item active">
+            <a class="nav-link " href="/get-data/" >
+              Tableau de bord
+                <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/heatmap/" >
+              Heatmap
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/clustering/">
+              Clustering BDSCAN
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/prediction/">
+              Prédictions
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/bdd/">
+              Base De Données
+            </a>
+          </li>
+          {% if not request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" href="/help/">
+              À propos
+            </a>
+          </li>
+            {% endif %}
+        {% if request.user.is_staff %}
+            <li class="nav-item">
+            <a class="nav-link" href="/admin/">
+              Administration
+            </a>
+        {% endif %}
+       </ul>
+    </div>
+ <div class=" row " >
+        <img src="{% static 'img/user.png' %}" style="width: 25px; height: 25px">
+
+
+
+        <a  class="hello-msg" href="{% url 'profile' request.user.id %}">
+             {{ request.user }} </a>
+        <a class="hello-msg" href="{% url 'logout' %}">Se déconnecter</a>
+
+
+
+
+{#            <div class="btn-group mr-2 px-3">#}
+{#                #}
+{#           <button id="username" type="button" class="btn btn-sm btn-outline-secondary">User Name</button>#}
+{#            <button id="deconnexion" type="button" class="btn btn-sm btn-outline-secondary">Déconnexion</button>#}
+{#          </div>#}
+        </div>
+</nav>
+<main role="main" class="col" style="margin: 0 auto">
+              <p style="text-align:right; margin-bottom:0px; "> Date : <span id="datetime"> </span></p>
+    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
+
+<div  class="my" style="width: 500px;position: relative; margin:0 auto; margin-top: 40px;">
+
+            <h1 style="padding-top: 7%; color: #808080">Editez vos informations</h1>
+  </div>
+<div style="width: 500px;position: relative; background: #ffffff; margin:0 auto; padding-bottom: 50px; padding-top: 20px" >
+    <div class="form-group">
+    <form method="post" style="width: 90%; margin:0 auto; padding-bottom: 20px">
+
+        {% csrf_token %}
+
+        {{ form.username.label }}
+
+              {{ form.username }}
+
+        {{ form.first_name.label }}
+
+        {{ form.first_name }}
+
+        {{ form.last_name.label }}
+
+        {{ form.last_name }}
+
+        {{ form.email.label }}
+
+        {{ form.email}}
+
+
+<br>
+
+
+
+    <button type="submit" class="btn btn-dark" style="float: right;">Enregistrer modifications</button>
+    </form>
+    </div>
+</div>
+
+
+</main>
+</div>
+
+
+
+
+
+<div class="footer navbar navbar-dark  navbar-expand-l bg-dark  p-0 shadow navbar-fixed-bottom fixed-bottom " style="height: 40px">
+{# <p style="float: right; position: relative; font-size: 11px">© 2020 </p>#}
+</div>
+</body>
+
+
+</html>

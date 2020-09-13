@@ -7,5 +7,3 @@ from home.models import Sheet1
 class SheetAdmin(ImportExportModelAdmin):
     pass
 
-
-

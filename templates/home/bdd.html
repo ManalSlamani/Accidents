@@ -39,8 +39,9 @@
     </style>
 
 
-<div class="container-fluid">
 
+<div class="container-fluid">
+    {% if  request.user.is_staff %}
     <div style="width: 100%; border-style: solid; border-width: 1px;  padding: 7px" id="importDataDiv">
         <h5 style="border-left: solid; padding-left: 5px; ">Importer de nouvelles données</h5>
         <br>
@@ -56,7 +57,9 @@
                 </div>
             </div>
         </form>
-    </div> <br>
+    </div>
+    <br>
+    {% endif %}
     <div style="float: right; margin-bottom: 0px">
            <form action="{% url 'change' %}" method="post"  class="form-inline">
                <div class="input-group mb-2" >
@@ -77,6 +80,7 @@
 
         <thead style="background: #ffeaa7;">
     <tr style="font-size: 11px">
+
       <th scope="col">Wilaya</th>
       <th scope="col">Latitude</th>
       <th scope="col">Longitude</th>
@@ -126,6 +130,7 @@
     </table></div>
 
 
+
     </div>
 
 
@@ -137,4 +142,5 @@
   $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 });
     </script>
+
 {% endblock %}
