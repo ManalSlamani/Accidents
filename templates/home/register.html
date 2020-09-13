@@ -1,0 +1,63 @@
+{% load static %}
+<html lang="fr">
+<head>
+    <title>Accidetns Analyzer </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Poppins/Poppins-Regular.ttf'%}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <link rel="stylesheet" href="{% static '/css/login.css' %}">
+    {% block script %}
+    <script src="{% static 'js/highcharts.src.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
+
+    <script src="{% static '/js/script.js' %}"></script>
+  {% endblock %}
+
+</head>
+<body>
+<nav class="navbar sticky-top  navbar-dark navbar-expand-md   bg-dark  p-0 shadow navbar-fixed-top "  style="height: 40px">
+</nav>
+<div >
+<main role="main" class="col" style="margin: 0 auto">
+              <p style="text-align:right; margin-bottom:0px; "> Date : <span id="datetime"> </span></p>
+    <script>var dt = new Date(); document.getElementById("datetime").innerHTML=dt.toLocaleString('en-GB');</script>
+<div  class="my" style="width: 500px;position: relative; margin:0 auto; margin-top: 40px;">
+    <div class="img_container row" style="margin: 0 auto; padding-left: 70px; padding-top: 10px">
+            <img src="{% static 'img/logo_RTA.png' %}"  alt="logo" class="logo">
+            <h2 style="padding-top: 7%; color: #dcdde1">Accidents Analyzer</h2>
+  </div></div>
+    <div style="width: 500px;position: relative; background: #ffffff; margin:0 auto; padding-bottom: 50px; padding-top: 20px">
+    <form method="post" style="width: 90%; margin:0 auto; padding-bottom: 20px">
+
+    {% csrf_token %}
+   {{ form.username.label}}
+    {{ form.username }}
+
+    {{ form.password1.label}}
+    {{ form.password1 }}
+
+    {{ form.password2.label}}
+    {{ form.password2 }}
+<br>
+                        <button type="submit" class="btn btn-dark" style="float: right;">Créer Utilisateur</button>
+</form>
+
+</div>
+
+
+</main>
+</div>
+
+
+
+
+
+<div class="footer navbar navbar-dark  navbar-expand-l bg-dark  p-0 shadow navbar-fixed-bottom fixed-bottom " style="height: 40px">
+{# <p style="float: right; position: relative; font-size: 11px">© 2020 </p>#}
+</div>
+</body>
+
+
+</html>

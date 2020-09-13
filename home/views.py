@@ -1,11 +1,10 @@
 import datetime
 import branca
-from django.shortcuts import render
+from django.shortcuts import render,redirect,get_object_or_404
 import json
 from django.db.models import Count, Q, Sum, Window, F
-from import_export import resources
-
 from .models import Sheet1
+from import_export import resources
 import folium
 from folium import plugins, Popup
 from folium.plugins import HeatMap
@@ -22,23 +21,36 @@ import pandas as pd
 from collections import Counter, defaultdict
 from joblib import  load
 from sklearn import metrics
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView
+from django.forms import inlineformset_factory
+from django.http import HttpResponse
+from .models import *
+from .form import CreateUserForm, EditUserForm
+from django.views import generic
+from django.urls import reverse_lazy
+from django.contrib import messages
 from tablib import Dataset
 import leaflet
-
-
 # Create your views here.
 from .resources import Sheet1Resource
+from .decorators import unauthenticated_user,allowed_users
 
-
+@login_required(login_url='authentif')
 def home(request):
     return render(request, 'home/welcome.html')
 
+@login_required(login_url='authentif')
 def get_data(request, *args, **kwargs):
     data = Sheet1.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
 
 
 # ------------------------------------------------------------------------------
+@login_required(login_url='authentif')
 def daybarchart(request):
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5,
@@ -105,9 +117,11 @@ def daybarchart(request):
                                                   "precipitationdata":precipitationdata, 'myfilter':myfilter})
 
 # ----------------------------------------------------------------------------------------
+@login_required(login_url='authentif')
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     latitude = list(Sheet1.objects.values_list("latitude", flat=True))
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
+    # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
     att = zip(latitude, longitude)
@@ -136,7 +150,9 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     return render(request, "home/heatmap.htm", context)
 
 # ----------------------------------------------------------------------------------------
+@login_required(login_url='authentif')
 def makeClusters(request):
+
     df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     fig = folium.Figure()
     # m = folium.Map(location=[28.5, 1.5], zoom_start=5)
@@ -205,6 +221,7 @@ def makeClusters(request):
     return render(request,'home/clustering.html', context)
 
 # ----------------------------------------------------------------------------------------
+@login_required(login_url='authentif')
 def makePrediction (request):
     mars= pd.read_excel(".\static\\rf_pred.xlsx")
     print(mars.date)
@@ -229,6 +246,95 @@ def makePrediction (request):
     context = {'my_map': m, 'predections':predections, 'mars':mars, 'total':total, 'rainbow':rainbow}
     return render(request, 'home/prediction.html', context)
 
+
+
+
+@unauthenticated_user
+def authentification (request):
+    form = authentif()
+    if request.method == 'POST':
+        form = authentif(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('user')
+            password = form.cleaned_data.get('pwd')
+            user = authenticate(request,username = username,password=password)
+            if user is not None :
+                login(request,user)
+                return redirect('home')
+            else:
+                messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
+                return render(request, 'home/authentification.html', {"form": form})
+
+    return render(request, 'home/authentification.html', {"form": form} )
+
+
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('authentif')
+
+
+
+@unauthenticated_user
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+
+            # form = UserCreationForm(request.POST)
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request,'Compte créé pour ' + user)
+            return redirect('authentif')
+
+    return render(request,'home/register.html',{"form":form})
+
+@login_required(login_url='authentif')
+def EditProfilePage(request):
+    form = EditUserForm()
+
+    if request.method == 'POST':
+
+            # form = UserCreationForm(request.POST)
+        form = EditUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request,'Compte modifié pour ' + user)
+            return redirect('home')
+
+    return render(request,'home/edit_profile.html',{"form":form})
+
+
+
+
+
+class ShowProfileView(DetailView):
+    model = User
+    template_name = 'home/profile.html'
+
+    def get_context_data(self,*args,**kwargs):
+        users = User.objects.all()
+        context = super(ShowProfileView,self).get_context_data(*args,**kwargs)
+        page_user = get_object_or_404(User,id=self.kwargs['pk'])
+        context["page_user"] = page_user
+        return context
+
+
+class UserEditView(generic.UpdateView):
+    model = User
+    form_class = EditUserForm
+    template_name = 'home/edit_profile.html'
+    success_url = reverse_lazy('home')
+
+    def get_object(self):
+        return self.request.user
+
+
+@login_required(login_url='authentif')
 def allData(request):
     data= Sheet1.objects.all().values()
     total = len(data)
@@ -237,10 +343,11 @@ def allData(request):
     context= {'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request,'home/bdd.html', context)
 
+@login_required(login_url='authentif')
 def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
-        data_resource= resources.modelresource_factory(model=Sheet1)()
+        data_resource= resources.modelresource_factory(model=Accidents)()
 
         dataset = Dataset()
         new_data = request.FILES['importData']
@@ -255,6 +362,7 @@ def uploadData(request):
     total = len(data)
     context ={'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request, 'home/bdd.html', context)
+@login_required(login_url='authentif')
 def changeWilaya(request):
     wilayaform = wilaya(request.POST)
     mywilaya= request.POST.get('wilaya')
@@ -264,15 +372,7 @@ def changeWilaya(request):
     context = {'data':data, 'wilayaform':wilayaform, 'total':total,'form': form }
     return render(request, 'home/bdd.html', context)
 
-
-
-def authentification (request):
-    if request.method == 'POST':
-        form = authentif(request.POST)
-    else:
-        form = authentif()
-
-    return render(request, 'home/authentification.html', {"form": form} )
-
+@login_required(login_url='authentif')
 def help (request):
     return render(request, "home/help.html")
+

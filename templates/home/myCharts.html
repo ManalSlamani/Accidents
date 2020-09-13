@@ -3,7 +3,11 @@
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
+<style>
 
+
+<<<<<<< HEAD
+=======
 <style>
 .maplegend .legend-title {
     text-align: left;
@@ -42,6 +46,7 @@
   .maplegend a {
     color: #777;
     }
+>>>>>>> b71d9d65ba5013bde85cb71446496c178da55338
 .highcharts-figure, .highcharts-data-table table {
     min-width: 200px;
     max-width: 3200px;
@@ -87,6 +92,7 @@
     background: #f8f8f8;
 }
 .highcharts-data-table tr:hover {
+
     background: #f1f7ff;
 }
 
@@ -123,6 +129,7 @@
     <div class="container-fluid">
 
 <div id="cards" class="card-deck" style="height: 120px; width: 102%">
+
             <div class="card border-info mb-3" style="max-width: 540px; height: 100%">
                 <div class="card-header bg-transparent border-info ">Nombre total d'accidents</div>
                 <div class="row no-gutters">
@@ -132,7 +139,9 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2 class="card-text text-info" style="padding-left: 10px;">{{ accidents }}</h2>
+
 {#                            <p class="card-text"><small class="text-muted">Janvier-Mars 2014</small></p>#}
+
                         </div>
                     </div>
                 </div>
@@ -174,13 +183,17 @@
                     <div class="col-md-9">
                         <div class="card-body">
                             <h2 class="card-text text-success">{{ evolution}} %</h2>
+
                             <p class="card-text" style="padding-left: 0px"><small class="text-muted">Les deux derniers mois </small></p>
+
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card border-warning mb-3" style="max-width: 540px; height: 100%">
+
                  <div class="card-header bg-transparent border-warning ">Accidents futurs</div>
+
 
                 <div class="row no-gutters">
                     <div class="col-md-4">
@@ -189,7 +202,9 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2 class="card-text text-warning">64</h2>
+
                             <p class="card-text"><small class="text-muted">Accidents prédits </small></p>
+
                         </div>
                     </div>
                 </div>
@@ -197,6 +212,7 @@
 
         </div>
     <br>
+
     <div class="row">
 
         <div class="col-lg-8 col-md-12">
@@ -205,6 +221,7 @@
                <h4 style="padding-left: 4px"> Distribution des accidents sur le territoire national</h4>
            </div>
             <div style="border-style: groove; width: 100%">
+
                 <div id='maplegend' class='maplegend'
     style='position: absolute; z-index:9999; border:2px solid grey; background-color:rgba(255, 255, 255, 0.8);
      border-radius:6px; padding: 5px; font-size:14px; margin: 10px; right: 30px; top: 30px;'>
@@ -281,7 +298,6 @@
 </figure>
     </div>
 </div>
-
 
 
 <script type="text/javascript">
@@ -619,7 +635,7 @@ Highcharts.chart('causechart', {
         keys: ['name', 'y', 'label'],
         data: [
              {% for entry in causes %}
-            [name='{{ entry.cause_acc }}',y={{ entry.cause }}, label='{{ entry.cause_acc }}']
+            [name ='{{ entry.cause_acc }}',y={{ entry.cause }}, label='{{ entry.cause_acc }}']
             {% if not forloop.last %}, {% endif %}{% endfor %}
         ],
         dataLabels: {
