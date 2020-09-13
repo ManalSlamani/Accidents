@@ -90,11 +90,6 @@ def daybarchart(request):
     MarkerCluster(att, options={'maxClusterRadius':50}).add_to(m)
     # folium.map.LayerControl('topleft', collapsed=True).add_to(m)
     vmax= len(att)/2
-    # colormap = branca.colormap.LinearColormap(colors=['green','yellow','brown'])
-    # steps = 20
-    # colormap = branca.colormap.linear.YlOrBr_09.scale(0, 1).to_step(steps)
-
-    # colormap.add_to(m)  # add color bar at the top of the map
     m.add_to(f)
     m = f._repr_html_()  # updated
 
