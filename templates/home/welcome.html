@@ -63,13 +63,13 @@
               Base De Données
             </a>
           </li>
-            {% if not request.user.is_staff %}
+
           <li class="nav-item">
             <a class="nav-link" href="/help/">
               À propos
             </a>
           </li>
-            {% endif %}
+
         {% if request.user.is_staff %}
             <li class="nav-item">
             <a class="nav-link" href="/admin/">

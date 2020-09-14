@@ -157,7 +157,7 @@ class Sheet1(models.Model):
     nbre_bless = models.IntegerField(db_column='NBRE_BLESS', blank=True, null=True)  # Field name made lowercase.
     annee_permis = models.DateTimeField(db_column='ANNEE_PERMIS', blank=True, null=True)  # Field name made lowercase.
     cat_veh = models.CharField(db_column='CAT_VEH', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    date_naiss_chau = models.DateTimeField(blank=True, null=True)
+    date_naiss_chauff = models.DateTimeField(blank=True, null=True)
     age_chauff = models.IntegerField(db_column='AGE_CHAUFF', blank=True, null=True)  # Field name made lowercase.
     temperature = models.IntegerField(db_column='Temperature', blank=True, null=True)  # Field name made lowercase.
     vitessevent = models.IntegerField(db_column='VitesseVent', blank=True, null=True)  # Field name made lowercase.

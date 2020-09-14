@@ -342,7 +342,7 @@ def allData(request):
 def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
-        data_resource= resources.modelresource_factory(model=Accidents)()
+        data_resource= resources.modelresource_factory(model=models.Sheet1)()
 
         dataset = Dataset()
         new_data = request.FILES['importData']
