@@ -1,13 +1,16 @@
 input[type=text], input[type=password], select{
-  width: 80%;
+  width: 60%;
 
   padding: 12px 20px;
-  margin: 8px 0;
+  margin: auto 0;
+  margin-top: 2%;
+  margin-bottom: 3%;
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
   position: relative;
-  left: 10%;
+  left: 20%;
+
   }
 
 button {
@@ -17,7 +20,10 @@ button {
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 100%;
+  width: 70%;
+  /*margin-top: 10px;*/
+  position: relative;
+  left: 15%;
 }
 
 button:hover {

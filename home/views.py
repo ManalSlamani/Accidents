@@ -54,7 +54,7 @@ def get_data(request, *args, **kwargs):
 def daybarchart(request):
     f = folium.Figure()
     m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png",
+                   tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png",
                    attr="local-map-server")
     if request.method == 'POST':
         myfilter = intervalledate(request.POST)
@@ -118,7 +118,8 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     longitude = list(Sheet1.objects.values_list("longitude", flat=True))
     # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
+    # m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
+    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png", attr="openmaptiles-server")
     att = zip(latitude, longitude)
     if request.method == 'POST':
         form = kdeform(request.POST)
@@ -152,7 +153,7 @@ def makeClusters(request):
     fig = folium.Figure()
     # m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
+                   tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png", attr="openmaptiles-server")
 
     if request.method == 'POST':
         formClus = clusteringform(request.POST)
@@ -226,7 +227,7 @@ def makePrediction (request):
     # f = folium.Figure()
     # m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
     m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
+                   tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png", attr="openmaptiles-server")
 
     colors_array = cm.rainbow(np.linspace(0,1 , len(mars)))
     rainbow = [colors.rgb2hex(i) for i in colors_array]
@@ -247,10 +248,16 @@ def makePrediction (request):
 @unauthenticated_user
 def authentification (request):
     form = authentif()
+
     if request.method == 'POST':
         form = authentif(request.POST)
         if form.is_valid():
+            # username = request.GET('userName')
+
             username = form.cleaned_data.get('user')
+            print(username)
+            # password = request.GET('pwd')
+
             password = form.cleaned_data.get('pwd')
             user = authenticate(request,username = username,password=password)
             if user is not None :
@@ -258,9 +265,9 @@ def authentification (request):
                 return redirect('home')
             else:
                 messages.info(request,'Nom Utilisateur ou mot de passe incorrect')
-                return render(request, 'home/authentification.html', {"form": form})
+                return render(request, 'home/authentification.html', {'username': username, 'pwd':password})
 
-    return render(request, 'home/authentification.html', {"form": form} )
+    return render(request, 'home/authentification.html', {'form':form} )
 
 
 
