@@ -102,8 +102,12 @@ def daybarchart(request):
     causes = list(data.values("cause_acc").annotate(cause=Count("cause_acc")).order_by('-cause'))
     causes = causes[:6]
     att = list(zip(latitude, longitude))
-    MarkerCluster(att, options={'maxClusterRadius':50}).add_to(m)
-    # folium.map.LayerControl('topleft', collapsed=True).add_to(m)
+    MarkerCluster(att, options={'maxClusterRadius':50}).add_to((folium.FeatureGroup(name='Regroupement').add_to(m)))
+    HeatMap(att, radius=15, min_opacity=0.8).add_to(folium.FeatureGroup(name='HeatMap').add_to(m))
+    colormap = branca.colormap.LinearColormap(colors=['blue', 'lime', 'yellow', 'red'], vmin=0, vmax=0.8)
+    colormap.add_to(m)  # add color bar at the top of the map
+    # folium.LayerControl().add_to(m)
+    folium.map.LayerControl('topleft', collapsed=True).add_to(m)
     vmax= len(att)/2
     m.add_to(f)
     m = f._repr_html_()  # updated
@@ -141,7 +145,7 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     else:
         colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=float(myOpacity))
         colormap.add_to(m)  # add color bar at the top of the map
-        HeatMap(att, radius=float(myRadius), min_opacity=float(myOpacity)).add_to(folium.FeatureGroup(name='Heat Map').add_to(m))
+        HeatMap(att, radius=float(myRadius), min_opacity=float(myOpacity)).add_to(folium.FeatureGroup(name='HeatMap').add_to(m))
         folium.LayerControl().add_to(m)
 
 
