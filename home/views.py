@@ -38,6 +38,10 @@ import leaflet
 # Create your views here.
 from .resources import Sheet1Resource
 from .decorators import unauthenticated_user,allowed_users
+#------- Variables globales --------#
+fullscreen = plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen', force_separate_button=False)
+tilesServer="http://192.168.1.5:90/tile/{z}/{x}/{y}.png"
+
 
 @login_required(login_url='authentif')
 def home(request):
@@ -53,9 +57,8 @@ def get_data(request, *args, **kwargs):
 @login_required(login_url='authentif')
 def daybarchart(request):
     f = folium.Figure()
-    m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png",
-                   attr="local-map-server")
+    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
+    m.add_child(fullscreen)
     if request.method == 'POST':
         myfilter = intervalledate(request.POST)
         debut = request.POST.get('debut')
@@ -119,7 +122,8 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     # f = folium.Figure(width=650, height=500, title="Heatmap")
     f = folium.Figure()
     # m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
-    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png", attr="openmaptiles-server")
+    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
+    m.add_child(fullscreen)
     att = zip(latitude, longitude)
     if request.method == 'POST':
         form = kdeform(request.POST)
@@ -133,11 +137,13 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
         colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=0.8)
         colormap.add_to(m)  # add color bar at the top of the map
         m.add_child(plugins.HeatMap(att, radius=15, min_opacity=0.8))
+
     else:
         colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=float(myOpacity))
         colormap.add_to(m)  # add color bar at the top of the map
         HeatMap(att, radius=float(myRadius), min_opacity=float(myOpacity)).add_to(folium.FeatureGroup(name='Heat Map').add_to(m))
         folium.LayerControl().add_to(m)
+
 
         # m.add_child(plugins.HeatMap(att, radius=myRadius, min_opacity=myOpacity))
     m.add_to(f)
@@ -152,9 +158,8 @@ def makeClusters(request):
     df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     fig = folium.Figure()
     # m = folium.Map(location=[28.5, 1.5], zoom_start=5)
-    m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png", attr="openmaptiles-server")
-
+    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
+    m.add_child(fullscreen)
     if request.method == 'POST':
         formClus = clusteringform(request.POST)
     else:
@@ -174,9 +179,8 @@ def makeClusters(request):
 
         clusters_df = df[model.labels_ != -1]
         clusters = Counter(model.labels_)
-        m = folium.Map(location=[28.5, 2], zoom_start=5,
-                       tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png",
-                       attr="openmaptiles-server")
+        m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
+        m.add_child(fullscreen)
         colors_array = cm.rainbow(np.linspace(0, 1, len(clusters)))
         rainbow = [colors.rgb2hex(i) for i in colors_array]
         for row in range(len(clusters_df)):
@@ -220,15 +224,10 @@ def makeClusters(request):
 @login_required(login_url='authentif')
 def makePrediction (request):
     mars= pd.read_excel(".\static\\rf_pred.xlsx")
-    print(mars.date)
-    # mars.date= datetime.date(mars.date)
     predections=len(mars)
     f = folium.Figure( height=500)
-    # f = folium.Figure()
-    # m = folium.Map(location=[28.5, 1.5], zoom_start=4.5)
-    m = folium.Map(location=[28.5, 2], zoom_start=5,
-                   tiles="http://192.168.1.5:90/tile/{z}/{x}/{y}.png", attr="openmaptiles-server")
-
+    m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
+    m.add_child(fullscreen)
     colors_array = cm.rainbow(np.linspace(0,1 , len(mars)))
     rainbow = [colors.rgb2hex(i) for i in colors_array]
     for row in range(len(mars)):
@@ -350,11 +349,8 @@ def uploadData(request):
     if request.method == 'POST':
         # data_resource = Sheet1Resource()
         data_resource= resources.modelresource_factory(model=models.Sheet1)()
-
         dataset = Dataset()
         new_data = request.FILES['importData']
-
-
         imported_data = dataset.load(new_data.read().decode('utf-8'),format='csv')
         result = data_resource.import_data(dataset, dry_run=True)  # Testing data import
         if not result.has_errors():

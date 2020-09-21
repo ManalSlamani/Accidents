@@ -5,6 +5,11 @@
 {% block content %}
 
 <style>
+input[type=date]{
+  height: 30px;
+
+
+  }
 .maplegend .legend-title {
     text-align: left;
     margin-bottom: 5px;
@@ -115,10 +120,10 @@
 {#                        <br>#}
 {#                        <button type="submit" class="btn btn-light" style="float: right;">Valider</button>#}
 {#                    </form><br></div>#}
-<div  style="margin-left:775px; margin-right:0;">
-<form class="form-row" action="" method="post" style="width: 100%; place-content: center;  grid-column-gap: 2%;" >
+<div style="float: right" >
+<form class="form-horizontal" action="" method="post" style="width: 100%; place-content: center;  grid-column-gap: 2%;" >
         {% csrf_token %}{{ myfilter }}
-    <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 11px;">Soumettre</button>
+      <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 11px; margin-left: 10px">Soumettre</button>
 </form>
 </div>
     <div class="container-fluid">
@@ -126,10 +131,10 @@
 <div id="cards" class="card-deck" style="height: 120px; width: 102%">
 
             <div class="card border-info mb-3" style="max-width: 540px; height: 100%">
-                <div class="card-header bg-transparent border-info ">Nombre total d'accidents</div>
+                <div class="card-header bg-transparent border-info" >Nombre total d'accidents</div>
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <img src="{% static 'img/acc.png' %}"  class="card-img" style="left: 10%" alt="">
+                        <img src="{% static 'img/acc.png' %}"  class="card-img img-responsive" style="left: 10%" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -145,7 +150,7 @@
                 <div class="card-header bg-transparent border-dark">Nombre total de blessés</div>
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                         <img src="{% static 'img/bless.png' %}"  class="card-img " alt="">
+                         <img src="{% static 'img/bless.png' %}"  class="card-img img-responsive" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -159,7 +164,7 @@
                  <div class="card-header bg-transparent border-danger ">Nombre total de décés</div>
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                         <img src="{% static 'img/dec2.png' %}"  class="card-img " alt="">
+                         <img src="{% static 'img/dec2.png' %}"  class="card-img img-responsive" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -173,7 +178,7 @@
                 <div class="card-header bg-transparent border-success ">Evolution des accidents</div>
                 <div class="row no-gutters">
                     <div class="col-md-3">
-                        <img src="{% static 'img/evolution.png' %}"  class="card-img "  style="left: 20%" alt="">
+                        <img src="{% static 'img/evolution.png' %}"  class="card-img img-responsive"  style="left: 20%" alt="">
                     </div>
                     <div class="col-md-9">
                         <div class="card-body">
@@ -192,7 +197,7 @@
 
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <img src="{% static 'img/warning.svg' %}"  class="card-img "  style="top:15%; left: 25%;height: 45px; width: 50px" alt="">
+                        <img src="{% static 'img/warning.svg' %}"  class="card-img img-responsive "  style="top:15%; left: 25%;height: 45px; width: 50px" alt="">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -287,7 +292,7 @@
             </figure></div>
         </div>
     </div>
-<div style="height: 40px"></div>
+
 </div>
 
 
