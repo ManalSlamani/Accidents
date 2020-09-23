@@ -1,13 +1,13 @@
 from import_export import resources
-from .models import Sheet1
+from .models import Accident
 from django.db import models
 from import_export.fields import Field
 
-class Sheet1Resource(resources.ModelResource):
+class AccidentResource(resources.ModelResource):
     # id_accident = models.AutoField(db_column='ID_accident', primary_key=True)  # Field name made lowercase.
     # id_accident= Field(column_name='ID_accident')
     class Meta:
-        model= Sheet1
+        model= Accident
         skip_unchanged = True
         report_skipped = True
         exclude = ('id_accident',)

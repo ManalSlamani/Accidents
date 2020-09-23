@@ -3,7 +3,7 @@ import branca
 from django.shortcuts import render,redirect,get_object_or_404
 import json
 from django.db.models import Count, Q, Sum, Window, F
-from .models import Sheet1
+from .models import Accident
 from import_export import resources
 import folium
 from folium import plugins, Popup
@@ -36,7 +36,7 @@ from django.contrib import messages
 from tablib import Dataset
 import leaflet
 # Create your views here.
-from .resources import Sheet1Resource
+from .resources import AccidentResource
 from .decorators import unauthenticated_user,allowed_users
 #------- Variables globales --------#
 fullscreen = plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen', force_separate_button=False)
@@ -49,7 +49,7 @@ def home(request):
 
 @login_required(login_url='authentif')
 def get_data(request, *args, **kwargs):
-    data = Sheet1.objects.all()
+    data = Accident.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
 
 
@@ -63,10 +63,10 @@ def daybarchart(request):
         myfilter = intervalledate(request.POST)
         debut = request.POST.get('debut')
         fin = request.POST.get('fin')
-        data = Sheet1.objects.filter(date__range=[debut, fin])
+        data = Accident.objects.filter(date__range=[debut, fin])
         evolution = 5
     else:
-        data= Sheet1.objects.all()
+        data= Accident.objects.all()
         myfilter = intervalledate()
 
     latitude = list(data.values_list("latitude", flat=True))
@@ -92,7 +92,7 @@ def daybarchart(request):
     catdata = list(data.values('cat_veh').annotate(cat_count=Count('cat_veh')).order_by('-cat_count'))[:8]
     hdata = list(
         data.values('heure').annotate(accidents=Count('accident')).order_by('heure').order_by('heure'))
-    # hdata= list(Sheet1.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
+    # hdata= list(Accident.objects.values('heure').annotate(accidents=Count('accident')).order_by('heure'))
     temperaturedata = data.values("age_chauff").annotate(accidents=Sum('accident')).order_by('age_chauff')
     precipitationdata = data.values("couverturenuage").annotate(accidents=Sum('accident')).order_by(
         'couverturenuage')
@@ -121,11 +121,9 @@ def daybarchart(request):
 # ----------------------------------------------------------------------------------------
 @login_required(login_url='authentif')
 def makeHeatmap(request, myRadius=15, myOpacity=0.8):
-    latitude = list(Sheet1.objects.values_list("latitude", flat=True))
-    longitude = list(Sheet1.objects.values_list("longitude", flat=True))
-    # f = folium.Figure(width=650, height=500, title="Heatmap")
+    latitude = list(Accident.objects.values_list("latitude", flat=True))
+    longitude = list(Accident.objects.values_list("longitude", flat=True))
     f = folium.Figure()
-    # m = folium.Map(location=[28.5, 2], zoom_start=5, tiles="http://192.168.99.100:32768/styles/osm-bright/{z}/{x}/{y}.png", attr="openmaptiles-server")
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
     m.add_child(fullscreen)
     att = zip(latitude, longitude)
@@ -134,9 +132,9 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
     else:
         form = kdeform()
     myRadius = request.POST.get('myRadius')
-    print((myRadius))
+    # print((myRadius))
     myOpacity = request.POST.get('myOpacity')
-    print(type(myOpacity))
+    # print(type(myOpacity))
     if (myRadius == None):
         colormap = branca.colormap.LinearColormap(colors=['blue','lime','yellow', 'red'],  vmin=0, vmax=0.8)
         colormap.add_to(m)  # add color bar at the top of the map
@@ -159,7 +157,7 @@ def makeHeatmap(request, myRadius=15, myOpacity=0.8):
 @login_required(login_url='authentif')
 def makeClusters(request):
 
-    df=pd.DataFrame(Sheet1.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
+    df=pd.DataFrame(Accident.objects.values('latitude','longitude','cause_acc','temperature','precipitation','nbre_bless', 'nbre_dec','age_chauff'))
     fig = folium.Figure()
     # m = folium.Map(location=[28.5, 1.5], zoom_start=5)
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
@@ -341,7 +339,7 @@ class UserEditView(generic.UpdateView):
 
 @login_required(login_url='authentif')
 def allData(request):
-    data= Sheet1.objects.all().values()
+    data= Accident.objects.all().values()
     total = len(data)
     wilayaform = wilaya()
     # form = uploadFiles()
@@ -351,8 +349,8 @@ def allData(request):
 @login_required(login_url='authentif')
 def uploadData(request):
     if request.method == 'POST':
-        # data_resource = Sheet1Resource()
-        data_resource= resources.modelresource_factory(model=models.Sheet1)()
+        # data_resource = AccidentResource()
+        data_resource= resources.modelresource_factory(model=models.Accident)()
         dataset = Dataset()
         new_data = request.FILES['importData']
         imported_data = dataset.load(new_data.read().decode('utf-8'),format='csv')
@@ -360,7 +358,7 @@ def uploadData(request):
         if not result.has_errors():
             data_resource.import_data(dataset, dry_run=False)  # Actually import now
     wilayaform = wilaya()
-    data = Sheet1.objects.all().values()
+    data = Accident.objects.all().values()
     total = len(data)
     context ={'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request, 'home/bdd.html', context)
@@ -368,7 +366,7 @@ def uploadData(request):
 def changeWilaya(request):
     wilayaform = wilaya(request.POST)
     mywilaya= request.POST.get('wilaya')
-    data = Sheet1.objects.filter(wilaya=mywilaya)
+    data = Accident.objects.filter(wilaya=mywilaya)
     total=len(data)
     form = uploadFiles()
     context = {'data':data, 'wilayaform':wilayaform, 'total':total,'form': form }

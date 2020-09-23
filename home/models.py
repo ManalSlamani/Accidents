@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 
 
 
-
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -143,7 +142,7 @@ class NegativeSamples(models.Model):
         managed = False
         db_table = 'negative_samples'
 
-class Sheet1(models.Model):
+class Accident(models.Model):
     wilaya = models.CharField(max_length=80, blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
     cause_acc = models.CharField(db_column='CAUSE_ACC', max_length=80, blank=True, null=True)  # Field name made lowercase.
@@ -171,8 +170,5 @@ class Sheet1(models.Model):
     id_accident = models.AutoField(primary_key=True)
 
     class Meta:
-        managed = False
-        db_table = 'sheet1'
-
-
-
+        managed = True
+        db_table = 'Accident'

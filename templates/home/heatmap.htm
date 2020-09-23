@@ -1,22 +1,51 @@
 {% extends 'home/welcome.html' %}
+{% load static %}
 {% block page_name %} Tableau de bord {% endblock %}
 
 {% block content %}
+    <style>
+        input[type=number]{
+            height: 25px;
+            width: 100%;
+            padding: 10px 10px;
+            {#padding-right: 20%;#}
+            {#margin: auto 0;#}
+            {#margin-top: 1%;#}
+            {#margin-bottom: 3%;#}
+            {#display: inline-block;#}
+            border: 3px solid #ccc;
+            box-sizing: border-box;
+            position: relative;
+            {#left: 0%;#}
+            {#display: table-cell;#}
+        }
+        label{
+            height: 30px;
+            font-size: 13px;
+            padding: 10px 10px;
+            {#margin: auto 0;#}
+            {#margin-top: 2%;#}
+            {#margin-bottom: 3%;#}
+            position: relative;
+            display: table-cell;
+                }
+    </style>
     <div class="container-fluid">
+
     <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
             <h4 style="padding-left: 4px"> Zones de concentration des accidents routiers en Algérie</h4></div>
     <div class="row">
-    <div class="col-lg-9">
+    <div class="col-lg-8">
         <div style="border-style: groove;">  {{my_map|safe}} </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
         <div class="card border-dark mb-0" style="width: 100%;">
             <div class="card-header">
                 <h5>Les paramètres du KDE</h5></div>
             <div class="card-body text-dark">
-                       <h6>Valeurs par défaut</h6>
-                    Rayon de recherche: 15 Km  ;  Seuil de densité: 0.8 <br><br>
-<center>
+{#                       <h6>Valeurs par défaut</h6>#}
+{#                    Rayon de recherche: 15 Km  ;  Seuil de densité: 0.8 <br><br>#}
+
 {#                <form style="">#}
 {#            <div class="form-group">#}
 {#               <h6>Seuil de densité</h6>#}
@@ -32,19 +61,71 @@
 {#            </div>#}
 {#            <button type="submit" class="btn btn-primary" style="float: right;">Valider</button>#}
 {#        </form>#}
-                    <form action="/heatmap/" method="post">
+                    <form action="/heatmap/" method="post" style="">
+
                         {% csrf_token %}
-                         {{ form.as_ul }}
-                        <br>
+                            <div class="form-group" style="display: table-row;">
+
+                            <label for="{{ form.myRadius.id_for_label }}">Rayon de voisinage</label>
+
+                         {{ form.myRadius }}
+
+                            </div>
+                            <div class="form-group" style="display: table-row;">
+                            <label for="{{ form.myOpacity.id_for_label }}">Seuil de densité</label>
+                                {{ form.myOpacity }}
+                            </div>
+
                         <button type="submit" class="btn btn-primary" style="float: right;">Valider</button>
                     </form>
 
-                </center>
-  </div>
 
+  </div>
     </div>
+        <br>
+        <div>
+            <div class="card border-dark mb-0" style="width: 100%;">
+                <div class="card-header">
+                    <h5>L'estimation par noyau de densité KDE</h5>
+                </div>
+                <div class="card-body text-dark" style="padding-bottom: 1px">
+                    <p style="font-size: 15px; padding-bottom: 0px" id="textArea">
+                        L'estimation par noyau de densité est une mtéthode statistique d'analyse de données,
+                        qui combine entre l'aproche basée grille et l'approche basée densité. Elle permet le regroupement des points d’accidents et la visualisation des régions chaudes.
+                        Cette technique est considérée comme étant la plus populaire et parmi les plus performantes dans le domaine de l’analyse
+                        des évènements.</p>
+                </div>
+            </div>
+        </div>
 </div>
-    </div></div>
+    </div><br>
+     <div class="card border-dark mb-0"  style="padding: 10px" >
+         <div class="row">
+    <div class="col-lg-5" >
+
+        <b> <h4>Principe de focntinnement</h4></b><br>
+
+                <p style="font-size: 15px">
+        L’espace étudié sera divisé en noeuds (cellules) contenant tous les points qui se trouvent dans un voisinage h déterminé
+                              (une distance de type euclidien).
+                               Une fonction noyau f sera utilisée pour l’estimation de la densité de la cellule
+                               (la somme sur l’ensemble du voisinage multipliés par le nombre d’occurrences). Les
+                               événements ponctuels seront par la suite remplacés par des noyaux de densité, déja comparés à un certain seuil, et dont la masse vaut 1 répartie sur le voisinage h.
+</p>
+        <ul style="font-size: 15px">
+            <li> <b>Le paramètre de lissage (appelé aussi fenêtre) h: </b>
+            Il qualifie la taille du voisinage et fixe la précision désirée dans l’estimation. Son choix conditionne l’aspect plus ou moins
+«lissé» de l’estimation de la fonction de densité.</li>
+            <li> <b> Le seuil de densité S:</b> La densité minimale dans une cellule pour la considérer comme
+un point chaud.</li>
+            <li> <b> La fonction noyau K:</b>  C’est une fonction positive d’intégrale 1. Elle exprime la distance
+d’un point de voisinage du centre c.</li>
+        </ul>
+    </div>
+    <div class="col-lg-7">
+        <img src="{% static 'img/kde.gif' %}"  style="width: 100%; border-style: solid; border-width: 1px" alt="">
+    </div>
+    </div></div></div> <br>
 
 
  {% endblock %}

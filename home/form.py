@@ -6,13 +6,13 @@ from . import models
 
 
 class kdeform(forms.Form):
-    myRadius= forms.DecimalField(label='Rayon de recherche',  widget=forms.NumberInput(attrs={'min': '0', 'step': '1'}))
-    myOpacity= forms.DecimalField(label='Seuil de densité ', widget= forms.NumberInput(attrs={'min': '0', 'step': '0.1'}))
+    myRadius= forms.DecimalField(widget=forms.NumberInput(attrs={'min': '0', 'step': '1', 'value':'15'}))
+    myOpacity= forms.DecimalField(widget= forms.NumberInput(attrs={'min': '0', 'step': '0.1', 'value':'0.8'}))
 class clusteringform(forms.Form):
     # silhouette = forms.DecimalField(label='Coefficient de Silhouette', disabled=True, widget=forms.NumberInput)
     # inxch = forms.DecimalField(label='Indice CH', disabled=True)
-    myEpsilon = forms.DecimalField(label='Epsilon', min_value=0, widget=forms.NumberInput(attrs={'min': '0', 'step': '0.01'}))
-    myMinPts = forms.DecimalField(label='minPts ', min_value=0, widget=forms.NumberInput(attrs={'min': '0', 'step': '1'}))
+    myEpsilon = forms.DecimalField(label='Epsilon', min_value=0, widget=forms.NumberInput(attrs={'min': '0', 'step': '0.01', 'value':'0.02'}))
+    myMinPts = forms.DecimalField(label='minPts ', min_value=0, widget=forms.NumberInput(attrs={'min': '0', 'step': '1', 'value':'4'}))
 class wilaya(forms.Form):
     options=[
         ('--','--'),('adrar','adrar'), ('ain defla','ain defla'), ('ain temouchent','ain temouchent'), ('alger','alger'), ('annaba','annaba'),

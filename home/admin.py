@@ -1,9 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from home.models import Sheet1
+from home.models import Accident
 
 
-@admin.register(Sheet1)
+@admin.register(Accident)
 class SheetAdmin(ImportExportModelAdmin):
     pass
 
