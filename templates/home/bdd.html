@@ -7,7 +7,7 @@
 }
 </style>
 <div class="container-fluid border-dark" style="width: 100%">
-    <table id="myTable" class="table table-striped display dataTable"  style="font-size: 13px; ">
+    <table id="myTable" class=" table-striped  dataTable"  style="font-size: 13px; ">
         <thead>
              <tr>
             <th>Wilaya</th>
@@ -99,6 +99,42 @@
         "language": {
                 "url": "{% static 'js/DataTables/French.json' %}"
             },
+        {#"columns": [#}
+		{#	{ "data": "Wilaya",#}
+        {#     width: "6%"#}
+        {#    },#}
+		{#	{ "data": "Date",#}
+        {#     width: "6%"#}
+        {#    },#}
+		{#	{ "data": "Heure",#}
+        {#     width: "6%"#}
+        {#    },#}
+        {#    { "data": "Jour",#}
+        {#     width: "6%"#}
+        {#    },#}
+        {#    { "data": "Cause d'accident",#}
+        {#     width: "18%"#}
+        {#    },#}
+        {#    { "data": "Type de route",#}
+        {#     width: "15%"#}
+        {#    },#}
+        {#    { "data": "N_Bless",#}
+        {#     width: "6%"#}
+        {#    },#}
+        {#    { "data": "N_Dec",#}
+        {#     width: "6%"#}
+        {#    },#}
+        {#    { "data": "Age_Chauff",#}
+        {#     width: "6%"#}
+        {#    },#}
+        {#    { "data": "Année_Permis",#}
+        {#     width: "6%"#}
+        {#    },#}
+        {#    { "data": "Cat_Veh",#}
+        {#     width: "15%"#}
+        {#    },#}
+        {##}
+		{#],#}
         initComplete: function () {
             this.api().columns().every( function () {
                 var column = this;
