@@ -4,6 +4,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 import json
 from django.db.models import Count, Q, Sum, Window, F
 from .models import Accident
+from django.http import JsonResponse
+from django.core import serializers
 from import_export import resources
 import folium
 from folium import plugins, Popup
@@ -27,20 +29,45 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView
 from django.forms import inlineformset_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import *
 from .form import CreateUserForm, EditUserForm
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib import messages
 from tablib import Dataset
-import leaflet
-# Create your views here.
-from .resources import AccidentResource
+from datatableview import Datatable
 from .decorators import unauthenticated_user,allowed_users
 #------- Variables globales --------#
 fullscreen = plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen', force_separate_button=False)
 tilesServer="http://192.168.1.5:90/tile/{z}/{x}/{y}.png"
+
+
+# class AccidentDatatableView(DatatablesServerSideView):
+# 	# We'll use this model as a data source.
+# 	model = Accident
+#
+# 	# Columns used in the DataTables
+# 	columns = ['name', 'age', 'manager', 'department']
+#
+# 	# Columns in which searching is allowed
+# 	searchable_columns = ['name', 'manager', 'department']
+#
+# 	# Replacement values for foreign key fields.
+# 	# Here, the "manager" field points toward another employee.
+# 	foreign_fields = {'manager': 'manager__name'}
+#
+# 	# By default, the entire collection of objects is accessible from this view.
+# 	# You can change this behaviour by overloading the get_initial_queryset method:
+# 	def get_initial_queryset(self):
+# 		qs = super(PeopleDatatableView, self).get_initial_queryset()
+# 		return qs.filter(manager__isnull=False)
+#
+# 	# You can also add data within each row using this method:
+# 	def customize_row(self, row, obj):
+# 		# 'row' is a dictionnary representing the current row, and 'obj' is the current object.
+# 		row['age_is_even'] = obj.age%2==0
 
 
 @login_required(login_url='authentif')
@@ -339,12 +366,27 @@ class UserEditView(generic.UpdateView):
 
 @login_required(login_url='authentif')
 def allData(request):
-    data= Accident.objects.all().values()
+    # context = {}
+    data= Accident.objects.all()
+    # data = json.dumps(data, cls=DjangoJSONEncoder)
+    # data=serializers.serialize('json', data)
+    # context['data']= data
     total = len(data)
     wilayaform = wilaya()
     # form = uploadFiles()
     context= {'data':data, 'wilayaform':wilayaform, 'total':total,}
     return render(request,'home/bdd.html', context)
+    # return JsonResponse(data, safe=False)
+
+# @login_required(login_url='authentif')
+# def allData(request):
+#     context = {}
+#     data= Accident.objects.all()
+#     total = len(data)
+#     wilayaform = wilaya()
+#     # form = uploadFiles()
+#     context= {'data':data, 'wilayaform':wilayaform, 'total':total,}
+#     return render(request,'home/bdd.html', context)
 
 @login_required(login_url='authentif')
 def uploadData(request):

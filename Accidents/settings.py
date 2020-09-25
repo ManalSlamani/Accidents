@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'rest_framework',
     'import_export',
+    'datatableview',
     'home.apps.HomeConfig',
 
     #
@@ -91,6 +92,9 @@ DATABASES = {
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'root123',
+        'OPTIONS': {
+                    'charset': 'utf8',
+                    'use_unicode': True, },
     }
 }
 # Password validation
@@ -118,7 +122,7 @@ LANGUAGE_CODE = 'fr-FR'
 
 TIME_ZONE = 'Africa/Algiers'
 
-
+DEFAULT_CHARSET = 'utf-8'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
