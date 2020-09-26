@@ -5,6 +5,10 @@
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
 <script src="{% static 'js/code/modules/accessibility.js' %}"></script>
+{#<script src="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/js/bootstrap.min.js' %}"></script>#}
+{#<script src="{% static 'css/bootstrap-4.5.0/bootstrap-4.5.0-dist/js/bootstrap.js' %}"></script>#}
+
+{#<script src="{% static 'js/jquery-3.5.1.js' %}"></script>#}
 
 {% block content %}
 
@@ -27,9 +31,19 @@ td, th {
 
 
     <div class="container-fluid">
-        <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
+     <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
             <h4 style="padding-left: 4px"> Prédiction de futures accidents routiers en Algérie</h4>
         </div>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="predictions-tab" data-toggle="tab" href="#predictions" role="tab" aria-controls="home" aria-selected="true">Futures accidents</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="predictor-tab" data-toggle="tab" href="#predictor" role="tab" aria-controls="profile" aria-selected="false">Prédicteur</a>
+        </li>
+    </ul><br>
+    <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="predictions" role="tabpanel" aria-labelledby="predictions-tab">
         <div class="row">
             <div class="col-lg-7">
 {#                 <h5 style="border-left-style: groove; padding-left: 3px ">Réulatats du prédicteur "Forets aléatoires"</h5>#}
@@ -71,7 +85,13 @@ td, th {
         <div style="padding-top: 20px">
 
         </div>
+     </div>
+    <div class="tab-pane fade" id="predictor" role="tabpanel" aria-labelledby="predictor-tab">
+        ...
     </div>
+    </div>
+    </div>
+
 <script>
 function humanize(x){
   return x.toFixed(4).replace(/\.?0*$/,'');
@@ -123,5 +143,10 @@ Highcharts.chart('predictionchart', {
 
 </script>
 
-
+<script>
+$('#myTab a').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+</script>
 {% endblock %}
