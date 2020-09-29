@@ -13,6 +13,7 @@ from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
 from .form import *
+from django.forms import formset_factory
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -87,14 +88,14 @@ def daybarchart(request):
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
     m.add_child(fullscreen)
     if request.method == 'POST':
-        myfilter = intervalledate(request.POST)
+        myfilter = intervalledate(request.POST, prefix='charts')
         debut = request.POST.get('debut')
         fin = request.POST.get('fin')
         data = Accident.objects.filter(date__range=[debut, fin])
         evolution = 5
     else:
         data= Accident.objects.all()
-        myfilter = intervalledate()
+        myfilter =  intervalledate(prefix='charts')
 
     latitude = list(data.values_list("latitude", flat=True))
     longitude = list(data.values_list("longitude", flat=True))
@@ -271,7 +272,20 @@ def makePrediction (request):
     return render(request, 'home/prediction.html', context)
 
 
-
+@login_required(login_url='authentif')
+def makePredictor (request):
+    if request.method == 'POST':
+        # myfilter = intervalledate(request.POST)
+        myfilter= intervalledate2(request.POST or None)
+        debut = request.POST.get('debut')
+        fin = request.POST.get('fin')
+        data = Accident.objects.filter(date__range=[debut, fin])
+        evolution = 5
+    else:
+        data= Accident.objects.all()
+        myfilter = intervalledate2()
+    context2 = {'myfilter':myfilter, 'data': data}
+    return render(request, 'home/prediction.html', context2)
 
 @unauthenticated_user
 def authentification (request):

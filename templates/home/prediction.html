@@ -1,7 +1,7 @@
 {% extends 'home/welcome.html' %}
 {% block page_name %} Tableau de bord {% endblock %}
 {% load static %}
-    <script src="{% static 'js/code/modules/exporting.js' %}"></script>
+<script src="{% static 'js/code/modules/exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/offline-exporting.js' %}"></script>
 <script src="{% static 'js/code/modules/export-data.js' %}"></script>
 <script src="{% static 'js/code/modules/accessibility.js' %}"></script>
@@ -27,24 +27,34 @@ td, th {
   padding: 4px;
 }
 
+input[type=date]{
+  height: 30px;
+      }
 </style>
 
-
+<div style="float: right" >
+<form class="form-horizontal" action="{% url 'predictor' %}" method="post" style="width: 100%; place-content: center;  grid-column-gap: 2%;" >
+    {% csrf_token %}
+    {{ myfilter }}
+      <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 11px; margin-left: 10px">Soumettre</button>
+</form>
+</div>
     <div class="container-fluid">
      <div style="  border-left-style: solid; border-width: 2px; border-color: #34495e">
             <h4 style="padding-left: 4px"> Prédiction de futures accidents routiers en Algérie</h4>
         </div>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="predictions-tab" data-toggle="tab" href="#predictions" role="tab" aria-controls="home" aria-selected="true">Futures accidents</a>
+            <a class="nav-link active" id="predictions-tab" data-toggle="tab" href="#predictions" role="tab" aria-controls="home" aria-selected="true"><h5>Futures accidents</h5></a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="predictor-tab" data-toggle="tab" href="#predictor" role="tab" aria-controls="profile" aria-selected="false">Prédicteur</a>
+            <a class="nav-link" id="predictor-tab" data-toggle="tab" href="#predictor" role="tab" aria-controls="profile" aria-selected="false"><h5>Prédicteur</h5></a>
         </li>
-    </ul><br>
+    </ul>
     <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="predictions" role="tabpanel" aria-labelledby="predictions-tab">
-        <div class="row">
+    <div class="tab-pane fade show active" id="predictions" role="tabpanel" aria-labelledby="predictions-tab"
+    style="border-bottom: solid; border-right:solid; border-left: solid; border-width: 1px; border-color: #c4dce8 ">
+       <br> <div class="row">
             <div class="col-lg-7">
 {#                 <h5 style="border-left-style: groove; padding-left: 3px ">Réulatats du prédicteur "Forets aléatoires"</h5>#}
                  <p style="float: right">Total: {{ total }} accidents prédits pour le {{ mars.date.1.date }}</p>
@@ -86,8 +96,11 @@ td, th {
 
         </div>
      </div>
-    <div class="tab-pane fade" id="predictor" role="tabpanel" aria-labelledby="predictor-tab">
-        ...
+    <div class="tab-pane fade" id="predictor" role="tabpanel" aria-labelledby="predictor-tab"
+         style="border-bottom: solid; border-right:solid; border-left: solid; border-width: 1px; border-color: #c4dce8 ">
+
+        fpzgktrml,;gmdfs:dqdm;flgl,;f:d
+        dlfmk,
     </div>
     </div>
     </div>

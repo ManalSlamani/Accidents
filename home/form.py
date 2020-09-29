@@ -47,6 +47,12 @@ class authentif(forms.Form):
 class intervalledate(forms.Form):
     debut= forms.DateField (label='Du',  widget=forms.DateInput(attrs={'type':'date', 'min':'2014-01-01', 'max': '2014-03-30', 'value':'2014-01-01'}))
     fin= forms.DateField (label='Au',  widget=forms.DateInput(attrs={'type':'date','min':'2014-01-02', 'max': '2014-03-31', 'value':'2014-03-31'}))
+
+class intervalledate2(forms.Form):
+    debut= forms.DateField (label='Du',  widget=forms.DateInput(attrs={'type':'date', 'min':'2014-01-01', 'max': '2014-03-30', 'value':'2014-01-01'}))
+    fin= forms.DateField (label='Au',  widget=forms.DateInput(attrs={'type':'date','min':'2014-01-02', 'max': '2014-03-31', 'value':'2014-03-31'}))
+
+
 class uploadFiles(forms.Form):
     file_field = forms.FileField(label='Sélectionner un fichier',
                                  widget=forms.ClearableFileInput(attrs={'multiple': True, 'lang': 'fr'}))
