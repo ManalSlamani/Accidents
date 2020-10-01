@@ -13,7 +13,6 @@ from folium.plugins import HeatMap
 from folium.plugins import MarkerCluster
 import pandas as pd
 from .form import *
-from django.forms import formset_factory
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import random
@@ -33,7 +32,7 @@ from django.forms import inlineformset_factory
 from django.http import HttpResponse, JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
 from .models import *
-from .form import CreateUserForm, EditUserForm
+# from .form import CreateUserForm, EditUserForm, intervalledate2
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -43,32 +42,6 @@ from .decorators import unauthenticated_user,allowed_users
 #------- Variables globales --------#
 fullscreen = plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen', force_separate_button=False)
 tilesServer="http://192.168.1.5:90/tile/{z}/{x}/{y}.png"
-
-
-# class AccidentDatatableView(DatatablesServerSideView):
-# 	# We'll use this model as a data source.
-# 	model = Accident
-#
-# 	# Columns used in the DataTables
-# 	columns = ['name', 'age', 'manager', 'department']
-#
-# 	# Columns in which searching is allowed
-# 	searchable_columns = ['name', 'manager', 'department']
-#
-# 	# Replacement values for foreign key fields.
-# 	# Here, the "manager" field points toward another employee.
-# 	foreign_fields = {'manager': 'manager__name'}
-#
-# 	# By default, the entire collection of objects is accessible from this view.
-# 	# You can change this behaviour by overloading the get_initial_queryset method:
-# 	def get_initial_queryset(self):
-# 		qs = super(PeopleDatatableView, self).get_initial_queryset()
-# 		return qs.filter(manager__isnull=False)
-#
-# 	# You can also add data within each row using this method:
-# 	def customize_row(self, row, obj):
-# 		# 'row' is a dictionnary representing the current row, and 'obj' is the current object.
-# 		row['age_is_even'] = obj.age%2==0
 
 
 @login_required(login_url='authentif')
@@ -82,6 +55,9 @@ def get_data(request, *args, **kwargs):
 
 
 # ------------------------------------------------------------------------------
+
+
+
 @login_required(login_url='authentif')
 def daybarchart(request):
     f = folium.Figure()
@@ -254,7 +230,7 @@ def makeClusters(request):
 @login_required(login_url='authentif')
 def makePrediction (request):
     mars= pd.read_excel(".\static\\rf_pred.xlsx")
-    predections=len(mars)
+    predictions=len(mars)
     f = folium.Figure( height=500)
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
     m.add_child(fullscreen)
@@ -268,24 +244,34 @@ def makePrediction (request):
     m = f._repr_html_()  # updated
     # mars = list(mars)
     total= len(mars)
-    context = {'my_map': m, 'predections':predections, 'mars':mars, 'total':total, 'rainbow':rainbow}
-    return render(request, 'home/prediction.html', context)
-
-
-@login_required(login_url='authentif')
-def makePredictor (request):
     if request.method == 'POST':
-        # myfilter = intervalledate(request.POST)
-        myfilter= intervalledate2(request.POST or None)
-        debut = request.POST.get('debut')
-        fin = request.POST.get('fin')
+        myfilter = intervalledate2(request.POST, prefix='pred')
+        debut = request.POST.get('debutPred')
+        fin = request.POST.get('finPred')
         data = Accident.objects.filter(date__range=[debut, fin])
         evolution = 5
     else:
-        data= Accident.objects.all()
-        myfilter = intervalledate2()
-    context2 = {'myfilter':myfilter, 'data': data}
-    return render(request, 'home/prediction.html', context2)
+        data = Accident.objects.all()
+        myfilter = intervalledate2(prefix='pred')
+
+    context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total, 'rainbow':rainbow,
+               'myfilter':myfilter}
+    return render(request, 'home/prediction.html', context)
+
+
+# @login_required(login_url='authentif')
+# def makePredictor(request):
+#     if request.method == 'POST':
+#         myfilter = intervalledate2(request.POST, prefix='pred')
+#         debut = request.POST.get('debutPred')
+#         fin = request.POST.get('finPred')
+#         data = Accident.objects.filter(date__range=[debut, fin])
+#         evolution = 5
+#     else:
+#         data= Accident.objects.all()
+#         myfilter=intervalledate2(prefix='pred')
+#     context={'myfilter': myfilter, 'data': data}
+#     return render(request, 'home/predictor.html', context )
 
 @unauthenticated_user
 def authentification (request):

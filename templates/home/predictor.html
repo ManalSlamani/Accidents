@@ -1,0 +1,155 @@
+<div class="row" style="width: 100%">
+            <div class="col-lg-6">
+                <div class="card border-info mb-3" style="margin:20px; width: 100%">
+                 <div class="card-header bg-transparent border-info">
+                     <h5>Paramétrer le modèle</h5>
+                 </div>
+                    <div class="card-body">
+                        <div style="float: right">
+            <form class="form" action="" method="post" style="" >
+{#            <form class="form-inline" action="" method="post" style="" >#}
+                {% csrf_token %}
+                <p style="color: #2e6da4; font-size: 16px">-Intervalle de temps</p>
+                <div class=input-group" style="display: flex;  justify-content: center;">
+
+                    <label style="margin-right: 6px" for="pred-debutPred"> Du </label>
+                     {{ myfilter.debutPred}}
+                    <label style="margin-right: 6px" for="pred-finPred"> Au </label>
+                    {{ myfilter.finPred}}
+{#                    <input type="date", min='2014-01-01', max= '2014-03-30', value='2014-01-01', id="debut", name="debutPred">#}
+                </div><br>
+                <p style="color: #2e6da4; font-size: 16px">-Attributs</p>
+                <div class="row ">
+
+                <div class="input-check">
+                    <label  for="pred-wilaya"> Wilaya </label>
+                     {{ myfilter.wilaya}}
+                </div>
+                <div class="input-check">
+                     <label  for="pred-latitude"> Latitude </label>
+                     {{ myfilter.latitude}}
+                </div>
+                     <div class="input-check">
+
+                     <label for="pred-longitude"> Longitude </label>
+                     {{ myfilter.longitude}}
+                     </div>
+                     <div class="input-check">
+
+                     <label  for="pred-date"> Date </label>
+                     {{ myfilter.date}}
+                     </div>
+                     <div class="input-check">
+                     <label for="pred-jour"> Jour </label>
+                     {{ myfilter.jour}}
+                     </div>
+                     <div class="input-check">
+                     <label for="pred-mois"> Mois </label>
+                     {{ myfilter.mois}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-heure"> Heure </label>
+                     {{ myfilter.heure}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-cause"> Cause d'accident </label>
+                     {{ myfilter.cause}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-date_naiss"> Date de naissance du chauffeur</label>
+                     {{ myfilter.date_naiss}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Age du chauffeur </label>
+                     {{ myfilter.age}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Temprérature </label>
+                     {{ myfilter.temperature}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Précipitations </label>
+                     {{ myfilter.precipitation}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Vitesse du vent </label>
+                     {{ myfilter.vitesse_vent}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Temprérature du vent </label>
+                     {{ myfilter.temp_vent}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Humidité </label>
+                     {{ myfilter.humidite}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Visibilité</label>
+                     {{ myfilter.visibilite}}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Couverture nuageuse </label>
+                     {{ myfilter.couv_nuage}}
+                     </div>
+{#                    <input type="date", min='2014-01-02', max= '2014-03-30', value='2014-03-31', id="fin", name="finPred">#}
+                </div>
+                <div>
+                     <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 13px; margin-left: 10px">Lancer l'entrainement</button>
+
+                </div>
+
+
+            </form>
+        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-success mb-3" style="margin:20px; width: 100%">
+                    <div class="card-header bg-transparent border-success">
+                     <h5>Performances obtenues</h5>
+
+                 </div>
+                    <div class="card-body">
+                         <form class="">
+                 <fieldset disabled>
+                 <div class="row">
+                 <div class="form-group mx-sm-2 mb-2 col">
+                     <label >Accuracy</label>
+                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ silhouette }}>
+                 </div>
+                 <div class="form-group mx-sm-2 mb-0 col">
+                     <label  data-toggle="popover" data-trigger="hover" >Précision</label>
+                    <input  class="form-control form-control-sm" id="harabasz" placeholder="" value={{ inxch }}>
+                 </div>
+                 </div>
+                  <div class="row">
+                  <div class="form-group mx-sm-2 mb-2 col">
+                     <label >Rappel</label>
+                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ nbr_clusters }}>
+                 </div>
+                  <div class="form-group mx-sm-2 mb-2 col">
+                     <label >F1-Score</label>
+                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ outliers }}>
+                 </div>
+                 </div>
+                     <div class="row">
+                         <div class="form-group mx-sm-2 mb-2 col-lg-6">
+                     <label >AUC-ROC</label>
+                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ outliers }}>
+                 </div>
+                     </div>
+
+                 </fieldset>
+                             <br>
+                             <div>
+                     <button type="submit" class="btn btn-warning" style="float: right; width: auto; font-size: 13px; margin-left: 10px">Sauvegarder le modèle</button>
+
+                </div>
+        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>

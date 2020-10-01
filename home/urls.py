@@ -14,7 +14,7 @@ urlpatterns = [
     # (r'(.+\.html)$', 'clusters.html'),
     # path(r'clustering/clusters.html', TemplateView.as_view(template_name='home/clusters.html'), name='clusters'),
     path(r'prediction/', views.makePrediction, name='prediction'),
-    path(r'predictor/', views.makePredictor, name='predictor'),
+    # path(r'predictor/', views.makePredictor, name='predictor'),
     path(r'bdd/', views.allData, name='bdd'),
     path(r'authentification/', views.authentification, name='authentif'),
     path(r'<int:pk>/profile/', ShowProfileView.as_view(), name='profile'),
