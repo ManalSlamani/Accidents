@@ -201,6 +201,26 @@ Highcharts.chart('predictionchart', {
 
 
 </script>
+<script>
+$(document).ready(function(){
+    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+        localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+    var activeTab = localStorage.getItem('activeTab');
+    if(activeTab){
+        $('#myTab a[href="' + activeTab + '"]').tab('show');
+    }});
+{#$(function(){#}
+{#    var test = localStorage.input === 'true'? true: false;#}
+{#    $('input').prop('checked', test);});#}
+{##}
+{#$('input').on('change', function() {#}
+{#    localStorage.input = $(this).is(':checked');#}
+{#    console.log($(this).is(':checked'));});#}
+
+
+</script>
+
 
 <script>
 $('#myTab a').on('click', function (e) {

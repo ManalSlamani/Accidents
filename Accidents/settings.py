@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'datatableview',
     'home.apps.HomeConfig',
 
+    'multiselectfield',
+
     #
 ]
 

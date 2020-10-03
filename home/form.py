@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
+from multiselectfield import MultiSelectField
 from . import models
 
 
@@ -72,29 +73,41 @@ class intervalledate(forms.Form):
 
 
 class intervalledate2(forms.Form):
+    myAttributs=(('wilaya','Wilaya'),
+         ('longitude', 'Longitude'),
+         ('latitude', 'Latitude'),
+         ('date', 'Date'),
+         ('jour', 'Jour'),
+         ('mois', 'Mois'),
+         ('heure', 'Heure'),
+         ('date_naiss', 'Date de naissance du chauffeur'),
+         ('date_permis', 'Date d\'obtention du permis'),
+         )
     debutPred = forms.DateField(label='Du', widget=forms.DateInput(
         attrs={'type': 'date', 'min': '2014-01-01', 'max': '2014-03-30', 'value': '2014-01-01'}))
     finPred = forms.DateField(label='Au', widget=forms.DateInput(
         attrs={'type': 'date', 'min': '2014-01-02', 'max': '2014-03-31', 'value': '2014-03-31'}))
-    wilaya= forms.BooleanField(label='Wilaya')
-    longitude= forms.BooleanField(label='Longitude')
-    latitude= forms.BooleanField(label='Latitude')
-    date= forms.BooleanField(label='Date')
-    jour= forms.BooleanField(label='Jour')
-    mois= forms.BooleanField(label='Mois')
-    heure= forms.BooleanField(label='Heure')
-    date_naiss= forms.BooleanField(label='Date de naissance du chauffeur')
-    age= forms.BooleanField(label='Age du chauffeur')
-    type_veh= forms.BooleanField(label='Type de véhicule')
-    cat_veh= forms.BooleanField(label='Catégorie du véhicule')
-    temp= forms.BooleanField(label='Temprérature')
-    vitesse_vent= forms.BooleanField(label='Vitesse du vent')
-    temp_vent= forms.BooleanField(label='Température du vent')
-    precipitation= forms.BooleanField(label='Précipiration')
-    humidite= forms.BooleanField(label='Humidité')
-    visibilite= forms.BooleanField(label='Visibilité')
-    couv_nuage= forms.BooleanField(label='Couverture nuageuse')
-    cause= forms.BooleanField()
+    # attributs= MultiSelectField(choices= myAttributs)
+    # attributs= forms.CheckboxSelectMultiple(choices=myAttributs)
+    # wilaya= forms.BooleanField(label='Wilaya', widget=forms.CheckboxInput(attrs={'name': 'attributs'}))
+    # longitude= forms.BooleanField(label='Longitude', widget=forms.CheckboxInput(attrs={'name': 'attributs'}))
+    # latitude= forms.BooleanField(label='Latitude', widget=forms.CheckboxInput(attrs={'name': 'attributs'}))
+    # date= forms.BooleanField(label='Date', widget=forms.CheckboxInput(attrs={'name': 'attributs'}))
+    # jour= forms.BooleanField(label='Jour', widget=forms.CheckboxInput(attrs={'name': 'attributs'}))
+    # mois= forms.BooleanField(label='Mois')
+    # heure= forms.BooleanField(label='Heure')
+    # date_naiss= forms.BooleanField(label='Date de naissance du chauffeur')
+    # age= forms.BooleanField(label='Age du chauffeur')
+    # type_veh= forms.BooleanField(label='Type de véhicule')
+    # cat_veh= forms.BooleanField(label='Catégorie du véhicule')
+    # temp= forms.BooleanField(label='Temprérature')
+    # vitesse_vent= forms.BooleanField(label='Vitesse du vent')
+    # temp_vent= forms.BooleanField(label='Température du vent')
+    # precipitation= forms.BooleanField(label='Précipiration')
+    # humidite= forms.BooleanField(label='Humidité')
+    # visibilite= forms.BooleanField(label='Visibilité')
+    # couv_nuage= forms.BooleanField(label='Couverture nuageuse')
+    # cause= forms.BooleanField()
 
 
 class uploadFiles(forms.Form):

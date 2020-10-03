@@ -3,7 +3,7 @@ import branca
 from django.shortcuts import render,redirect,get_object_or_404
 import json
 from django.db.models import Count, Q, Sum, Window, F
-from .models import Accident
+from .models import Accident, NegativeSamples
 from django.http import JsonResponse
 from django.core import serializers
 from import_export import resources
@@ -39,6 +39,10 @@ from django.contrib import messages
 from tablib import Dataset
 from datatableview import Datatable
 from .decorators import unauthenticated_user,allowed_users
+#Import Random Forest Model
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn import  preprocessing # used for label encoding and imputing NaNs
 #------- Variables globales --------#
 fullscreen = plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen', force_separate_button=False)
 tilesServer="http://192.168.1.5:90/tile/{z}/{x}/{y}.png"
@@ -74,6 +78,7 @@ def daybarchart(request):
         myfilter =  intervalledate(prefix='charts')
 
     latitude = list(data.values_list("latitude", flat=True))
+    #flat to resturn a QuerySet of single values instead of 1-tuples: <QuerySet [1, 2]> instead of <QuerySet [(1,), (2,)]>
     longitude = list(data.values_list("longitude", flat=True))
     bless = (data.values("accident").annotate(accidents=Sum('nbre_bless'))[0]['accidents'])
     dec = (data.values("accident").annotate(accidents=Sum('nbre_dec'))[0]['accidents'])
@@ -246,10 +251,24 @@ def makePrediction (request):
     total= len(mars)
     if request.method == 'POST':
         myfilter = intervalledate2(request.POST, prefix='pred')
-        debut = request.POST.get('debutPred')
-        fin = request.POST.get('finPred')
+        attributs = request.POST.getlist('attributs')
+        debut = request.POST.get('pred-debutPred')
+        fin = request.POST.get('pred-finPred')
+        # data = Accident.objects.values(attributs)
         data = Accident.objects.filter(date__range=[debut, fin])
-        evolution = 5
+        print(attributs[:])
+        # for i in attribut
+        data= data.values(*attributs)
+        print(data[10])
+        data= list(data)
+        data1 = list(NegativeSamples.objects.filter(date__range=[debut, fin]))
+        print(len(data1))
+        data= data+data1
+        print(len(data))
+
+
+
+
     else:
         data = Accident.objects.all()
         myfilter = intervalledate2(prefix='pred')

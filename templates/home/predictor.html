@@ -23,76 +23,125 @@
 
                 <div class="input-check">
                     <label  for="pred-wilaya"> Wilaya </label>
-                     {{ myfilter.wilaya}}
+                     <input type="checkbox" name="attributs" value="wilaya" >
                 </div>
                 <div class="input-check">
                      <label  for="pred-latitude"> Latitude </label>
-                     {{ myfilter.latitude}}
+{#                     {{ myfilter.latitude}}#}
+                    <input type="checkbox" name="attributs" value="latitude">
                 </div>
                      <div class="input-check">
 
                      <label for="pred-longitude"> Longitude </label>
-                     {{ myfilter.longitude}}
+                         <input type="checkbox" name="attributs" value="longitude">
+{#                     {{ myfilter.longitude}}#}
+                     </div>
+
+                       <div class="input-check">
+                    <label  for="pred-age"> Type de route </label>
+                         <input type="checkbox" name="attributs" value="type_route">
+{#                     {{ myfilter.age}}#}
                      </div>
                      <div class="input-check">
 
                      <label  for="pred-date"> Date </label>
-                     {{ myfilter.date}}
+{#                     {{ myfilter.date}}#}
+                         <input type="checkbox" name="attributs" value="date">
                      </div>
                      <div class="input-check">
                      <label for="pred-jour"> Jour </label>
-                     {{ myfilter.jour}}
+                         <input type="checkbox" name="attributs" value="jour">
+{#                     {{ myfilter.jour}}#}
                      </div>
                      <div class="input-check">
                      <label for="pred-mois"> Mois </label>
-                     {{ myfilter.mois}}
+                         <input type="checkbox" name="attributs" value="mois">
+{#                     {{ myfilter.mois}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-heure"> Heure </label>
-                     {{ myfilter.heure}}
+                         <input type="checkbox" name="attributs" value="heure">
+{#                     {{ myfilter.heure}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-cause"> Cause d'accident </label>
-                     {{ myfilter.cause}}
+                         <input type="checkbox" name="attributs" value="cause_acc">
+{#                     {{ myfilter.cause}}#}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-cause"> Nombre de décès </label>
+                         <input type="checkbox" name="attributs" value="nbre_dec">
+{#                     {{ myfilter.cause}}#}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-cause"> Nombre de blessés </label>
+                         <input type="checkbox" name="attributs" value="nbre_bless">
+{#                     {{ myfilter.cause}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-date_naiss"> Date de naissance du chauffeur</label>
-                     {{ myfilter.date_naiss}}
+                         <input type="checkbox" name="attributs" value="date_naiss_chauff">
+{#                     {{ myfilter.date_naiss}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Age du chauffeur </label>
-                     {{ myfilter.age}}
+                         <input type="checkbox" name="attributs" value="age_chauff">
+{#                     {{ myfilter.age}}#}
+                     </div>
+                    <div class="input-check">
+                    <label  for="pred-age"> Année d'obtention du permis </label>
+                         <input type="checkbox" name="attributs" value="annee_permis">
+{#                     {{ myfilter.age}}#}
+                     </div>
+
+                     <div class="input-check">
+                    <label  for="pred-age"> Catégorie du véhicule </label>
+                         <input type="checkbox" name="attributs" value="cat_veh">
+{#                     {{ myfilter.age}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Temprérature </label>
-                     {{ myfilter.temperature}}
+                         <input type="checkbox" name="attributs" value="temperature">
+{#                     {{ myfilter.temperature}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Précipitations </label>
-                     {{ myfilter.precipitation}}
+                         <input type="checkbox" name="attributs" value="precipitation">
+{#                     {{ myfilter.precipitation}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Vitesse du vent </label>
-                     {{ myfilter.vitesse_vent}}
+                         <input type="checkbox" name="attributs" value="vitessevent">
+{#                     {{ myfilter.vitesse_vent}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Temprérature du vent </label>
-                     {{ myfilter.temp_vent}}
+                         <input type="checkbox" name="attributs" value="tempvent">
+{#                     {{ myfilter.temp_vent}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Humidité </label>
-                     {{ myfilter.humidite}}
+                         <input type="checkbox" name="attributs" value="humidite">
+{#                     {{ myfilter.humidite}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Visibilité</label>
-                     {{ myfilter.visibilite}}
+                         <input type="checkbox" name="attributs" value="visibilite">
+{#                     {{ myfilter.visibilite}}#}
                      </div>
                      <div class="input-check">
                     <label  for="pred-age"> Couverture nuageuse </label>
-                     {{ myfilter.couv_nuage}}
+                         <input type="checkbox" name="attributs" value="couverturenuage">
+{#                     {{ myfilter.couv_nuage}}#}
+                     </div>
+                     <div class="input-check">
+                    <label  for="pred-age"> Neige </label>
+                         <input type="checkbox" name="attributs" value="neige">
+{#                     {{ myfilter.couv_nuage}}#}
                      </div>
 {#                    <input type="date", min='2014-01-02', max= '2014-03-30', value='2014-03-31', id="fin", name="finPred">#}
                 </div>
+{#                {{ myfilter }}#}
                 <div>
                      <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 13px; margin-left: 10px">Lancer l'entrainement</button>
 
@@ -105,8 +154,8 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card border-success mb-3" style="margin:20px; width: 100%">
-                    <div class="card-header bg-transparent border-success">
+                <div class="card border-info mb-3" style="margin:20px; width: 100%">
+                    <div class="card-header bg-transparent border-info">
                      <h5>Performances obtenues</h5>
 
                  </div>
@@ -115,28 +164,28 @@
                  <fieldset disabled>
                  <div class="row">
                  <div class="form-group mx-sm-2 mb-2 col">
-                     <label >Accuracy</label>
-                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ silhouette }}>
+                     <label >Exactitude</label>
+                     <input  size="10" class="form-control form-control-sm" id="acc" placeholder="" value={{ silhouette }}>
                  </div>
                  <div class="form-group mx-sm-2 mb-0 col">
                      <label  data-toggle="popover" data-trigger="hover" >Précision</label>
-                    <input  class="form-control form-control-sm" id="harabasz" placeholder="" value={{ inxch }}>
+                    <input  class="form-control form-control-sm" id="precision" placeholder="" value={{ inxch }}>
                  </div>
                  </div>
                   <div class="row">
                   <div class="form-group mx-sm-2 mb-2 col">
                      <label >Rappel</label>
-                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ nbr_clusters }}>
+                     <input  size="10" class="form-control form-control-sm" id="recall" placeholder="" value={{ nbr_clusters }}>
                  </div>
                   <div class="form-group mx-sm-2 mb-2 col">
                      <label >F1-Score</label>
-                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ outliers }}>
+                     <input  size="10" class="form-control form-control-sm" id="f1score" placeholder="" value={{ outliers }}>
                  </div>
                  </div>
                      <div class="row">
                          <div class="form-group mx-sm-2 mb-2 col-lg-6">
                      <label >AUC-ROC</label>
-                     <input  size="10" class="form-control form-control-sm" id="silhouette" placeholder="" value={{ outliers }}>
+                     <input  size="10" class="form-control form-control-sm" id="aucroc" placeholder="" value={{ outliers }}>
                  </div>
                      </div>
 

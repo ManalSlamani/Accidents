@@ -58,19 +58,19 @@
               Base De Données
             </a>
           </li>
-
+ {% if request.user.is_staff %}
+            <li class="nav-item">
+            <a class="nav-link" href="/admin/">
+              Administration
+            </a>
+        {% endif %}
           <li class="nav-item">
             <a class="nav-link" href="/help/">
               À propos
             </a>
           </li>
 
-        {% if request.user.is_staff %}
-            <li class="nav-item">
-            <a class="nav-link" href="/admin/">
-              Administration
-            </a>
-        {% endif %}
+
        </ul>
     </div>
     <div class=" row " >

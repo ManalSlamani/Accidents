@@ -135,11 +135,13 @@ class NegativeSamples(models.Model):
     visibilite = models.IntegerField(db_column='Visibilite', blank=True, null=True)  # Field name made lowercase.
     vitessevent = models.IntegerField(db_column='VitesseVent', blank=True, null=True)  # Field name made lowercase.
     date = models.DateField(blank=True, null=True)
-    date_naiss_chau = models.DateField(blank=True, null=True)
+    date_naiss_chauff = models.DateField(blank=True, null=True)
     wilaya = models.CharField(max_length=20, blank=True, null=True)
+    accident = models.IntegerField(db_column='Accident', blank=True, null=True)  # Field name made lowercase.
+    id_acc = models.AutoField(primary_key=True, default= 0)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'negative_samples'
 
 class Accident(models.Model):
