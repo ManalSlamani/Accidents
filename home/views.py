@@ -258,33 +258,38 @@ def makePrediction (request):
         attributs = request.POST.getlist('attributs')
         attributs.append('accident')
         debut = request.POST.get('pred-debutPred')
+        # print(debut)
         fin = request.POST.get('pred-finPred')
         # data = Accident.objects.values(attributs)
         data = Accident.objects.filter(date__range=[debut, fin])
-        print(attributs[:])
+        # print(attributs[:])
         # for i in attribut
         data= data.values(*attributs)
-        print(data[10])
-        data= list(data)
-        data1 = list(NegativeSamples.objects.all.filter(date__range=[debut, fin]))
-        print(len(data1))
-        data= pd.DataFrame(data+data1)
-        print(len(data))
+        # print(len(data))
+        # data1 = NegativeSamples.objects.filter(date__range=[debut, fin])
+        data1= NegativeSamples.objects.filter(date__range=[debut, fin])
+        # data1= data1.filter(date)
+        data1 = data1.values(*attributs)
+        # print(len(data1))
+
+        data= pd.DataFrame(list(data)+list(data1))
+        # print(len(data))
+        # print(data.tail())
 
         if 'date' in attributs:
             # Convert the date into a number (of days since some point)
             fromDate = min(data['date'])
             data['timedelta'] = (data['date'] - fromDate).dt.days.astype(int)
-            print(data[['date', 'timedelta']].head())
+            # print(data[['date', 'timedelta']].head())
             data.drop('date', axis=1, inplace=True)
             data.rename(columns={"timedelta": "date"}, inplace=True)
-        if 'date_permis' in attributs:
+        if 'annee_permis' in attributs:
             # Convert ANNEE_PERMIS into a number (of days since some point)
-            fromDate = min(data['ANNEE_PERMIS'])
-            data['timedelta2'] = (data['ANNEE_PERMIS'] - fromDate).dt.days.astype(int)
+            fromDate = min(data['annee_permis'])
+            data['timedelta2'] = (data['annee_permis'] - fromDate).dt.days.astype(int)
             # print(data[['ANNEE_PERMIS', 'timedelta2']].head())
-            data.drop('ANNEE_PERMIS', axis=1, inplace=True)
-            data.rename(columns={"timedelta2": "ANNEE_PERMIS"}, inplace=True)
+            data.drop('annee_permis', axis=1, inplace=True)
+            data.rename(columns={"timedelta2": "annee_permis"}, inplace=True)
         if 'date_naiss_chauff' in attributs:
             # Convert date_naiss_chauff into a number (of days since some point)
             fromDate = min(data['date_naiss_chauff'])
@@ -295,10 +300,10 @@ def makePrediction (request):
         if 'heure' in attributs:
             data.info()
             # Convert the hour into a number (minutes)
-            data['heure'] = pd.to_timedelta(data.heure).astype('timedelta64[m]').astype(int)
-            # print(data[['heure']].tail())
+            data['Heure'] = pd.to_timedelta((data['heure']).astype(str)).astype('timedelta64[m]').astype(int)
+            print(data[['heure']].tail())
             data.drop('heure', axis=1, inplace=True)
-            data.rename(columns={"heure": "heure"}, inplace=True)
+            data.rename(columns={'Heure': 'heure'}, inplace=True)
         if data.isnull().values.any() :
             # Create a list of columns that have missing values and an index (True / False)
             df_missing = data.isnull().sum(axis=0).reset_index()
@@ -317,40 +322,35 @@ def makePrediction (request):
 
             # Apply the imputer
             data.loc[:, idx_cols_missing] = imputer.transform(data.loc[:, idx_cols_missing])
-            # encoding categorical features: we assign a num value to each categorical feature
-            for c in data.columns:
-                if data[c].dtype == 'object':
-                    lbl = preprocessing.LabelEncoder()
-                    lbl.fit(list(data[c].values))
-                    data[c] = lbl.transform(list(data[c].values))
-
-
+        # encoding categorical features: we assign a num value to each categorical feature
+        # if ('wilaya' or 'cause_acc' or 'cat_veh' or 'type_route' or 'jour' or 'mois') in attributs:
+        for c in data.columns:
+            if data[c].dtype == 'object':
+                lbl = preprocessing.LabelEncoder()
+                lbl.fit(list(data[c].values))
+                data[c] = lbl.transform(list(data[c].values))
 
         #mélanger le dataset
         data = sklearn.utils.shuffle(data)
-
         X= data[attributs[:-1]]
         # print(X)
         y= data[['accident']]
         # Split dataset into training set and test set
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)  # 70% training and 30% test
         # Create a Gaussian Classifier
-        clf = RandomForestClassifier(n_estimators=50, random_state=1, max_depth=None, min_samples_leaf=5,
-                                     max_features=None, oob_score=False)
+        clf = RandomForestClassifier(random_state=42, max_features='auto', n_estimators= 32, criterion='gini',  min_samples_leaf= 1 ,min_samples_split= 2)
 
         # Train the model using the training sets y_pred=clf.predict(X_test)
-        clf.fit(X_train, y_train)
-
+        clf.fit(X_train, y_train.values.ravel())
         y_pred = clf.predict(X_test)
         # Import scikit-learn metrics module for accuracy calculation
         from sklearn import metrics
         # Model Accuracy, how often is the classifier correct?
         acc= metrics.accuracy_score(y_pred, y_test)
-        precision=  metrics.precision_score(y_test, y_pred)
+        precision= metrics.precision_score(y_test, y_pred)
         recall= metrics.recall_score(y_test, y_pred)
         f1score= metrics.f1_score(y_test, y_pred, average='weighted')
-        roc= 0
-            # metrics.roc_auc_score(y_test, y_pred)
+        roc= metrics.roc_auc_score(y_test, y_pred)
     else:
         data = Accident.objects.all()
         myfilter = intervalledate2(prefix='pred')
@@ -360,7 +360,7 @@ def makePrediction (request):
         f1score = '-'
         roc = '-'
 
-    context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total, 'rainbow':rainbow,
+    context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total,
                'myfilter':myfilter, 'acc':acc, 'precision': precision, 'recall': recall,
                'f1score':f1score, 'roc':roc}
     return render(request, 'home/prediction.html', context)

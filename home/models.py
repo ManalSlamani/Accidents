@@ -129,6 +129,8 @@ class NegativeSamples(models.Model):
     nbre_dec = models.IntegerField(db_column='NBRE_DEC', blank=True, null=True)  # Field name made lowercase.
     neige = models.IntegerField(db_column='Neige', blank=True, null=True)  # Field name made lowercase.
     precipitation = models.IntegerField(db_column='Precipitation', blank=True, null=True)  # Field name made lowercase.
+    cause_acc = models.CharField(db_column='CAUSE_ACC', max_length=80, blank=True,
+                                 null=True)  # Field name made lowercase.
     type_route = models.CharField(db_column='TYPE_ROUTE', max_length=50, blank=True, null=True)  # Field name made lowercase.
     tempvent = models.IntegerField(db_column='TempVent', blank=True, null=True)  # Field name made lowercase.
     temperature = models.IntegerField(db_column='Temperature', blank=True, null=True)  # Field name made lowercase.
