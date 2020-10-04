@@ -56,9 +56,11 @@ input[type=date]{
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="predictions-tab" data-toggle="tab" href="#predictions" role="tab" aria-controls="home" aria-selected="true"><h5>Futures accidents</h5></a>
         </li>
+        {% if request.user.is_staff %}
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="predictor-tab" data-toggle="tab" href="#predictor" role="tab" aria-controls="profile" aria-selected="false"><h5>Prédicteur</h5></a>
         </li>
+        {% endif %}
     </ul>
     <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="predictions" role="tabpanel" aria-labelledby="predictions-tab"
@@ -105,48 +107,14 @@ input[type=date]{
 
         </div>
      </div>
+    {% if request.user.is_staff %}
     <div class="tab-pane fade" id="predictor" role="tabpanel" aria-labelledby="predictor-tab" style="border-bottom: solid; border-right:solid; border-left: solid; border-width: 1px; border-color: #c4dce8 ">
 
         {% include 'home/predictor.html' %}
 
-        <br>
-        <div class="card border-dark mb-0"  style="padding: 20px; margin: 10px" >
-            <b>  <h4>Les forêts aléatoires</h4></b><br>
-{#        <div class="row">#}
-
-{#            <div class="col-lg-6">#}
-                 <p style="font-size: 14px">
-                    L’idée générale derrière la méthode des forêts aléatoires est qu’au lieu d’essayer d’obtenir une méthode optimisée en une fois, plusieurs prédicteurs sont générés avant de mettre en
-                     commun leurs différentes prédictions. Elle se base sur l’application de l’approche arbre de décision sur plusieurs échantillons de données et permet d’obtenir des modèles prédictifs
-                     pour la classification et la régression. L’aspect aléatoire se présente dans le choix des tests de sélection dans le processus des arbres de décision.
-                     Les tests sont choisis aléatoirement dans chaque étape et dans chaque arbre ce qui rend la méthode robuste face au problème de surapprentissage.<br>
-
-                     La forêt est composée d’un ensemble d’arbres de décision où chaque arbre s’entraîne sur
-                     une fraction de données nommée a bootstrapped dataset. Pour construire ce dataset, des données sont tirées -avec remise- aléatoirement du dataset original (nous pouvons avoir la même
-                     donnée deux fois dans le dataset résultant). C’est le principe de Bootstrap. De plus, et afin que
-                     les arbres de notre forêt ne se ressemblent pas trop, un tirage aléatoire sans remise de m features,
-                     parmi M en entrée (m < M), est fait pour chaque noeud pour son découpage. Cette variable m
-                     est identique pour tous les arbres et les noeuds d’un même arbre, par contre les m variables
-                     impliquées dans deux nœuds distincts sont en général différentes. La collection d’arbres obtenus est enfin agrégée (moyenne en régression, vote majoritaire en classification) pour donner le
-                     prédicteur Random Forests.
-
-                </p>
-
-{#            </div>#}
-{#            <div class="col-lg-6">#}
-                 <img src="{% static 'img/RF.gif' %}"  style="width: 80%; border-style: solid; border-width: 1px; display: block;   margin-left: auto;  margin-right: auto;" alt="">
-{#            </div>#}
-{#        </div>#}
-            <br>
-
-
-
-
-
-
-
-
-    </div></div> <br>
+        <br></div>
+    {% endif %}
+</div> <br>
     </div>
     </div>
     </div>

@@ -1,3 +1,4 @@
+{% load static %}
 <div class="row" style="width: 100%">
             <div class="col-lg-6">
                 <div class="card border-info mb-3" style="margin:20px; width: 100%">
@@ -165,27 +166,27 @@
                  <div class="row">
                  <div class="form-group mx-sm-2 mb-2 col">
                      <label >Exactitude</label>
-                     <input  size="10" class="form-control form-control-sm" id="acc" placeholder="" value={{ silhouette }}>
+                     <input  size="10" class="form-control form-control-sm" id="acc" placeholder="" value={{ acc }}>
                  </div>
                  <div class="form-group mx-sm-2 mb-0 col">
                      <label  data-toggle="popover" data-trigger="hover" >Précision</label>
-                    <input  class="form-control form-control-sm" id="precision" placeholder="" value={{ inxch }}>
+                    <input  class="form-control form-control-sm" id="precision" placeholder="" value={{ precision }}>
                  </div>
                  </div>
                   <div class="row">
                   <div class="form-group mx-sm-2 mb-2 col">
                      <label >Rappel</label>
-                     <input  size="10" class="form-control form-control-sm" id="recall" placeholder="" value={{ nbr_clusters }}>
+                     <input  size="10" class="form-control form-control-sm" id="recall" placeholder="" value={{ recall }}>
                  </div>
                   <div class="form-group mx-sm-2 mb-2 col">
                      <label >F1-Score</label>
-                     <input  size="10" class="form-control form-control-sm" id="f1score" placeholder="" value={{ outliers }}>
+                     <input  size="10" class="form-control form-control-sm" id="f1score" placeholder="" value={{ f1score }}>
                  </div>
                  </div>
                      <div class="row">
                          <div class="form-group mx-sm-2 mb-2 col-lg-6">
                      <label >AUC-ROC</label>
-                     <input  size="10" class="form-control form-control-sm" id="aucroc" placeholder="" value={{ outliers }}>
+                     <input  size="10" class="form-control form-control-sm" id="aucroc" placeholder="" value={{ roc }}>
                  </div>
                      </div>
 
@@ -202,3 +203,44 @@
 
             </div>
         </div>
+
+
+
+<div class="card border-dark mb-0"  style="padding: 20px; margin: 10px" >
+            <b>  <h4>Les forêts aléatoires</h4></b><br>
+{#        <div class="row">#}
+
+{#            <div class="col-lg-6">#}
+                 <p style="font-size: 14px">
+                    L’idée générale derrière la méthode des forêts aléatoires est qu’au lieu d’essayer d’obtenir une méthode optimisée en une fois, plusieurs prédicteurs sont générés avant de mettre en
+                     commun leurs différentes prédictions. Elle se base sur l’application de l’approche arbre de décision sur plusieurs échantillons de données et permet d’obtenir des modèles prédictifs
+                     pour la classification et la régression. L’aspect aléatoire se présente dans le choix des tests de sélection dans le processus des arbres de décision.
+                     Les tests sont choisis aléatoirement dans chaque étape et dans chaque arbre ce qui rend la méthode robuste face au problème de surapprentissage.<br>
+
+                     La forêt est composée d’un ensemble d’arbres de décision où chaque arbre s’entraîne sur
+                     une fraction de données nommée a bootstrapped dataset. Pour construire ce dataset, des données sont tirées -avec remise- aléatoirement du dataset original (nous pouvons avoir la même
+                     donnée deux fois dans le dataset résultant). C’est le principe de Bootstrap. De plus, et afin que
+                     les arbres de notre forêt ne se ressemblent pas trop, un tirage aléatoire sans remise de m features,
+                     parmi M en entrée (m < M), est fait pour chaque noeud pour son découpage. Cette variable m
+                     est identique pour tous les arbres et les noeuds d’un même arbre, par contre les m variables
+                     impliquées dans deux nœuds distincts sont en général différentes. La collection d’arbres obtenus est enfin agrégée (moyenne en régression, vote majoritaire en classification) pour donner le
+                     prédicteur Random Forests.
+
+                </p>
+
+{#            </div>#}
+{#            <div class="col-lg-6">#}
+                 <img src="{% static 'img/RF.gif' %}"  style="width: 80%; border-style: solid; border-width: 1px; display: block;   margin-left: auto;  margin-right: auto;" alt="">
+
+{#            </div>#}
+{#        </div>#}
+            <br>
+
+
+
+
+
+
+
+
+    </div>

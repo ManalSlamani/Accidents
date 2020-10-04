@@ -132,7 +132,7 @@ class NegativeSamples(models.Model):
     type_route = models.CharField(db_column='TYPE_ROUTE', max_length=50, blank=True, null=True)  # Field name made lowercase.
     tempvent = models.IntegerField(db_column='TempVent', blank=True, null=True)  # Field name made lowercase.
     temperature = models.IntegerField(db_column='Temperature', blank=True, null=True)  # Field name made lowercase.
-    visibilite = models.IntegerField(db_column='Visibilite', blank=True, null=True)  # Field name made lowercase.
+    visibilite = models.IntegerField(db_column='visibilite', blank=True, null=True)  # Field name made lowercase.
     vitessevent = models.IntegerField(db_column='VitesseVent', blank=True, null=True)  # Field name made lowercase.
     date = models.DateField(blank=True, null=True)
     date_naiss_chauff = models.DateField(blank=True, null=True)

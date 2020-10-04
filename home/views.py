@@ -3,6 +3,7 @@ import branca
 from django.shortcuts import render,redirect,get_object_or_404
 import json
 from django.db.models import Count, Q, Sum, Window, F
+import datetime as dt # we will need this to convert the date to a number of days since some point
 from .models import Accident, NegativeSamples
 from django.http import JsonResponse
 from django.core import serializers
@@ -39,6 +40,9 @@ from django.contrib import messages
 from tablib import Dataset
 from datatableview import Datatable
 from .decorators import unauthenticated_user,allowed_users
+from sklearn.impute import SimpleImputer
+import numpy as np
+import sklearn
 #Import Random Forest Model
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -252,6 +256,7 @@ def makePrediction (request):
     if request.method == 'POST':
         myfilter = intervalledate2(request.POST, prefix='pred')
         attributs = request.POST.getlist('attributs')
+        attributs.append('accident')
         debut = request.POST.get('pred-debutPred')
         fin = request.POST.get('pred-finPred')
         # data = Accident.objects.values(attributs)
@@ -261,20 +266,103 @@ def makePrediction (request):
         data= data.values(*attributs)
         print(data[10])
         data= list(data)
-        data1 = list(NegativeSamples.objects.filter(date__range=[debut, fin]))
+        data1 = list(NegativeSamples.objects.all.filter(date__range=[debut, fin]))
         print(len(data1))
-        data= data+data1
+        data= pd.DataFrame(data+data1)
         print(len(data))
 
+        if 'date' in attributs:
+            # Convert the date into a number (of days since some point)
+            fromDate = min(data['date'])
+            data['timedelta'] = (data['date'] - fromDate).dt.days.astype(int)
+            print(data[['date', 'timedelta']].head())
+            data.drop('date', axis=1, inplace=True)
+            data.rename(columns={"timedelta": "date"}, inplace=True)
+        if 'date_permis' in attributs:
+            # Convert ANNEE_PERMIS into a number (of days since some point)
+            fromDate = min(data['ANNEE_PERMIS'])
+            data['timedelta2'] = (data['ANNEE_PERMIS'] - fromDate).dt.days.astype(int)
+            # print(data[['ANNEE_PERMIS', 'timedelta2']].head())
+            data.drop('ANNEE_PERMIS', axis=1, inplace=True)
+            data.rename(columns={"timedelta2": "ANNEE_PERMIS"}, inplace=True)
+        if 'date_naiss_chauff' in attributs:
+            # Convert date_naiss_chauff into a number (of days since some point)
+            fromDate = min(data['date_naiss_chauff'])
+            data['timedelta3'] = (data['date_naiss_chauff'] - fromDate).dt.days.astype(int)
+            # print(data[['date_naiss_chau', 'timedelta3']].head())
+            data.drop('date_naiss_chauff', axis=1, inplace=True)
+            data.rename(columns={"timedelta3": "date_naiss_chauff"}, inplace=True)
+        if 'heure' in attributs:
+            data.info()
+            # Convert the hour into a number (minutes)
+            data['heure'] = pd.to_timedelta(data.heure).astype('timedelta64[m]').astype(int)
+            # print(data[['heure']].tail())
+            data.drop('heure', axis=1, inplace=True)
+            data.rename(columns={"heure": "heure"}, inplace=True)
+        if data.isnull().values.any() :
+            # Create a list of columns that have missing values and an index (True / False)
+            df_missing = data.isnull().sum(axis=0).reset_index()
+            df_missing.columns = ['column_name', 'missing_count']
+            idx_ = df_missing['missing_count'] > 0
+            df_missing = df_missing.loc[idx_]
+            cols_missing = df_missing.column_name.values
+            idx_cols_missing = data.columns.isin(cols_missing)
+
+            # Instantiate an imputer
+            imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+
+            # Fit the imputer using all of our data (but not any dates)
+
+            imputer.fit(data.loc[:, idx_cols_missing])
+
+            # Apply the imputer
+            data.loc[:, idx_cols_missing] = imputer.transform(data.loc[:, idx_cols_missing])
+            # encoding categorical features: we assign a num value to each categorical feature
+            for c in data.columns:
+                if data[c].dtype == 'object':
+                    lbl = preprocessing.LabelEncoder()
+                    lbl.fit(list(data[c].values))
+                    data[c] = lbl.transform(list(data[c].values))
 
 
 
+        #mélanger le dataset
+        data = sklearn.utils.shuffle(data)
+
+        X= data[attributs[:-1]]
+        # print(X)
+        y= data[['accident']]
+        # Split dataset into training set and test set
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)  # 70% training and 30% test
+        # Create a Gaussian Classifier
+        clf = RandomForestClassifier(n_estimators=50, random_state=1, max_depth=None, min_samples_leaf=5,
+                                     max_features=None, oob_score=False)
+
+        # Train the model using the training sets y_pred=clf.predict(X_test)
+        clf.fit(X_train, y_train)
+
+        y_pred = clf.predict(X_test)
+        # Import scikit-learn metrics module for accuracy calculation
+        from sklearn import metrics
+        # Model Accuracy, how often is the classifier correct?
+        acc= metrics.accuracy_score(y_pred, y_test)
+        precision=  metrics.precision_score(y_test, y_pred)
+        recall= metrics.recall_score(y_test, y_pred)
+        f1score= metrics.f1_score(y_test, y_pred, average='weighted')
+        roc= 0
+            # metrics.roc_auc_score(y_test, y_pred)
     else:
         data = Accident.objects.all()
         myfilter = intervalledate2(prefix='pred')
+        acc = '-'
+        precision = '-'
+        recall = '-'
+        f1score = '-'
+        roc = '-'
 
     context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total, 'rainbow':rainbow,
-               'myfilter':myfilter}
+               'myfilter':myfilter, 'acc':acc, 'precision': precision, 'recall': recall,
+               'f1score':f1score, 'roc':roc}
     return render(request, 'home/prediction.html', context)
 
 
