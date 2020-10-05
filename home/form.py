@@ -70,14 +70,13 @@ class intervalledate(forms.Form):
         attrs={'type': 'date', 'min': '2014-01-01', 'max': '2014-03-30', 'value': '2014-01-01'}))
     fin = forms.DateField(label='Au', widget=forms.DateInput(
         attrs={'type': 'date', 'min': '2014-01-02', 'max': '2014-03-31', 'value': '2014-03-31'}))
-
-
 class intervalledate2(forms.Form):
     debutPred = forms.DateField(label='Du', widget=forms.DateInput(
         attrs={'type': 'date', 'min': '2014-01-01', 'max': '2014-03-30', 'value': '2014-01-01'}))
     finPred = forms.DateField(label='Au', widget=forms.DateInput(
         attrs={'type': 'date', 'min': '2014-01-02', 'max': '2014-03-31', 'value': '2014-03-31'}))
-
+class savePred(forms.Form):
+    user = forms.CharField(required=True, label="", widget=forms.TextInput(attrs={'placeholder': "Nome d'utilisateur"}))
 
 class uploadFiles(forms.Form):
     file_field = forms.FileField(label='Sélectionner un fichier',

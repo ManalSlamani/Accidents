@@ -253,7 +253,8 @@ def makePrediction (request):
     m = f._repr_html_()  # updated
     # mars = list(mars)
     total= len(mars)
-    if request.method == 'POST':
+    if request.method == 'POST' and 'train' in request.POST:
+        # saveP= savePred()
         myfilter = intervalledate2(request.POST, prefix='pred')
         attributs = request.POST.getlist('attributs')
         attributs.append('accident')
@@ -301,7 +302,7 @@ def makePrediction (request):
             data.info()
             # Convert the hour into a number (minutes)
             data['Heure'] = pd.to_timedelta((data['heure']).astype(str)).astype('timedelta64[m]').astype(int)
-            print(data[['heure']].tail())
+            # print(data[['heure']].tail())
             data.drop('heure', axis=1, inplace=True)
             data.rename(columns={'Heure': 'heure'}, inplace=True)
         if data.isnull().values.any() :
@@ -343,6 +344,7 @@ def makePrediction (request):
         # Train the model using the training sets y_pred=clf.predict(X_test)
         clf.fit(X_train, y_train.values.ravel())
         y_pred = clf.predict(X_test)
+
         # Import scikit-learn metrics module for accuracy calculation
         from sklearn import metrics
         # Model Accuracy, how often is the classifier correct?
@@ -351,6 +353,7 @@ def makePrediction (request):
         recall= metrics.recall_score(y_test, y_pred)
         f1score= metrics.f1_score(y_test, y_pred, average='weighted')
         roc= metrics.roc_auc_score(y_test, y_pred)
+
     else:
         data = Accident.objects.all()
         myfilter = intervalledate2(prefix='pred')
@@ -359,10 +362,13 @@ def makePrediction (request):
         recall = '-'
         f1score = '-'
         roc = '-'
+    if request.method == 'POST' and "savePredictor" in request.POST:
+        from joblib import dump, load
+        dump(clf, '.\static\\clf_classifier.joblib')
 
     context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total,
                'myfilter':myfilter, 'acc':acc, 'precision': precision, 'recall': recall,
-               'f1score':f1score, 'roc':roc}
+               'f1score':f1score, 'roc':roc, }
     return render(request, 'home/prediction.html', context)
 
 

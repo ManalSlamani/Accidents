@@ -1,4 +1,14 @@
 {% load static %}
+<style>
+.hide {
+  display: none;
+}
+
+.myDIV:hover + .hide {
+  display: block;
+  color: red;
+}
+</style>
 <div class="row" style="width: 100%">
             <div class="col-lg-6">
                 <div class="card border-info mb-3" style="margin:20px; width: 100%">
@@ -144,7 +154,7 @@
                 </div>
 {#                {{ myfilter }}#}
                 <div>
-                     <button type="submit" class="btn btn-dark" style="float: right; width: auto; font-size: 13px; margin-left: 10px">Lancer l'entrainement</button>
+                     <button type="submit" class="btn btn-dark" name="train" style="float: right; width: auto; font-size: 13px; margin-left: 10px">Lancer l'entrainement</button>
 
                 </div>
 
@@ -159,33 +169,58 @@
                     <div class="card-header bg-transparent border-info">
                      <h5>Performances obtenues</h5>
 
+
                  </div>
                     <div class="card-body">
-                         <form class="">
+                         <form class="" method="post">
+                             {% csrf_token %}
+                             {{ saveP }}
                  <fieldset disabled>
                  <div class="row">
                  <div class="form-group mx-sm-2 mb-2 col">
-                     <label >Exactitude</label>
+                    <label class="myDIV">
+                         Exactitude</label>
+                         <span class="hide">
+                             Elle mesure la fraction de prédictions correctes. La plage est comprise entre 0 et 1. Plus
+la valeur est grande, meilleure est la précision prédictive
+                         </span>
+
                      <input  size="10" class="form-control form-control-sm" id="acc" placeholder="" value={{ acc }}>
                  </div>
                  <div class="form-group mx-sm-2 mb-0 col">
-                     <label  data-toggle="popover" data-trigger="hover" >Précision</label>
+                     <label  class="myDIV" >Précision</label>
+                     <span class="hide">
+                         Elle est égale au rapport du nombre de prédictions réussies sur le nombre total de pré-
+dictions.
+
+                     </span>
                     <input  class="form-control form-control-sm" id="precision" placeholder="" value={{ precision }}>
                  </div>
                  </div>
                   <div class="row">
                   <div class="form-group mx-sm-2 mb-2 col">
-                     <label >Rappel</label>
+                     <label class="myDIV">Rappel</label>
+                      <span class="hide">
+                          Mesure la fraction de positifs observés qui sont prédits comme positifs.
+La plage est comprise entre 0 et 1
+                      </span>
                      <input  size="10" class="form-control form-control-sm" id="recall" placeholder="" value={{ recall }}>
                  </div>
                   <div class="form-group mx-sm-2 mb-2 col">
-                     <label >F1-Score</label>
+                     <label class="myDIV" >F1-Score</label>
+                      <span class="hide">
+                          Elle prend en compte à la fois la précision et le rappel. Il s’agit de la moyenne harmonique
+de ces deux métriques.
+                      </span>
                      <input  size="10" class="form-control form-control-sm" id="f1score" placeholder="" value={{ f1score }}>
                  </div>
                  </div>
                      <div class="row">
                          <div class="form-group mx-sm-2 mb-2 col-lg-6">
-                     <label >AUC-ROC</label>
+                     <label class="myDIV">AUC-ROC</label>
+                             <span class="hide">
+                                 Area Under the Received Operating Characteristic Curves
+                             </span>
                      <input  size="10" class="form-control form-control-sm" id="aucroc" placeholder="" value={{ roc }}>
                  </div>
                      </div>
@@ -193,7 +228,7 @@
                  </fieldset>
                              <br>
                              <div>
-                     <button type="submit" class="btn btn-warning" style="float: right; width: auto; font-size: 13px; margin-left: 10px">Sauvegarder le modèle</button>
+                     <button type="submit" class="btn btn-warning" style="float: right; width: auto; font-size: 13px; margin-left: 10px" name="savePredictor">Sauvegarder le modèle</button>
 
                 </div>
         </form>
