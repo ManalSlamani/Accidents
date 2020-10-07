@@ -78,7 +78,7 @@ def prepareData(data):
         data.drop('date_naiss_chauff', axis=1, inplace=True)
         data.rename(columns={"timedelta3": "date_naiss_chauff"}, inplace=True)
     if 'heure' in data.columns:
-        data.info()
+        # data.info()
         # Convert the hour into a number (minutes)
         data['Heure'] = pd.to_timedelta((data['heure']).astype(str)).astype('timedelta64[m]').astype(int)
         # print(data[['heure']].tail())
@@ -119,11 +119,7 @@ def get_data(request, *args, **kwargs):
     data = Accident.objects.all()
     return render(request, 'home/lineChart.htm', {"data": data})
 
-
 # ------------------------------------------------------------------------------
-
-
-
 @login_required(login_url='authentif')
 def daybarchart(request):
     f = folium.Figure()
@@ -298,28 +294,35 @@ def makeClusters(request):
 def makePrediction (request):
     myfilter = intervalledate2(prefix='pred')
     clf = load('.\static\\rf_classifier.joblib')
-
-    mars = pd.read_excel(".\static\\rf_pred.xlsx")
-    predictions = len(mars)
-
+    # mars = pd.read_excel(".\static\\rf_pred.xlsx")
+    # predictions = len(mars)
     marsData= Accident.objects.filter(date__year=2014, date__month=3, date__day=31)
-    marsData= marsData.values('longitude', 'latitude', 'age_chauff', 'annee_permis', 'heure', 'cause_acc', 'date_naiss_chauff', 'date')
-    marsData= prepareData(pd.DataFrame(marsData))
+    print(marsData.values('wilaya'))
+    marsData= marsData.values('wilaya','longitude', 'latitude', 'age_chauff', 'annee_permis', 'heure', 'cause_acc', 'date_naiss_chauff', 'date')
+
+    marsDataCopy= pd.DataFrame(marsData)
+    marsData= prepareData(pd.DataFrame(marsData).loc[:, pd.DataFrame(marsData).columns != 'wilaya'])
     predMars= clf.predict(marsData)
+    proba = pd.DataFrame(clf.predict_proba(marsData)).rename(columns={0: "proba_0", 1: "proba_1"}, errors="raise")
+    pred = pd.DataFrame(clf.predict(marsData)).rename(columns={0: "pred"}, errors="raise")
+    result = proba.merge(pred, left_index=True, right_on=None, right_index=True)
+    res = pd.concat([marsDataCopy, result], axis=1, join='inner')
+
+    predictions = len(res)
 
     f = folium.Figure(height=500)
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
     m.add_child(fullscreen)
     colors_array = cm.rainbow(np.linspace(0, 1, predictions))
     rainbow = [colors.rgb2hex(i) for i in colors_array]
-    for row in range(len(mars)):
-        folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],
+    for row in range(len(res)):
+        folium.CircleMarker([float(res.iloc[row]['latitude']), float(res.iloc[row]['longitude'])],
                             color=(rainbow[row - 1]), radius=7, fill=True, id=rainbow[row - 1],
-                            popup=('Prpba:', mars.iloc[row]['proba_1'])).add_to(m)
+                            popup=('Prpba:', res.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
     # mars = list(mars)
-    total = len(mars)
+    total = predictions
 
     # if request.method == 'POST' and 'predictors' in request.POST:
     #     m=0
@@ -368,13 +371,12 @@ def makePrediction (request):
         recall = '-'
         f1score = '-'
         roc = '-'
-
     if request.method == 'POST' and "savePredictor" in request.POST:
         clf = load('.\static\\predictors\\clf_classifier.joblib')
         dump(clf, '.\static\\clf_classifier.joblib')
-    context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total,
+    context = {'my_map': m, 'predictions':predictions, 'mars':res, 'total':total,
                'myfilter':myfilter, 'acc':acc, 'precision': precision, 'recall': recall,
-               'f1score':f1score, 'roc':roc,'intervallePred': intervallePred }
+               'f1score':f1score, 'roc':roc,'intervallePred': intervallePred,}
     return render(request, 'home/prediction.html', context)
 
 
