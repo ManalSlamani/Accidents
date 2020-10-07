@@ -43,6 +43,7 @@ from .decorators import unauthenticated_user,allowed_users
 from sklearn.impute import SimpleImputer
 import numpy as np
 import sklearn
+from joblib import load, dump
 #Import Random Forest Model
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -318,7 +319,6 @@ def makePrediction (request):
             imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
 
             # Fit the imputer using all of our data (but not any dates)
-
             imputer.fit(data.loc[:, idx_cols_missing])
 
             # Apply the imputer
@@ -338,13 +338,13 @@ def makePrediction (request):
         y= data[['accident']]
         # Split dataset into training set and test set
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)  # 70% training and 30% test
-        # Create a Gaussian Classifier
-        clf = RandomForestClassifier(random_state=42, max_features='auto', n_estimators= 32, criterion='gini',  min_samples_leaf= 1 ,min_samples_split= 2)
 
+        # Create a RandomForest Classifier
+        clf = RandomForestClassifier(random_state=42, max_features='auto', n_estimators= 32, criterion='gini',  min_samples_leaf= 1 ,min_samples_split= 2)
         # Train the model using the training sets y_pred=clf.predict(X_test)
         clf.fit(X_train, y_train.values.ravel())
         y_pred = clf.predict(X_test)
-
+        dump(clf, '.\static\\predictors\\clf_classifier.joblib')
         # Import scikit-learn metrics module for accuracy calculation
         from sklearn import metrics
         # Model Accuracy, how often is the classifier correct?
@@ -353,7 +353,6 @@ def makePrediction (request):
         recall= metrics.recall_score(y_test, y_pred)
         f1score= metrics.f1_score(y_test, y_pred, average='weighted')
         roc= metrics.roc_auc_score(y_test, y_pred)
-
     else:
         data = Accident.objects.all()
         myfilter = intervalledate2(prefix='pred')
@@ -363,7 +362,7 @@ def makePrediction (request):
         f1score = '-'
         roc = '-'
     if request.method == 'POST' and "savePredictor" in request.POST:
-        from joblib import dump, load
+        clf = load('.\static\\predictors\\clf_classifier.joblib')
         dump(clf, '.\static\\clf_classifier.joblib')
 
     context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total,
