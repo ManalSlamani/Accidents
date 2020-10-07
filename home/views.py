@@ -41,6 +41,8 @@ from tablib import Dataset
 from datatableview import Datatable
 from .decorators import unauthenticated_user,allowed_users
 from sklearn.impute import SimpleImputer
+# Import scikit-learn metrics module for accuracy calculation
+from sklearn import metrics
 import numpy as np
 import sklearn
 from joblib import load, dump
@@ -48,10 +50,65 @@ from joblib import load, dump
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import  preprocessing # used for label encoding and imputing NaNs
+
 #------- Variables globales --------#
 fullscreen = plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen', force_separate_button=False)
 tilesServer="http://192.168.1.5:90/tile/{z}/{x}/{y}.png"
 
+def prepareData(data):
+    if 'date' in data.columns:
+        # Convert the date into a number (of days since some point)
+        fromDate = min(data['date'])
+        data['timedelta'] = (data['date'] - fromDate).dt.days.astype(int)
+        # print(data[['date', 'timedelta']].head())
+        data.drop('date', axis=1, inplace=True)
+        data.rename(columns={"timedelta": "date"}, inplace=True)
+    if 'annee_permis' in data.columns:
+        # Convert ANNEE_PERMIS into a number (of days since some point)
+        fromDate = min(data['annee_permis'])
+        data['timedelta2'] = (data['annee_permis'] - fromDate).dt.days.astype(int)
+        # print(data[['ANNEE_PERMIS', 'timedelta2']].head())
+        data.drop('annee_permis', axis=1, inplace=True)
+        data.rename(columns={"timedelta2": "annee_permis"}, inplace=True)
+    if 'date_naiss_chauff' in data.columns:
+        # Convert date_naiss_chauff into a number (of days since some point)
+        fromDate = min(data['date_naiss_chauff'])
+        data['timedelta3'] = (data['date_naiss_chauff'] - fromDate).dt.days.astype(int)
+        # print(data[['date_naiss_chau', 'timedelta3']].head())
+        data.drop('date_naiss_chauff', axis=1, inplace=True)
+        data.rename(columns={"timedelta3": "date_naiss_chauff"}, inplace=True)
+    if 'heure' in data.columns:
+        data.info()
+        # Convert the hour into a number (minutes)
+        data['Heure'] = pd.to_timedelta((data['heure']).astype(str)).astype('timedelta64[m]').astype(int)
+        # print(data[['heure']].tail())
+        data.drop('heure', axis=1, inplace=True)
+        data.rename(columns={'Heure': 'heure'}, inplace=True)
+    if data.isnull().values.any():
+        # Create a list of columns that have missing values and an index (True / False)
+        df_missing = data.isnull().sum(axis=0).reset_index()
+        df_missing.columns = ['column_name', 'missing_count']
+        idx_ = df_missing['missing_count'] > 0
+        df_missing = df_missing.loc[idx_]
+        cols_missing = df_missing.column_name.values
+        idx_cols_missing = data.columns.isin(cols_missing)
+
+        # Instantiate an imputer
+        imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+
+        # Fit the imputer using all of our data (but not any dates)
+        imputer.fit(data.loc[:, idx_cols_missing])
+
+        # Apply the imputer
+        data.loc[:, idx_cols_missing] = imputer.transform(data.loc[:, idx_cols_missing])
+    # encoding categorical features: we assign a num value to each categorical feature
+    # if ('wilaya' or 'cause_acc' or 'cat_veh' or 'type_route' or 'jour' or 'mois') in attributs:
+    for c in data.columns:
+        if data[c].dtype == 'object':
+            lbl = preprocessing.LabelEncoder()
+            lbl.fit(list(data[c].values))
+            data[c] = lbl.transform(list(data[c].values))
+    return (data)
 
 @login_required(login_url='authentif')
 def home(request):
@@ -239,97 +296,47 @@ def makeClusters(request):
 # ----------------------------------------------------------------------------------------
 @login_required(login_url='authentif')
 def makePrediction (request):
-    mars= pd.read_excel(".\static\\rf_pred.xlsx")
-    predictions=len(mars)
-    f = folium.Figure( height=500)
+    myfilter = intervalledate2(prefix='pred')
+    clf = load('.\static\\rf_classifier.joblib')
+
+    mars = pd.read_excel(".\static\\rf_pred.xlsx")
+    predictions = len(mars)
+
+    marsData= Accident.objects.filter(date__year=2014, date__month=3, date__day=31)
+    marsData= marsData.values('longitude', 'latitude', 'age_chauff', 'annee_permis', 'heure', 'cause_acc', 'date_naiss_chauff', 'date')
+    marsData= prepareData(pd.DataFrame(marsData))
+    predMars= clf.predict(marsData)
+
+    f = folium.Figure(height=500)
     m = folium.Map(location=[28.5, 2], zoom_start=5, tiles=tilesServer, attr="openmaptiles-server")
     m.add_child(fullscreen)
-    colors_array = cm.rainbow(np.linspace(0,1 , len(mars)))
+    colors_array = cm.rainbow(np.linspace(0, 1, predictions))
     rainbow = [colors.rgb2hex(i) for i in colors_array]
     for row in range(len(mars)):
         folium.CircleMarker([float(mars.iloc[row]['Latitude']), float(mars.iloc[row]['Longitude'])],
-                            color=(rainbow[row-1]), radius=7,fill=True, id= rainbow[row-1],
-                            popup=('Prpba:',mars.iloc[row]['proba_1'])).add_to(m)
+                            color=(rainbow[row - 1]), radius=7, fill=True, id=rainbow[row - 1],
+                            popup=('Prpba:', mars.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
     # mars = list(mars)
-    total= len(mars)
+    total = len(mars)
+
+    # if request.method == 'POST' and 'predictors' in request.POST:
+    #     m=0
     if request.method == 'POST' and 'train' in request.POST:
-        # saveP= savePred()
+        intervallePred = intervalledate()
         myfilter = intervalledate2(request.POST, prefix='pred')
         attributs = request.POST.getlist('attributs')
         attributs.append('accident')
         debut = request.POST.get('pred-debutPred')
-        # print(debut)
         fin = request.POST.get('pred-finPred')
-        # data = Accident.objects.values(attributs)
         data = Accident.objects.filter(date__range=[debut, fin])
-        # print(attributs[:])
-        # for i in attribut
+        data1 = NegativeSamples.objects.filter(date__range=[debut, fin])
         data= data.values(*attributs)
-        # print(len(data))
-        # data1 = NegativeSamples.objects.filter(date__range=[debut, fin])
-        data1= NegativeSamples.objects.filter(date__range=[debut, fin])
-        # data1= data1.filter(date)
         data1 = data1.values(*attributs)
-        # print(len(data1))
-
         data= pd.DataFrame(list(data)+list(data1))
-        # print(len(data))
-        # print(data.tail())
-
-        if 'date' in attributs:
-            # Convert the date into a number (of days since some point)
-            fromDate = min(data['date'])
-            data['timedelta'] = (data['date'] - fromDate).dt.days.astype(int)
-            # print(data[['date', 'timedelta']].head())
-            data.drop('date', axis=1, inplace=True)
-            data.rename(columns={"timedelta": "date"}, inplace=True)
-        if 'annee_permis' in attributs:
-            # Convert ANNEE_PERMIS into a number (of days since some point)
-            fromDate = min(data['annee_permis'])
-            data['timedelta2'] = (data['annee_permis'] - fromDate).dt.days.astype(int)
-            # print(data[['ANNEE_PERMIS', 'timedelta2']].head())
-            data.drop('annee_permis', axis=1, inplace=True)
-            data.rename(columns={"timedelta2": "annee_permis"}, inplace=True)
-        if 'date_naiss_chauff' in attributs:
-            # Convert date_naiss_chauff into a number (of days since some point)
-            fromDate = min(data['date_naiss_chauff'])
-            data['timedelta3'] = (data['date_naiss_chauff'] - fromDate).dt.days.astype(int)
-            # print(data[['date_naiss_chau', 'timedelta3']].head())
-            data.drop('date_naiss_chauff', axis=1, inplace=True)
-            data.rename(columns={"timedelta3": "date_naiss_chauff"}, inplace=True)
-        if 'heure' in attributs:
-            data.info()
-            # Convert the hour into a number (minutes)
-            data['Heure'] = pd.to_timedelta((data['heure']).astype(str)).astype('timedelta64[m]').astype(int)
-            # print(data[['heure']].tail())
-            data.drop('heure', axis=1, inplace=True)
-            data.rename(columns={'Heure': 'heure'}, inplace=True)
-        if data.isnull().values.any() :
-            # Create a list of columns that have missing values and an index (True / False)
-            df_missing = data.isnull().sum(axis=0).reset_index()
-            df_missing.columns = ['column_name', 'missing_count']
-            idx_ = df_missing['missing_count'] > 0
-            df_missing = df_missing.loc[idx_]
-            cols_missing = df_missing.column_name.values
-            idx_cols_missing = data.columns.isin(cols_missing)
-
-            # Instantiate an imputer
-            imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-
-            # Fit the imputer using all of our data (but not any dates)
-            imputer.fit(data.loc[:, idx_cols_missing])
-
-            # Apply the imputer
-            data.loc[:, idx_cols_missing] = imputer.transform(data.loc[:, idx_cols_missing])
-        # encoding categorical features: we assign a num value to each categorical feature
-        # if ('wilaya' or 'cause_acc' or 'cat_veh' or 'type_route' or 'jour' or 'mois') in attributs:
-        for c in data.columns:
-            if data[c].dtype == 'object':
-                lbl = preprocessing.LabelEncoder()
-                lbl.fit(list(data[c].values))
-                data[c] = lbl.transform(list(data[c].values))
+        #préparer les données pour le modèle (pas de date, chaine de caractères). La fonction est définie plus haut :)
+        prepareData(data)
 
         #mélanger le dataset
         data = sklearn.utils.shuffle(data)
@@ -345,8 +352,7 @@ def makePrediction (request):
         clf.fit(X_train, y_train.values.ravel())
         y_pred = clf.predict(X_test)
         dump(clf, '.\static\\predictors\\clf_classifier.joblib')
-        # Import scikit-learn metrics module for accuracy calculation
-        from sklearn import metrics
+
         # Model Accuracy, how often is the classifier correct?
         acc= metrics.accuracy_score(y_pred, y_test)
         precision= metrics.precision_score(y_test, y_pred)
@@ -356,34 +362,23 @@ def makePrediction (request):
     else:
         data = Accident.objects.all()
         myfilter = intervalledate2(prefix='pred')
+        intervallePred = intervalledate()
         acc = '-'
         precision = '-'
         recall = '-'
         f1score = '-'
         roc = '-'
+
     if request.method == 'POST' and "savePredictor" in request.POST:
         clf = load('.\static\\predictors\\clf_classifier.joblib')
         dump(clf, '.\static\\clf_classifier.joblib')
-
     context = {'my_map': m, 'predictions':predictions, 'mars':mars, 'total':total,
                'myfilter':myfilter, 'acc':acc, 'precision': precision, 'recall': recall,
-               'f1score':f1score, 'roc':roc, }
+               'f1score':f1score, 'roc':roc,'intervallePred': intervallePred }
     return render(request, 'home/prediction.html', context)
 
 
-# @login_required(login_url='authentif')
-# def makePredictor(request):
-#     if request.method == 'POST':
-#         myfilter = intervalledate2(request.POST, prefix='pred')
-#         debut = request.POST.get('debutPred')
-#         fin = request.POST.get('finPred')
-#         data = Accident.objects.filter(date__range=[debut, fin])
-#         evolution = 5
-#     else:
-#         data= Accident.objects.all()
-#         myfilter=intervalledate2(prefix='pred')
-#     context={'myfilter': myfilter, 'data': data}
-#     return render(request, 'home/predictor.html', context )
+
 
 @unauthenticated_user
 def authentification (request):

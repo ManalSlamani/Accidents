@@ -68,8 +68,14 @@ input[type=date]{
     style="border-bottom: solid; border-right:solid; border-left: solid; border-width: 1px; border-color: #c4dce8 ">
        <br> <div class="row">
             <div class="col-lg-7">
+            <div> <form class="form-inline" action="" method="post" style="float: right" >
+{#            <form class="form-inline" action="" method="post" style="" >#}
+                {% csrf_token %}
+            {{ intervallePred }}
+                  <button type="submit" class="btn btn-warning" style="height:30px;float: right; width: auto; font-size: 13px; margin-left: 10px" name="predictors">Valider</button>
+             </form></div><br><br><br>
 {#                 <h5 style="border-left-style: groove; padding-left: 3px ">Réulatats du prédicteur "Forets aléatoires"</h5>#}
-                 <p style="float: right">Total: {{ total }} accidents prédits pour le {{ mars.date.1.date }}</p>
+                <div> <p style="float: right">Total: {{ total }} accidents prédits pour le {{ mars.date.1.date }}</p>
                 <table class="table table-bordered" style="padding-top: 20px; width: 100%; font-size: 12.5px; width: 100%"  >
   <thead>
     <tr class="table-warning">
@@ -99,7 +105,7 @@ input[type=date]{
    </font>
   </tbody>
 </table>
-            </div>
+                </div></div>
             <div class="col-lg-5">
             <div style="border-style: groove; width: 100%; align-content: center">  {{my_map|safe}} </div><br>
             </div>
