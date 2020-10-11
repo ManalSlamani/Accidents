@@ -76,7 +76,7 @@ input[type=date]{
              </form></div><br><br><br>
 {#                 <h5 style="border-left-style: groove; padding-left: 3px ">Réulatats du prédicteur "Forets aléatoires"</h5>#}
                 <div> <p style="float: right">Total: {{ total }} accidents prédits pour le {{ mars.date.1 }}</p>
-                <table class="table table-bordered" style="padding-top: 20px; width: 100%; font-size: 12.5px; width: 100%"  >
+                <table id="predictionsTable" class="table table-bordered" style="padding-top: 20px; width: 100%; font-size: 12.5px; width: 100%"  >
   <thead>
     <tr class="table-warning">
         <th>#</th>
@@ -93,7 +93,7 @@ input[type=date]{
   <font size="5">
    {% for acc in mars.itertuples %}
        <tr>
-           <td > <a href="#acc.Index">{{acc.Index}}</a></td>
+           <td > {{acc.Index}}</td>
        <td>{{ acc.wilaya }}</td>
        <td>{{ acc.latitude|floatformat:4 }}</td>
        <td>{{ acc.longitude|floatformat:4 }}</td>
@@ -202,5 +202,41 @@ $('#myTab a').on('click', function (e) {
   e.preventDefault()
   $(this).tab('show')
 })
+
+$(document).ready( function () {
+    $('#predictionsTable').DataTable({
+        "processing": true,
+         dom: 'B<"clear">lfrtip',
+    buttons: {
+        name: 'primary',
+        buttons: [ 'csv', 'pdf' ]
+
+        },
+        "language": {
+                "url": "{% static 'js/DataTables/French.json' %}"
+            },
+        initComplete: function () {
+            this.api().columns().every( function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo( $(column.footer()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
+        }
+    } );
+} );
+
 </script>
 {% endblock %}

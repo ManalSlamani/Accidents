@@ -297,8 +297,8 @@ def makePrediction (request):
     # mars = pd.read_excel(".\static\\rf_pred.xlsx")
     # predictions = len(mars)
     marsData= Accident.objects.filter(date__year=2014, date__month=3, date__day=31)
-    print(marsData.values('wilaya'))
-    marsData= marsData.values('wilaya','longitude', 'latitude', 'age_chauff', 'annee_permis', 'heure', 'cause_acc', 'date_naiss_chauff', 'date')
+    # print(marsData.values('wilaya'))
+    marsData= marsData.values('longitude', 'latitude', 'age_chauff', 'annee_permis', 'heure', 'cause_acc', 'date_naiss_chauff', 'date', 'wilaya')
 
     marsDataCopy= pd.DataFrame(marsData)
     marsData= prepareData(pd.DataFrame(marsData).loc[:, pd.DataFrame(marsData).columns != 'wilaya'])
@@ -318,7 +318,7 @@ def makePrediction (request):
     for row in range(len(res)):
         folium.CircleMarker([float(res.iloc[row]['latitude']), float(res.iloc[row]['longitude'])],
                             color=(rainbow[row - 1]), radius=7, fill=True, id=rainbow[row - 1],
-                            popup=('Prpba:', res.iloc[row]['proba_1'])).add_to(m)
+                            popup=('Proba:', res.iloc[row]['proba_1'])).add_to(m)
     m.add_to(f)
     m = f._repr_html_()  # updated
     # mars = list(mars)
@@ -350,7 +350,7 @@ def makePrediction (request):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)  # 70% training and 30% test
 
         # Create a RandomForest Classifier
-        clf = RandomForestClassifier(random_state=42, max_features='auto', n_estimators= 32, criterion='gini',  min_samples_leaf= 1 ,min_samples_split= 2)
+        clf = RandomForestClassifier(random_state=42, max_features='auto', n_estimators= 512, criterion='gini',  min_samples_leaf= 1 ,min_samples_split= 2)
         # Train the model using the training sets y_pred=clf.predict(X_test)
         clf.fit(X_train, y_train.values.ravel())
         y_pred = clf.predict(X_test)
